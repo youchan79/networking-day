@@ -44,9 +44,10 @@ svg { display: block; }
 :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
 .app { height: 100%; max-width: 480px; margin: 0 auto; position: relative; display: flex; flex-direction: column; }
-html.standalone .app { padding-top: calc(env(safe-area-inset-top, 0px) + var(--net-h, 0px)); }
+/* 위쪽 알림·연결 안내가 떠 있는 동안에는 그만큼 내용을 아래로 내려 가리지 않게 */
+.app { padding-top: var(--net-h, 0px); }
 /* 휴대폰 키보드가 올라오면 보이는 영역 높이에 맞춰 '계속' 버튼이 키보드 위에 오도록 */
-html.standalone.kb-open .app { height: var(--vvh, 100%); }
+html.kb-open .app { height: var(--vvh, 100%); }
 .app.wide { max-width: 1000px; }
 .view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 24px; text-align: center; color: var(--text-2); }
@@ -75,7 +76,7 @@ html.standalone.kb-open .app { height: var(--vvh, 100%); }
   font-size: 15px; font-weight: 700; text-decoration: none; white-space: nowrap;
 }
 .outline-btn { width: 100%; height: 52px; border-radius: 999px; border: 1.5px solid #46464b; background: transparent; color: #fff; font-size: 16px; font-weight: 800; }
-.text-btn { background: none; border: 0; color: var(--text-2); font-size: 15px; font-weight: 700; padding: 10px; }
+.text-btn { min-height: 44px; background: none; border: 0; color: var(--text-2); font-size: 15px; font-weight: 700; padding: 10px; }
 .text-link { color: var(--text-2); font-size: 15px; font-weight: 700; text-decoration: none; }
 .icon-btn { width: 44px; height: 44px; margin-left: -10px; border: 0; background: none; color: #fff; display: grid; place-items: center; border-radius: 50%; }
 .icon-btn svg { width: 28px; height: 28px; }
@@ -85,6 +86,10 @@ html.standalone.kb-open .app { height: var(--vvh, 100%); }
   height: 26px; padding: 0 9px; border-radius: 7px; border: 0;
   background: var(--surface-2); color: var(--text-2); font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
 }
+/* 시연 표시가 위쪽 막대(남은 시간·그만 보기)를 가리지 않게 */
+body:has(#demo-chip:not([hidden])):not(:has(#top-timer:not([hidden]))) .topbar { padding-right: 62px; }
+/* 남은 시간이 떠 있는 동안은 시연 표시를 잠깐 숨깁니다 (좁은 화면에서 위쪽 막대가 넘치지 않게) */
+body:has(#top-timer:not([hidden])) #demo-chip { display: none; }
 
 /* ---------- 가입 단계 ---------- */
 .ob { padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
@@ -95,8 +100,8 @@ html.standalone.kb-open .app { height: var(--vvh, 100%); }
 .ob-body { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 20px; }
 .ob-step h2 { font-size: 31px; font-weight: 800; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 26px; text-wrap: balance; }
 .ob-step h2 + .ob-help { margin: -14px 0 22px; }
-.ob-help { color: var(--text-3); font-size: 14.5px; line-height: 1.5; margin-top: 12px; }
-.ob-error { color: var(--like); font-size: 14.5px; font-weight: 600; margin-top: 12px; }
+.ob-help { color: var(--text-3); font-size: 15px; line-height: 1.5; margin-top: 12px; }
+.ob-error { color: var(--like); font-size: 15px; font-weight: 600; margin-top: 12px; }
 .ob-label { font-size: 16px; font-weight: 800; margin: 28px 0 12px; }
 .ob-label span { color: var(--text-3); font-weight: 600; font-size: 14px; margin-left: 4px; }
 .line-input {
@@ -106,6 +111,7 @@ html.standalone.kb-open .app { height: var(--vvh, 100%); }
 .line-input:focus { border-bottom-color: var(--brand); }
 .line-input::placeholder, .box-input::placeholder { color: #8b8b93; opacity: 1; }
 .line-input.pin { font-size: 38px; letter-spacing: 0.35em; max-width: 220px; font-variant-numeric: tabular-nums; }
+.box-input:disabled { opacity: 0.55; }
 .box-input {
   width: 100%; min-height: 52px; padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--line);
   background: var(--surface); color: #fff; font-size: 16px; outline: none; resize: none; line-height: 1.45;
@@ -114,7 +120,7 @@ html.standalone.kb-open .app { height: var(--vvh, 100%); }
 .counter { text-align: right; color: var(--text-3); font-size: 13px; margin-top: 8px; font-variant-numeric: tabular-nums; }
 .counter.full, .mini-count.full { color: var(--like); font-weight: 700; }
 .field { display: flex; flex-direction: column; min-width: 0; }
-.mini-count { align-self: flex-end; margin-top: 4px; color: var(--text-3); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.mini-count { align-self: flex-end; margin-top: 4px; color: var(--text-3); font-size: 13px; font-variant-numeric: tabular-nums; }
 .line-input.at-max, .box-input.at-max { border-color: rgba(255, 68, 88, 0.7); }
 /* '계속'을 눌렀는데 빠진 항목 */
 .line-input.need, .box-input.need, .stack.need .box-input { border-color: var(--like); }
@@ -151,7 +157,7 @@ html.standalone.kb-open .app { height: var(--vvh, 100%); }
 .ob-foot { padding: 10px 0 calc(14px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 10px; }
 html.kb-open .ob-foot { padding-bottom: 10px; }
 .ob-foot-note { text-align: center; font-size: 13px; color: var(--text-3); line-height: 1.6; }
-.ob-msg { color: var(--like); font-size: 14.5px; font-weight: 700; text-align: center; }
+.ob-msg { color: var(--like); font-size: 15px; font-weight: 700; text-align: center; }
 .ob-label.first { margin-top: 0; }
 
 .ob.is-welcome { background: linear-gradient(160deg, var(--brand-a) 0%, #ff4b5c 55%, var(--brand-b) 100%); }
@@ -174,10 +180,13 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .tab-scroll { overflow-y: auto; overflow-x: hidden; padding-bottom: 24px; }
 .tab-scroll > * { flex-shrink: 0; }
 .topbar { display: flex; align-items: center; gap: 12px; height: 60px; flex: none; }
-.top-stop { margin-left: auto; color: var(--text-2); font-size: 14.5px; }
-.top-pill { height: 40px; display: inline-flex; align-items: center; padding: 0 18px; border-radius: 999px; background: #000; border: 1px solid #2c2c30; font-weight: 800; font-size: 15px; }
-.top-count { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; }
+.top-stop { margin-left: auto; color: var(--text-2); font-size: 15px; white-space: nowrap; padding: 10px 4px; }
+.top-pill { white-space: nowrap; flex: none; height: 40px; display: inline-flex; align-items: center; padding: 0 18px; border-radius: 999px; background: #000; border: 1px solid #2c2c30; font-weight: 800; font-size: 15px; }
+.top-count { white-space: nowrap; flex: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; }
 .top-count svg { width: 20px; height: 20px; color: var(--like); }
+.top-timer { margin-left: auto; height: 34px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 999px; background: #3a2412; color: #ffb36b; font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.top-timer:not([hidden]) ~ .top-stop { margin-left: 0; }
+.admin-timer { font-size: 16px; font-weight: 800; color: #ffb36b; font-variant-numeric: tabular-nums; }
 
 .deck-area { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .deck { position: relative; flex: 1; min-height: 300px; }
@@ -243,6 +252,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
   align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px;
   background: rgba(255, 255, 255, 0.92); color: #15151a; font-size: 13.5px; font-weight: 800;
 }
+.ci-badges { align-self: flex-start; display: flex; flex-wrap: wrap; gap: 6px; }
 .ci-badge.shared { background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); color: #fff; }
 .ci-badge svg { width: 15px; height: 15px; }
 .ci-head { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 800; margin-top: 2px; }
@@ -258,6 +268,8 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
   .card .ci-bio-text, .card .ci-list .clamp { -webkit-line-clamp: 2; }
 }
 .ci-line { display: flex; align-items: flex-start; gap: 8px; font-size: 16px; line-height: 1.4; }
+/* 띄어쓰기 없는 긴 이름·회사도 카드 밖으로 나가지 않게 */
+.ci-name > *, .ci-line > span { min-width: 0; overflow-wrap: anywhere; }
 .ci-line svg { width: 19px; height: 19px; flex: none; margin-top: 1px; opacity: 0.95; }
 .ci-k { font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-top: 6px; }
 .ci-list li { font-size: 15.5px; line-height: 1.45; padding-left: 12px; position: relative; }
@@ -281,12 +293,13 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .stamp.nope { right: 22px; color: var(--like); border-color: var(--like); transform: rotate(18deg); }
 
 /* 처음 한 번 보여 주는 사용 안내 */
-.coach { position: absolute; inset: 0; z-index: 6; border-radius: 14px; background: rgba(8, 8, 10, 0.9); color: #fff; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto; text-align: center; }
+.coach .cta { pointer-events: auto; }
+.coach { pointer-events: none; position: absolute; inset: 0; z-index: 6; border-radius: 14px; background: rgba(8, 8, 10, 0.9); color: #fff; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto; text-align: center; }
 .coach-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; font-size: 15px; font-weight: 700; }
 .coach-zone + .coach-zone { border-left: 2px dashed rgba(255, 255, 255, 0.35); }
 .coach-zone b { font-size: 28px; }
 .coach-foot { grid-column: 1 / -1; padding: 12px 18px 20px; display: flex; flex-direction: column; gap: 12px; font-size: 15px; font-weight: 700; }
-.coach-list { display: flex; flex-direction: column; gap: 6px; text-align: left; font-size: 14.5px; font-weight: 600; color: rgba(255, 255, 255, 0.92); }
+.coach-list { display: flex; flex-direction: column; gap: 6px; text-align: left; font-size: 15px; font-weight: 600; color: rgba(255, 255, 255, 0.92); }
 .coach-list b { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 4px; border-radius: 50%; background: rgba(255, 255, 255, 0.16); font-size: 14px; }
 .coach-list b.c-like { color: var(--like); }
 .coach-foot .cta { height: 48px; }
@@ -324,11 +337,11 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .li-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .li-top { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
 .li-nm { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
-.li-new { height: 20px; padding: 0 7px; border-radius: 6px; background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); color: #fff; font-size: 11.5px; font-weight: 900; letter-spacing: 0.04em; display: inline-flex; align-items: center; }
+.li-new { height: 20px; padding: 0 7px; border-radius: 6px; background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); color: #fff; font-size: 13px; font-weight: 900; letter-spacing: 0.04em; display: inline-flex; align-items: center; }
 .li-tag { font-size: 13px; font-weight: 700; color: var(--gold); }
 .li-mutual { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--ok); }
 .li-mutual::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ok); }
-.li-sub { font-size: 14.5px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.li-sub { font-size: 15px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .li-q { font-size: 15px; font-weight: 600; line-height: 1.45; color: #ececef; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .li.slim { padding: 10px 12px; }
 .li.slim .li-logo { width: 44px; height: 44px; border-radius: 11px; }
@@ -365,18 +378,18 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 
 /* ---------- 내 프로필 ---------- */
 .me-card { position: relative; height: min(64vh, 580px); min-height: 380px; margin-bottom: 18px; flex: none; }
-.me-note { color: var(--text-3); font-size: 13.5px; text-align: center; margin-top: 12px; }
+.me-note { color: var(--text-3); font-size: 15px; text-align: center; margin-top: 12px; }
 .me-alert { margin-bottom: 14px; padding: 12px 14px; border-radius: 14px; background: #3a2a10; color: #ffd98a; font-size: 14.5px; font-weight: 700; }
 
 /* ---------- 탭바 ---------- */
 .tabbar { flex: none; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #1c1c1f; background: var(--bg); padding: 8px 0 8px; }
 html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)); }
-.tabbar button { position: relative; border: 0; background: none; color: #8a8a90; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 12.5px; font-weight: 600; padding: 4px 0; }
+.tabbar button { position: relative; border: 0; background: none; color: #8a8a90; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 13px; font-weight: 600; padding: 4px 0; }
 .tabbar button[aria-current="page"] { color: #fff; font-weight: 800; }
 .tb-icon svg { width: 28px; height: 28px; }
 .tb-badge {
   position: absolute; top: -2px; left: calc(50% + 6px); min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px;
-  background: #e8312f; color: #fff; font-size: 12px; font-weight: 800; display: grid; place-items: center; font-variant-numeric: tabular-nums;
+  background: #e8312f; color: #fff; font-size: 13px; font-weight: 800; display: grid; place-items: center; font-variant-numeric: tabular-nums;
 }
 
 /* ---------- 오버레이 ---------- */
@@ -445,9 +458,9 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .qr-full .ghost-btn { color: #111; border-color: #ccc; }
 
 .toast {
-  position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); z-index: 60; pointer-events: none;
+  position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px) + var(--net-h, 0px)); transform: translateX(-50%); z-index: 60; pointer-events: none;
   max-width: min(420px, calc(100% - 32px)); padding: 12px 18px; border-radius: 999px; background: rgba(44, 44, 48, 0.97);
-  color: #fff; font-size: 14.5px; font-weight: 600; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  color: #fff; font-size: 15px; font-weight: 600; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* ---------- 로고 ---------- */
@@ -469,7 +482,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .panel.wide { grid-column: 1 / -1; }
 .panel h3 { font-size: 17px; font-weight: 800; }
 .phase-seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 5px; border-radius: 999px; background: #0f0f11; }
-.phase-seg button { height: 44px; border: 0; border-radius: 999px; background: transparent; color: var(--text-2); font-weight: 700; font-size: 14.5px; }
+.phase-seg button { height: 44px; border: 0; border-radius: 999px; background: transparent; color: var(--text-2); font-weight: 700; font-size: 15px; }
 .phase-seg button[aria-checked="true"] { background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); color: #fff; }
 .confirm { background: #2a1a20; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 12px; font-size: 15px; }
 .confirm .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
@@ -477,23 +490,23 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .cta.danger { background: var(--like); }
 .check { display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; }
 .check input { width: 20px; height: 20px; accent-color: var(--brand); }
-.type-confirm { display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--text-2); }
+.type-confirm { display: flex; flex-direction: column; gap: 8px; font-size: 15px; color: var(--text-2); }
 .type-confirm b { color: var(--like); }
-.head-link { min-height: 40px; margin-left: auto; padding: 0 14px; font-size: 14px; }
+.head-link { min-height: 44px; margin-left: auto; padding: 0 14px; font-size: 15px; }
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .stat { background: var(--surface-2); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .stat.wide { grid-column: 1 / -1; }
 .stat b { font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; white-space: nowrap; }
 .stat b small { font-size: 15px; color: var(--text-3); font-weight: 600; }
-.stat span { font-size: 12.5px; color: var(--text-2); }
-.stat .stat-sub { font-size: 12.5px; color: var(--text-3); }
+.stat span { font-size: 13px; color: var(--text-2); }
+.stat .stat-sub { font-size: 13px; color: var(--text-3); }
 @media (max-width: 420px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-.notice-last { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); font-size: 14px; color: var(--text-2); }
+.notice-last { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); font-size: 15px; color: var(--text-2); }
 .notice-last p { flex: 1; min-width: 180px; }
 .notice-last .ghost-btn { min-height: 36px; font-size: 13.5px; }
 .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .mini-seg { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: #0f0f11; }
-.mini-seg button { height: 34px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: var(--text-2); font-size: 13.5px; font-weight: 700; }
+.mini-seg button { height: 44px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: var(--text-2); font-size: 13.5px; font-weight: 700; }
 .mini-seg button[aria-pressed="true"] { background: #ececef; color: #111; }
 /* 참가자 목록: 휴대폰에서도 이름·상태·버튼이 한눈에 */
 .prows { display: flex; flex-direction: column; }
@@ -501,9 +514,18 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .p-main { min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; }
 .p-main b { font-size: 15px; }
 .p-sub { flex-basis: 100%; font-size: 13px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.prow .ghost-btn { min-height: 36px; padding: 0 12px; font-size: 13px; }
+.prow .ghost-btn { min-height: 44px; padding: 0 12px; font-size: 13px; }
 .prow .ghost-btn.armed { border-color: var(--like); color: var(--like); }
 .prow.is-hidden .p-main { opacity: 0.5; text-decoration: line-through; }
+/* 운영자: 지금 어디에 연결됐는지, 명단 미리 보기·찾기 */
+.admin .page-head { flex-wrap: wrap; height: auto; min-height: 76px; row-gap: 4px; padding: 8px 0; }
+.admin .page-head .mode-chip { order: 3; }
+.mode-chip { height: 30px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 999px; background: #10301f; color: #7ee0a8; font-size: 13px; font-weight: 800; white-space: nowrap; }
+.mode-chip.demo { background: #3a1416; color: #ff8a8a; }
+#admin-search { margin-bottom: 8px; }
+.roster-found, .roster-preview { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--text-2); }
+.roster-found { padding: 10px 12px; border-radius: 12px; background: var(--surface-2); }
+.qr-full .qr-count { color: #333; font-size: clamp(15px, 2vw, 22px); font-weight: 800; }
 @media (max-width: 420px) {
   .prow { grid-template-columns: 1fr auto; }
   .prow .state { grid-column: 1; grid-row: 2; }
@@ -527,7 +549,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 /* ---------- 추가: 링크드인, 테스트 도구 ---------- */
 .row-btns { display: flex; flex-wrap: wrap; gap: 8px; }
 .ghost-btn.danger { color: var(--like); border-color: rgba(255, 68, 88, 0.5); }
-.tag-test { display: inline-flex; align-items: center; height: 20px; padding: 0 7px; margin-left: 6px; border-radius: 5px; background: var(--surface-2); color: var(--text-2); font-size: 11.5px; font-weight: 700; }
+.tag-test { display: inline-flex; align-items: center; height: 20px; padding: 0 7px; margin-left: 6px; border-radius: 5px; background: var(--surface-2); color: var(--text-2); font-size: 13px; font-weight: 700; }
 .logo-auto { margin-top: 14px; color: var(--ok); font-size: 14.5px; font-weight: 700; }
 
 /* ---------- 추가: 연결 상태·전체 알림 ---------- */
@@ -537,13 +559,13 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   width: min(448px, calc(100% - 32px)); display: flex; flex-direction: column; gap: 8px; pointer-events: none;
 }
 .net-banner, .notice-banner {
-  pointer-events: auto; padding: 11px 14px; border-radius: 14px; font-size: 14px; font-weight: 700; line-height: 1.45; text-align: center;
+  pointer-events: auto; padding: 11px 14px; border-radius: 14px; font-size: 15px; font-weight: 700; line-height: 1.45; text-align: center;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 .net-banner { background: #3a2a10; color: #ffd98a; }
 .notice-banner { display: flex; align-items: center; gap: 10px; text-align: left; background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); color: #fff; font-size: 15px; }
 .notice-banner span { flex: 1; }
-.notice-x { flex: none; height: 32px; padding: 0 12px; border-radius: 999px; border: 0; background: rgba(0, 0, 0, 0.25); color: #fff; font-size: 13px; font-weight: 800; }
+.notice-x { flex: none; height: 44px; padding: 0 12px; border-radius: 999px; border: 0; background: rgba(0, 0, 0, 0.25); color: #fff; font-size: 13px; font-weight: 800; }
 
 /* ---------- 추가: LIKE 목록 동작 버튼 ---------- */
 .li-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding-left: 72px; }
@@ -552,14 +574,14 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .chip-btn { height: 40px; }
 .chip-btn {
   display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; border-radius: 999px; border: 1.5px solid #46464b;
-  background: transparent; color: var(--text); font-size: 14.5px; font-weight: 700; white-space: nowrap;
+  background: transparent; color: var(--text); font-size: 15px; font-weight: 700; white-space: nowrap;
 }
 .chip-btn svg { width: 17px; height: 17px; }
 .chip-btn.on { border-color: var(--ok); color: var(--ok); }
 .chip-btn.warn { color: var(--text-2); }
 .chip-btn.warn.armed { border-color: var(--like); color: var(--like); }
 .chip-btn.pick { border-color: rgba(255, 68, 88, 0.6); color: var(--like); }
-.met-count { color: var(--text-2); font-size: 14px; font-weight: 700; margin: -8px 0 16px; }
+.met-count { color: var(--text-2); font-size: 15px; font-weight: 700; margin: -8px 0 16px; }
 .me-out { align-self: center; margin-top: 10px; color: var(--text-3); text-decoration: underline; text-underline-offset: 3px; }
 .text-btn.inline { padding: 0 4px; color: var(--like); text-decoration: underline; }
 .match .finish-title { background: linear-gradient(90deg, #7cf0b8, #3ecf8e, #2bb3a3); -webkit-background-clip: text; background-clip: text; }
@@ -598,7 +620,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
       <div class="ob-step" data-step="pin" hidden>
         <h2>휴대폰 번호<br>뒤 4자리를 입력하세요</h2>
         <input id="in-pin" class="line-input pin" type="tel" inputmode="numeric" maxlength="4" autocomplete="off" enterkeyhint="next" placeholder="0000" aria-label="휴대폰 번호 뒤 4자리">
-        <p class="ob-help">본인 확인에만 쓰고 저장하지 않아요. 다른 기기에서 다시 들어올 때도 같은 번호를 입력하면 돼요.</p>
+        <p class="ob-help">본인 확인에만 쓰고, 번호 그대로는 저장하지 않아요. 다른 기기에서 다시 들어올 때도 같은 번호를 입력하면 돼요.</p>
         <p class="ob-help" id="pin-demo" hidden>시연 모드: 1234 또는 5678을 입력해 보세요.</p>
       </div>
 
@@ -609,21 +631,23 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 
       <!-- 명단에 없는 사람(현장 참가 등): 직접 입력 -->
       <div class="ob-step" data-step="manual" hidden>
-        <h2>직접 입력해 주세요</h2>
-        <p class="ob-label first" id="lbl-m-name">이름</p>
-        <input id="in-name" class="box-input" type="text" maxlength="20" autocomplete="name" enterkeyhint="next" aria-labelledby="lbl-m-name">
+        <h2 id="manual-h">직접 입력해 주세요</h2>
+        <p class="ob-help" id="manual-help">전에 직접 입력으로 등록했다면 그때와 같은 이름을 넣으면 이어서 들어가요.</p>
+        <p class="ob-label" id="lbl-m-name">이름</p>
+        <input id="in-name" class="box-input" type="text" maxlength="20" autocomplete="name" enterkeyhint="next" placeholder="예) 홍길동" aria-labelledby="lbl-m-name">
+        <p class="ob-help" id="m-name-note" hidden>이름은 바꿀 수 없어요. 잘못됐으면 운영진에게 알려 주세요.</p>
         <p class="ob-label" id="lbl-m-company">회사</p>
-        <input id="in-company" class="box-input" type="text" maxlength="30" autocomplete="organization" enterkeyhint="next" aria-labelledby="lbl-m-company">
-        <p class="ob-label" id="lbl-m-title">직급</p>
-        <input id="in-title" class="box-input" type="text" maxlength="30" enterkeyhint="done" aria-labelledby="lbl-m-title">
+        <input id="in-company" class="box-input" type="text" maxlength="30" autocomplete="organization" enterkeyhint="next" placeholder="예) 왓츠랩" aria-labelledby="lbl-m-company">
+        <p class="ob-label" id="lbl-m-title">직급 <span>선택</span></p>
+        <input id="in-title" class="box-input" type="text" maxlength="30" enterkeyhint="done" placeholder="예) 대표, 연구원, 학생" aria-labelledby="lbl-m-title">
       </div>
 
       <div class="ob-step" data-step="rules" hidden>
         <h2>참가 안내</h2>
         <p class="ob-help">시작하기 전에 확인해 주세요.</p>
         <ul class="rules">
-          <li><b>프로필은 참가자에게 공개돼요</b><span>이름, 회사, 직무, 경험이 이 행사 참가자에게 보여요.</span></li>
-          <li><b>5명을 고르면 끝나요</b><span>다 고르고 나면 누가 나를 골랐는지 볼 수 있어요.</span></li>
+          <li><b>프로필은 참가자에게 공개돼요</b><span>이름, 회사, 직무, 경험, 이야기, 키워드가 이 행사 참가자에게 보여요.</span></li>
+          <li><b>5명까지 고를 수 있어요</b><span>5명을 다 고르거나 결과가 공개되면 누가 나를 골랐는지 볼 수 있어요.</span></li>
           <li><b>누가 누구를 골랐는지는 당사자만 알아요</b><span>운영진도 볼 수 없어요.</span></li>
           <li><b>행사가 끝나면 삭제돼요</b><span>입력한 정보는 행사 후 모두 지워요.</span></li>
         </ul>
@@ -653,7 +677,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 
       <div class="ob-step" data-step="tags" hidden>
         <h2>관심 키워드</h2>
-        <p class="ob-help">같은 키워드를 고른 사람 카드에 표시돼요. <b class="pick-n" id="kw-count">0/5</b></p>
+        <p class="ob-help">같은 키워드를 고른 사람 카드에 표시돼요. 고르지 않아도 돼요. <b class="pick-n" id="kw-count">0/5</b></p>
         <div class="pills" id="in-keywords"></div>
         <div class="add-row">
           <input id="kw-custom" class="box-input" type="text" maxlength="15" enterkeyhint="done" placeholder="직접 입력" aria-label="키워드 직접 입력">
@@ -668,7 +692,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
       <button type="button" class="cta" id="ob-next">계속</button>
       <button type="button" class="text-btn" id="ob-no" hidden>아니에요</button>
       <button type="button" class="text-btn" id="ob-manual" hidden>직접 입력하기</button>
-      <p class="ob-foot-note" id="ob-foot-note">이미 등록했다면 같은 번호로 들어오면 돼요<br>11월 16일(월) · 팁스타운 S6</p>
+      <p class="ob-foot-note" id="ob-foot-note"><button type="button" class="text-btn" id="ob-returning">이미 프로필을 만들었어요 · 바로 들어가기</button><br>11월 16일(월) · 팁스타운 S6</p>
     </div>
   </section>
 
@@ -678,6 +702,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
       <header class="topbar">
         <span class="top-pill">오늘의 5명</span>
         <span class="top-count" id="pick-count"></span>
+        <span class="top-timer" id="top-timer" hidden></span>
         <button type="button" class="text-btn top-stop" id="top-stop" hidden>그만 보기</button>
       </header>
       <div class="deck-area" id="deck-area">
@@ -713,9 +738,9 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
       <p class="me-alert" id="me-hidden" hidden>운영진이 내 프로필을 숨겼어요. 다른 참가자에게 보이지 않아요. 잘못된 것 같으면 운영진에게 알려 주세요.</p>
       <div class="me-card" id="me-card"></div>
       <button type="button" class="outline-btn" id="me-edit">프로필 수정</button>
-      <p class="me-note">다른 기기에서도 같은 번호 뒤 4자리로 들어올 수 있어요.</p>
+      <p class="me-note">다른 기기에서도 같은 번호 뒤 4자리로 들어올 수 있어요. 직접 입력으로 등록했다면 ‘직접 입력하기’에서 같은 이름을 넣어 주세요.</p>
       <button type="button" class="text-btn me-out" id="me-out">이 기기에서 나가기</button>
-      <p class="me-note" id="me-out-note" hidden>다른 사람이 이 기기로 등록할 수 있게 나갑니다. 내 프로필과 고른 기록은 그대로 남아요. <button type="button" class="text-btn inline" id="me-out-yes">나가기</button></p>
+      <div class="confirm" id="me-out-note" hidden><p>다른 사람이 이 기기로 등록할 수 있게 나갑니다. 내 프로필과 고른 기록은 그대로 남아요.</p><div class="row"><button type="button" class="ghost-btn" id="me-out-no">취소</button><button type="button" class="cta small" id="me-out-yes">나가기</button></div></div>
     </div>
 
     <nav class="tabbar" aria-label="메뉴">
@@ -728,10 +753,10 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   <!-- 운영자 -->
   <section class="view admin" id="view-admin" hidden>
     <div class="admin-scroll">
-      <header class="page-head"><h1>운영자</h1><a class="ghost-btn head-link" href="#">참가자 화면</a></header>
+      <header class="page-head"><h1>운영자</h1><span class="mode-chip" id="admin-mode"></span><a class="ghost-btn head-link" href="#">참가자 화면</a></header>
       <form id="admin-login" class="admin-login" novalidate>
         <p class="ob-help">진행 단계를 바꾸면 모든 참가자 화면이 바로 바뀌어요.</p>
-        <input id="admin-pin" class="box-input" type="password" autocomplete="off" placeholder="운영자 PIN" aria-label="운영자 PIN">
+        <input id="admin-pin" class="box-input" type="password" inputmode="numeric" autocomplete="off" placeholder="운영자 PIN" aria-label="운영자 PIN">
         <p class="ob-error" id="admin-error" hidden></p>
         <button class="cta" type="submit">들어가기</button>
       </form>
@@ -743,12 +768,14 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
             <button type="button" role="radio" data-phase="swipe">카드 고르기</button>
             <button type="button" role="radio" data-phase="ended">결과 공개</button>
           </div>
+          <p class="admin-timer" id="admin-timer" hidden></p>
+          <button type="button" class="cta" id="phase-next" hidden></button>
           <div class="confirm" id="phase-confirm" hidden>
             <p id="phase-confirm-text"></p>
             <label class="check" id="phase-notice-row" hidden><input type="checkbox" id="phase-notice" checked> ‘네트워킹 시작’ 알림도 함께 보내기</label>
             <div class="row">
-              <button type="button" class="cta small" id="phase-yes">바꾸기</button>
               <button type="button" class="ghost-btn" id="phase-no">취소</button>
+              <button type="button" class="cta small" id="phase-yes">바꾸기</button>
             </div>
           </div>
           <div class="stats" id="stats"></div>
@@ -757,10 +784,10 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
           <h3>전체 알림</h3>
           <p class="ob-help">모든 참가자 화면 맨 위에 20초 동안 띄워요. 참가자가 눌러서 닫을 수 있어요.</p>
           <div class="row-btns" id="notice-presets">
-            <button type="button" class="ghost-btn" data-notice="2분 뒤에 카드 고르기가 끝나요">2분 남음</button>
-            <button type="button" class="ghost-btn" data-notice="1분 뒤에 카드 고르기가 끝나요">1분 남음</button>
+            <button type="button" class="ghost-btn" data-notice="2분 뒤에 카드 고르기가 끝나요" data-min="2">2분 남음</button>
+            <button type="button" class="ghost-btn" data-notice="1분 뒤에 카드 고르기가 끝나요" data-min="1">1분 남음</button>
           </div>
-          <p class="ob-help" id="notice-preset-note" hidden>‘2분 남음’, ‘1분 남음’은 카드 고르기 단계에서만 보낼 수 있어요.</p>
+          <p class="ob-help" id="notice-preset-note" hidden>카드 고르기를 시작하면 ‘2분 남음’, ‘1분 남음’ 버튼이 나와요. 누르면 참가자 화면 위에 남은 시간이 떠요.</p>
           <form class="add-row" id="notice-form" novalidate>
             <input id="notice-text" class="box-input" type="text" maxlength="60" placeholder="직접 입력" aria-label="알림 문구" enterkeyhint="send">
             <button type="submit" class="ghost-btn" id="notice-send">보내기</button>
@@ -769,6 +796,18 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
             <p id="notice-last-text"></p>
             <button type="button" class="ghost-btn" id="notice-clear" hidden>알림 내리기</button>
           </div>
+        </div>
+        <div class="panel wide">
+          <div class="panel-head">
+            <h3>참가자</h3>
+            <div class="mini-seg" id="admin-filter">
+              <button type="button" data-filter="real">실제 참가자</button>
+              <button type="button" data-filter="all">전체</button>
+            </div>
+          </div>
+          <input id="admin-search" class="box-input" type="search" placeholder="이름·회사로 찾기" aria-label="참가자 찾기">
+          <div class="prows" id="admin-rows"></div>
+          <p class="ob-help">숨긴 프로필은 다른 참가자 카드와 LIKE 목록에 나타나지 않아요. 그 사람을 고른 기록에서도 빠지고, 다시 보이게 해도 돌아오지 않아요. 테스트·중복 프로필 정리용이에요.</p>
         </div>
         <div class="panel">
           <h3>입장 QR</h3>
@@ -782,13 +821,24 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
           </div>
         </div>
         <div class="panel">
-          <h3>신청 명단</h3>
+          <h3>행사 전 준비 · 신청 명단</h3>
           <p class="ob-help" id="roster-count"></p>
-          <textarea id="roster-text" class="box-input" rows="6" aria-label="신청 명단" placeholder="이름, 회사, 직급, 휴대폰 번호 (한 줄에 한 명, 엑셀에서 복사해도 돼요)"></textarea>
-          <button type="button" class="ghost-btn" id="roster-save">명단 바꾸기</button>
+          <input id="roster-find" class="box-input" type="search" placeholder="명단에서 이름·번호 뒤 4자리로 찾기" aria-label="신청 명단에서 찾기">
+          <ul class="roster-found" id="roster-found" hidden></ul>
+          <textarea id="roster-text" class="box-input" rows="6" aria-label="신청 명단" placeholder="엑셀에서 이름·회사·직급·휴대폰 번호 칸을 복사해 붙여 넣으세요 (첫 줄 제목 줄도 괜찮아요)"></textarea>
+          <button type="button" class="ghost-btn" id="roster-save">명단 확인하기</button>
+          <div class="confirm" id="roster-confirm" hidden>
+            <p id="roster-confirm-text"></p>
+            <ul class="roster-preview" id="roster-preview"></ul>
+            <div class="row">
+              <button type="button" class="ghost-btn" id="roster-no">취소</button>
+              <button type="button" class="cta small" id="roster-yes">명단 바꾸기</button>
+            </div>
+          </div>
+          <p class="ob-help" id="roster-result" hidden></p>
         </div>
         <div class="panel">
-          <h3>테스트</h3>
+          <h3>행사 전 준비 · 테스트</h3>
           <p class="ob-help">리허설 때는 예시 참가자를 넣고 카드를 넘겨 보세요. 실제 행사 전에는 전체 초기화로 테스트 기록을 모두 지웁니다.</p>
           <div class="row-btns">
             <button type="button" class="ghost-btn" id="test-add">예시 참가자 34명 넣기</button>
@@ -807,17 +857,6 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
               <button type="button" class="cta small danger" id="test-yes">확인</button>
             </div>
           </div>
-        </div>
-        <div class="panel wide">
-          <div class="panel-head">
-            <h3>참가자</h3>
-            <div class="mini-seg" id="admin-filter">
-              <button type="button" data-filter="real">실제 참가자</button>
-              <button type="button" data-filter="all">전체</button>
-            </div>
-          </div>
-          <div class="prows" id="admin-rows"></div>
-          <p class="ob-help">숨긴 프로필은 다른 참가자 카드와 LIKE 목록에 나타나지 않아요. 테스트·중복 프로필 정리용이에요.</p>
         </div>
       </div>
     </div>
@@ -873,6 +912,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   <h2>QR을 찍고 프로필을 만들어 주세요</h2>
   <div class="qr" id="qr-large"></div>
   <p class="url" id="qr-large-url"></p>
+  <p class="qr-count" id="qr-large-count"></p>
   <button type="button" class="ghost-btn" id="qr-close">닫기</button>
 </div>
 
@@ -918,6 +958,10 @@ window.ND_CONFIG = {
 // 실제 행사(Firebase 연결)에서는 쓰이지 않습니다.
 (function () {
   const ND = (window.ND = window.ND || {});
+
+  // 관심 키워드 보기 ('찾고 있어요'와 겹치는 투자·데이터 협력 쪽은 뺌)
+  ND.KEYWORDS = ['휴머노이드', '매니퓰레이션', '로봇 핸드·그리퍼', '촉각 센서', '원격조작(텔레오퍼레이션)', '모션캡처',
+    '시뮬레이션·Sim2Real', 'VLA·로봇 파운데이션 모델', '강화학습', '제조 자동화', '물류', '의료·재활'];
 
   // [회사, 로고 글자, 회사가 하는 일, 이름, 직함, 직무 분야, 연차, 이전 경력[[기간, 소속, 역할]], 대표 경험[], 관심 키워드[], 찾고 있어요[], 나누고 싶은 이야기]
   const ROWS = [
@@ -1126,7 +1170,7 @@ window.ND_CONFIG = {
     years: '',
     careers: [],
     experiences: r[8].slice(0, 1),
-    keywords: r[9],
+    keywords: r[9].filter((k) => ND.KEYWORDS.includes(k)),
     lookingFor: r[10],
     topic: r[11],
     sample: true,
@@ -1147,8 +1191,17 @@ window.ND_CONFIG = {
       if (saved && typeof saved === 'object') st = Object.assign(fresh(), saved);
     } catch (e) { /* 저장소를 못 쓰면 메모리에서만 동작 */ }
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { /* 무시 */ } };
+    // 같은 브라우저의 다른 탭(운영자 탭 ↔ 참가자 탭)에서 바꾼 내용을 바로 반영합니다.
+    window.addEventListener('storage', (e) => {
+      if (e.key !== KEY) return;
+      try { st = Object.assign(fresh(), JSON.parse(e.newValue) || {}); } catch (err) { st = fresh(); }
+      emitSettings();
+      emitProfiles();
+      subs.swipes.forEach((set, pid) => emitKeyed(subs.swipes, pid, st.swipes[pid] || { likes: [], passes: [] }));
+      subs.privates.forEach((set, pid) => emitKeyed(subs.privates, pid, st.privates[pid] || { linkedin: '', met: [] }));
+    });
 
-    const base = Date.parse('2026-11-16T11:10:00+09:00');
+    const base = Date.now() - 40 * 60000; // 예시 참가자는 최근 40분 사이에 등록한 것으로
     const samples = ND.SAMPLE_PROFILES.map((p, i) => Object.assign({}, p, { done: i % 3 === 0, createdAt: base + i * 53000 }));
 
     const subs = { settings: new Set(), profiles: new Set(), progress: new Set(), swipes: new Map(), inbox: new Map(), privates: new Map() };
@@ -1159,14 +1212,20 @@ window.ND_CONFIG = {
       .map((p) => Object.assign({}, p, { hidden: !!st.hidden[p.id] }));
     const emitProfiles = () => { const list = allProfiles(); subs.profiles.forEach((cb) => later(() => cb(clone(list), { fromCache: false }))); emitProgress(); };
     // 운영자 화면 진행 현황: 예시 참가자는 그럴듯한 값으로, 직접 등록한 사람은 실제 기록으로
-    const progressList = () => samples.map((p, i) => ({ id: p.id, likes: p.done ? 5 : i % 4, seen: p.done ? 14 : (i % 4) * 3, left: p.done ? 19 : 10 }))
+    const progressList = () => samples.map((p, i) => (st.phase === 'registration' ? { id: p.id, likes: 0, seen: 0, left: null }
+      : { id: p.id, likes: p.done ? 5 : i % 4, seen: p.done ? 14 : (i % 4) * 3, left: p.done ? 19 : 10 }))
       .concat(Object.keys(st.users).map((pid) => {
         const sw = st.swipes[pid] || { likes: [], passes: [] };
         return { id: pid, likes: sw.likes.length, seen: sw.likes.length + sw.passes.length, left: (st.progress || {})[pid] };
       }));
     function emitProgress() { const list = progressList(); subs.progress.forEach((cb) => later(() => cb(clone(list)))); }
-    const settings = () => ({ phase: st.phase, notice: st.notice, noticeAt: st.noticeAt });
-    const emitSettings = () => subs.settings.forEach((cb) => later(() => cb(settings())));
+    const settings = () => ({ phase: st.phase, notice: st.notice, noticeAt: st.noticeAt, endsAt: st.endsAt || 0, phaseAt: st.phaseAt || 0 });
+    // 예시 '나를 고른 사람'은 카드 고르기가 시작된 뒤부터 보여 줍니다 (실제 행사와 같게).
+    const inboxOf = (pid) => (st.phase === 'registration' ? [] : st.inbox[pid] || []);
+    const emitSettings = () => {
+      subs.settings.forEach((cb) => later(() => cb(settings())));
+      subs.inbox.forEach((set, pid) => emitKeyed(subs.inbox, pid, inboxOf(pid)));
+    };
     const emitKeyed = (map, pid, value) => (map.get(pid) || new Set()).forEach((cb) => later(() => cb(clone(value))));
     const watchKeyed = (map, pid, cb, value) => {
       if (!map.has(pid)) map.set(pid, new Set());
@@ -1188,12 +1247,14 @@ window.ND_CONFIG = {
 
     return {
       mode: 'demo',
-      // 신청 명단 (시연: 설정 파일의 가상 명단)
+      // 신청 명단 (시연: 설정 파일의 가상 명단, 운영자가 바꾸면 이 브라우저에 저장)
       async findRoster(phone4) {
-        return (C.roster || []).filter((r) => String(r[3]) === phone4).map(([name, company, title]) => ({ name, company, title }));
+        return (st.roster || C.roster || []).filter((r) => String(r[3]) === phone4).map(([name, company, title]) => ({ name, company, title }));
       },
-      async rosterCount() { return (C.roster || []).length; },
-      async saveRoster(people) { C.roster = people.map((p) => [p.name, p.company, p.title, p.phone4]); },
+      async rosterList() {
+        return (st.roster || C.roster || []).map(([name, company, title, phone4]) => ({ name, company, title, phone4: String(phone4) }));
+      },
+      async saveRoster(people) { st.roster = people.map((p) => [p.name, p.company, p.title, p.phone4]); save(); },
       async isOwner(pid) { return st.owned.includes(pid); },
       async findKey(hash) { return st.keys[hash] || null; },
       async claim(hash, pid) {
@@ -1208,8 +1269,9 @@ window.ND_CONFIG = {
         st.inbox[pid] = seedInbox();
         save();
         emitProfiles();
-        return pid;
+        return { pid, saved: Promise.resolve() };
       },
+      synced: () => Promise.resolve(),
       async updateProfile(pid, data) {
         if (!st.users[pid]) throw new Error('not found');
         Object.assign(st.users[pid], data);
@@ -1235,7 +1297,7 @@ window.ND_CONFIG = {
         return watchKeyed(subs.swipes, pid, cb, () => st.swipes[pid] || { likes: [], passes: [] });
       },
       watchInbox(pid, cb) {
-        return watchKeyed(subs.inbox, pid, cb, () => st.inbox[pid] || []);
+        return watchKeyed(subs.inbox, pid, cb, () => inboxOf(pid));
       },
       watchPrivate(pid, cb) {
         return watchKeyed(subs.privates, pid, cb, () => st.privates[pid] || { linkedin: '', met: [] });
@@ -1245,10 +1307,11 @@ window.ND_CONFIG = {
         save();
         emitKeyed(subs.privates, pid, st.privates[pid]);
       },
-      async sendNotice(text, phase) {
+      async sendNotice(text, phase, endsAt) {
         st.notice = text;
         st.noticeAt = Date.now();
-        if (phase) st.phase = phase;
+        if (phase) { st.phase = phase; st.phaseAt = Date.now(); }
+        if (endsAt !== undefined) st.endsAt = endsAt;
         save();
         emitSettings();
       },
@@ -1268,7 +1331,7 @@ window.ND_CONFIG = {
         save();
         return true;
       },
-      async setPhase(phase) { st.phase = phase; save(); emitSettings(); },
+      async setPhase(phase) { st.phase = phase; st.phaseAt = Date.now(); st.endsAt = 0; save(); emitSettings(); },
       async setHidden(pid, hidden) {
         if (hidden) st.hidden[pid] = true; else delete st.hidden[pid];
         save();
@@ -1277,7 +1340,15 @@ window.ND_CONFIG = {
       async addTestProfiles() { /* 시연 모드에는 이미 예시 참가자가 들어 있습니다 */ },
       async removeTestProfiles() { /* 시연 모드에는 테스트 참가자가 따로 없습니다 */ },
       async resetAll() { this.reset(); emitProfiles(); emitSettings(); },
-      reset() { try { localStorage.removeItem(KEY); } catch (e) { /* 무시 */ } st = fresh(); },
+      reset() {
+        // 전체 초기화해도 신청 명단은 남깁니다 (실제 서버와 같게).
+        const { roster, admin } = st;
+        try { localStorage.removeItem(KEY); } catch (e) { /* 무시 */ }
+        st = fresh();
+        if (roster) st.roster = roster;
+        st.admin = !!admin;
+        save();
+      },
     };
   };
 })();
@@ -1311,7 +1382,10 @@ window.ND_CONFIG = {
     const read = (snap) => snap.data({ serverTimestamps: 'estimate' }) || {};
     const fail = (e) => { console.error(e); if (ND.onStoreError) ND.onStoreError(e); };
     const ownerDoc = (pid) => D('owners/' + pid + '/uids/' + me());
-    const isOwner = async (pid) => (await fs.getDoc(ownerDoc(pid))).exists();
+    const isOwner = async (pid) => {
+      try { if ((await fs.getDocFromCache(ownerDoc(pid))).exists()) return true; } catch (e) { /* 보관본 없음 */ }
+      return (await fs.getDoc(ownerDoc(pid))).exists();
+    };
     // 한 번에 500개까지만 쓸 수 있어서 나눠서 지웁니다.
     async function deleteAll(refs) {
       for (let i = 0; i < refs.length; i += 400) {
@@ -1328,21 +1402,19 @@ window.ND_CONFIG = {
         const s = await fs.getDoc(D('roster/' + phone4));
         return s.exists() ? (s.data().people || []) : [];
       },
-      async rosterCount() {
+      async rosterList() {
         const s = await fs.getDocs(COL('roster'));
-        return s.docs.reduce((n, d) => n + (d.data().people || []).length, 0);
+        return s.docs.flatMap((d) => (d.data().people || []).map((p) => Object.assign({}, p, { phone4: d.id })));
       },
       // 명단 전체를 바꿉니다. 번호 뒤 4자리별로 한 문서.
       async saveRoster(people) {
         const groups = {};
         people.forEach((p) => { (groups[p.phone4] = groups[p.phone4] || []).push({ name: p.name, company: p.company, title: p.title }); });
-        await deleteAll(await refsOf('roster'));
-        const ids = Object.keys(groups);
-        for (let i = 0; i < ids.length; i += 400) {
-          const b = fs.writeBatch(db);
-          ids.slice(i, i + 400).forEach((k) => b.set(D('roster/' + k), { people: groups[k] }));
-          await b.commit();
-        }
+        const old = await refsOf('roster');
+        const b = fs.writeBatch(db);
+        old.forEach((r) => { if (!groups[r.id]) b.delete(r); });
+        Object.keys(groups).forEach((k) => b.set(D('roster/' + k), { people: groups[k] }));
+        await b.commit();
       },
       isOwner,
       async findKey(hash) {
@@ -1360,16 +1432,17 @@ window.ND_CONFIG = {
           b.set(ownerDoc(pid), { hash });
         }
         b.set(D('profiles/' + pid), Object.assign({}, data, { done: false, createdAt: fs.serverTimestamp(), updatedAt: fs.serverTimestamp() }));
-        await b.commit();
-        return pid;
+        return { pid, saved: b.commit() };
       },
+      // 이 기기에서 보낸 저장이 서버에 다 들어갈 때까지
+      synced: () => fs.waitForPendingWrites(db),
       async updateProfile(pid, data) {
         await fs.updateDoc(D('profiles/' + pid), Object.assign({}, data, { updatedAt: fs.serverTimestamp() }));
       },
       watchSettings(cb) {
         return fs.onSnapshot(D('settings/main'), (s) => {
           const d = read(s);
-          cb({ phase: d.phase || 'registration', notice: d.notice || null, noticeAt: d.noticeAt || 0 });
+          cb({ phase: d.phase || 'registration', notice: d.notice || null, noticeAt: ms(d.noticeAt), endsAt: d.endsAt || 0, phaseAt: d.phaseAt || 0 });
         }, fail);
       },
       watchProfiles(cb) {
@@ -1384,7 +1457,7 @@ window.ND_CONFIG = {
         return fs.onSnapshot(COL('progress'), (snap) => cb(snap.docs.map((d) => Object.assign({ id: d.id }, d.data()))), fail);
       },
       watchSwipes(pid, cb) {
-        return fs.onSnapshot(D('swipes/' + pid), (s) => cb(s.exists() ? s.data() : { likes: [], passes: [] }), fail);
+        return fs.onSnapshot(D('swipes/' + pid), (s) => cb(s.exists() ? s.data() : { likes: [], passes: [] }, s.metadata.hasPendingWrites), fail);
       },
       watchInbox(pid, cb) {
         return fs.onSnapshot(COL('inbox/' + pid + '/from'), (snap) => cb(snap.docs.map((d) => ({ id: d.id, at: ms(read(d).at) }))), fail);
@@ -1395,8 +1468,9 @@ window.ND_CONFIG = {
       async savePrivate(pid, fields) {
         await fs.setDoc(D('privates/' + pid), fields, { merge: true });
       },
-      async sendNotice(text, phase) {
-        await fs.setDoc(D('settings/main'), Object.assign({ notice: text, noticeAt: Date.now() }, phase ? { phase } : {}), { merge: true });
+      async sendNotice(text, phase, endsAt) {
+        await fs.setDoc(D('settings/main'), Object.assign({ notice: text, noticeAt: fs.serverTimestamp() }, phase ? { phase, phaseAt: Date.now() } : {},
+          endsAt !== undefined ? { endsAt } : {}), { merge: true });
       },
       // 고른 기록 저장 + 상대의 '나를 고른 사람'에 넣고 빼기 + 운영자용 진행 현황
       async saveSwipe(pid, swipes, change, done, progress) {
@@ -1413,9 +1487,11 @@ window.ND_CONFIG = {
       },
       async isAdmin() { return (await fs.getDoc(D('admins/' + me()))).exists(); },
       async becomeAdmin(pin) {
-        try { await fs.setDoc(D('admins/' + me()), { pin }); return true; } catch (e) { return false; }
+        try { await fs.setDoc(D('admins/' + me()), { pin }); return true; } catch (e) {
+          try { return (await fs.getDoc(D('admins/' + me()))).exists(); } catch (e2) { return false; }
+        }
       },
-      async setPhase(phase) { await fs.setDoc(D('settings/main'), { phase }, { merge: true }); },
+      async setPhase(phase) { await fs.setDoc(D('settings/main'), { phase, phaseAt: Date.now(), endsAt: 0 }, { merge: true }); },
       async setHidden(pid, hidden) { await fs.updateDoc(D('profiles/' + pid), { hidden }); },
       async addTestProfiles(list) {
         const b = fs.writeBatch(db);
@@ -1425,21 +1501,19 @@ window.ND_CONFIG = {
         await b.commit();
       },
       async removeTestProfiles(testIds) {
+        const inboxes = await Promise.all(testIds.map((id) => refsOf('inbox/' + id + '/from')));
         const refs = [];
-        for (const id of testIds) refs.push(D('profiles/' + id), ...(await refsOf('inbox/' + id + '/from')));
+        testIds.forEach((id, i) => refs.push(D('profiles/' + id), ...inboxes[i]));
         await deleteAll(refs);
       },
       // 참가자 기록 전체 삭제 (신청 명단과 운영자는 그대로)
       async resetAll(ids) {
-        const keys = await fs.getDocs(COL('keys'));
-        const profiles = await fs.getDocs(COL('profiles'));
-        const pids = new Set(ids.concat(keys.docs.map((d) => d.data().pid), profiles.docs.map((d) => d.id)));
+        const [keys, profiles] = await Promise.all([fs.getDocs(COL('keys')), fs.getDocs(COL('profiles'))]);
+        const pids = [...new Set(ids.concat(keys.docs.map((d) => d.data().pid), profiles.docs.map((d) => d.id)))];
         const refs = keys.docs.map((d) => d.ref).concat(profiles.docs.map((d) => d.ref));
-        // 고른 기록은 운영자도 목록을 볼 수 없으므로 참가자 id로 하나씩 지웁니다.
-        for (const pid of pids) {
-          refs.push(D('swipes/' + pid), D('progress/' + pid), D('privates/' + pid));
-          refs.push(...(await refsOf('owners/' + pid + '/uids')), ...(await refsOf('inbox/' + pid + '/from')));
-        }
+        // 고른 기록은 운영자도 목록을 볼 수 없으므로 참가자 id로 지웁니다 (한꺼번에 읽기).
+        const subs = await Promise.all(pids.map((pid) => Promise.all([refsOf('owners/' + pid + '/uids'), refsOf('inbox/' + pid + '/from')])));
+        pids.forEach((pid, i) => refs.push(D('swipes/' + pid), D('progress/' + pid), D('privates/' + pid), ...subs[i][0], ...subs[i][1]));
         await deleteAll(refs);
         await fs.setDoc(D('settings/main'), { phase: 'registration', notice: null, noticeAt: 0 });
       },
@@ -1461,9 +1535,7 @@ window.ND_CONFIG = {
   const EVENT_ID = C.eventId || 'physical-ai-networking-day-2026';
 
   const FIELDS = ['연구개발', 'AI·소프트웨어', '하드웨어·기구', '데이터', '제품·기획', '사업개발·영업', '투자', '정책·공공', '경영·창업'];
-  const KEYWORDS = ['휴머노이드', '매니퓰레이션', '로봇 핸드·그리퍼', '촉각 센서', '원격조작(텔레오퍼레이션)', '모션캡처',
-    '시뮬레이션·Sim2Real', 'VLA·로봇 파운데이션 모델', '강화학습', '데이터 수집·라벨링', '자율주행·모바일 로봇',
-    '제조 자동화', '물류', '의료·재활', '서비스 로봇', '반도체·부품', '투자 유치', '해외 진출', '정부 과제', '규제·표준'];
+  const KEYWORDS = ND.KEYWORDS;
   const LOOKING = ['공동 연구·개발', '고객사·도입처', '데이터 협력', '투자', '채용·구직', '정보 교류'];
   const MAX_KEYWORDS = 5;
   const MAX_LOOKING = 3;
@@ -1500,6 +1572,7 @@ window.ND_CONFIG = {
     notice: null,
     noticeText: '',
     noticeAt: 0,
+    endsAt: 0, // '2분 남음'·'1분 남음'을 보낸 뒤 카드 고르기가 끝나는 시각
     swipes: { likes: [], passes: [] },
     inbox: [],
     met: [],
@@ -1630,7 +1703,9 @@ window.ND_CONFIG = {
   let shieldUntil = 0;
   function shield(ms) { shieldUntil = Math.max(shieldUntil, performance.now() + (ms || 350)); }
   ['pointerdown', 'pointerup', 'click'].forEach((type) => document.addEventListener(type, (e) => {
-    if (performance.now() < shieldUntil) { e.stopPropagation(); e.preventDefault(); }
+    if (performance.now() >= shieldUntil) return;
+    if (type !== 'click' && e.target.closest && e.target.closest('.card.top')) { e.ndShielded = true; return; }
+    e.stopPropagation(); e.preventDefault();
   }, true));
 
   // ---------- 연결 상태·저장 대기 (13) ----------
@@ -1649,9 +1724,14 @@ window.ND_CONFIG = {
     } else {
       b.hidden = true;
     }
-    // 연결 안내가 떠 있는 동안에는 화면 내용을 그만큼 아래로 내려 상단 표시를 가리지 않습니다.
-    document.documentElement.style.setProperty('--net-h', b.hidden ? '0px' : (b.offsetHeight + 8) + 'px');
+    syncBannerSpace();
     $('finish-pending').hidden = !(pendingWrites > 0 && (offline || slowTimer === 'shown'));
+  }
+  // 연결 안내·전체 알림이 떠 있는 동안에는 화면 내용을 그만큼 아래로 내려 상단 표시를 가리지 않습니다.
+  function syncBannerSpace() {
+    const bs = $('banners');
+    const shown = [...bs.children].some((c) => !c.hidden);
+    document.documentElement.style.setProperty('--net-h', shown ? (bs.offsetHeight + 16) + 'px' : '0px');
   }
   function enqueue(fn) {
     pendingWrites++;
@@ -1799,7 +1879,7 @@ window.ND_CONFIG = {
       box.style.setProperty('--mono', monoColor(p.company));
       box.setAttribute('role', 'img');
       box.setAttribute('aria-label', label);
-      box.append(h('span', { 'aria-hidden': 'true', text: (p.company || '?').trim().charAt(0).toUpperCase() || '?' }));
+      box.append(h('span', { 'aria-hidden': 'true', text: (Array.from((p.company || '?').trim())[0] || '?').toUpperCase() }));
     }
     return box;
   }
@@ -1844,11 +1924,10 @@ window.ND_CONFIG = {
     const shared = sharedKeywords(p);
     if (kind === 'intro') {
       return [
-        shared.length
-          ? h('span', { class: 'ci-badge shared' }, icon('sparkle'), '나와 같은 관심 ' + shared.length + '개')
-          : h('span', { class: 'ci-badge' }, p.field),
+        h('span', { class: 'ci-badges' }, h('span', { class: 'ci-badge' }, p.field),
+          shared.length ? h('span', { class: 'ci-badge shared' }, icon('sparkle'), '같은 관심 · ' + shared[0] + (shared.length > 1 ? ' 외 ' + (shared.length - 1) : '')) : null),
         null, // 이름 자리
-        line('briefcase', p.title),
+        p.title ? line('briefcase', p.title) : null,
         line('building', p.company),
         h('p', { class: 'ci-bio' }, h('span', { class: 'ci-bio-text', text: '“' + p.topic + '”' })),
         h('button', { type: 'button', class: 'ci-more', 'data-more': '' }, '프로필 전체 보기'),
@@ -1933,12 +2012,12 @@ window.ND_CONFIG = {
     return [...S.profiles.values()].filter((p) => !p.hidden);
   }
   const picksFull = () => S.swipes.likes.length >= MAX;
-  // 한 번이라도 다 고르면(또는 카드를 다 넘기면) LIKE 목록이 열리고, 그 뒤로는 계속 열려 있습니다.
-  const unlocked = () => picksFull() || !!(S.me && S.me.done) || S.phase === 'ended';
+  // 5명을 채우거나 결과가 공개되면 '나를 고른 사람'이 열립니다 (카드를 넘기기만 해서는 열리지 않음).
+  const unlocked = () => picksFull() || S.phase === 'ended';
 
   function decide() {
     if (location.hash === '#admin') return 'admin';
-    if (!S.pid) return 'onboard';
+    if (!S.pid) return S.booting ? 'loading' : 'onboard';
     if (!S.me) return 'loading';
     if (S.editing) return 'onboard';
     return 'app';
@@ -1978,7 +2057,19 @@ window.ND_CONFIG = {
     S.view = 'error';
   }
 
-  async function enterAs(pid) {
+  function listenMine(pid) {
+    if (S.pid !== pid || S.unsub.length) return;
+    S.unsub.push(S.store.watchSwipes(pid, (sw, mine) => {
+      // 방금 내가 보낸 저장의 메아리는 건너뜁니다 (넘긴 카드가 잠깐 되살아나지 않게)
+      if (mine && S.swipesLoaded) return;
+      S.swipes = { likes: (sw.likes || []).slice(), passes: (sw.passes || []).slice() };
+      S.swipesLoaded = true;
+      onData();
+    }));
+    S.unsub.push(S.store.watchInbox(pid, (list) => { S.inbox = list; S.inboxLoaded = true; onData(); }));
+    S.unsub.push(S.store.watchPrivate(pid, (v) => { S.met = (v.met || []).slice(); S.privLoaded = true; onData(); }));
+  }
+  function enterAs(pid, after) {
     S.unsub.forEach((u) => u());
     S.unsub = [];
     S.pid = pid;
@@ -2000,14 +2091,9 @@ window.ND_CONFIG = {
     S.newIds = new Set();
     S.swipesLoaded = false;
     S.inboxLoaded = false;
+    S.privLoaded = false;
     wasHidden = null;
-    S.unsub.push(S.store.watchSwipes(pid, (sw) => {
-      S.swipes = { likes: (sw.likes || []).slice(), passes: (sw.passes || []).slice() };
-      S.swipesLoaded = true;
-      onData();
-    }));
-    S.unsub.push(S.store.watchInbox(pid, (list) => { S.inbox = list; S.inboxLoaded = true; onData(); }));
-    S.unsub.push(S.store.watchPrivate(pid, (v) => { S.met = (v.met || []).slice(); onData(); }));
+    if (after) after.then(() => listenMine(pid), (e) => console.error(e)); else listenMine(pid);
   }
   function signOut() {
     S.unsub.forEach((u) => u());
@@ -2077,7 +2163,7 @@ window.ND_CONFIG = {
     OB.manual = false;
     let restored = '';
     if (mode === 'edit') {
-      OB.base = ['editmenu'].concat(PROFILE_STEPS);
+      OB.base = ['editmenu', 'manual'].concat(PROFILE_STEPS);
       OB.d = draftFrom(S.me);
       const saved = store.json(LS_EDIT);
       if (fresh12h(saved) && saved.pid === S.pid) {
@@ -2097,6 +2183,9 @@ window.ND_CONFIG = {
           const idx = obSteps().indexOf(saved.step);
           OB.i = idx >= LOGIN_STEPS.length ? idx : LOGIN_STEPS.length;
           restored = '입력하던 내용을 불러왔어요.';
+        } else if (['pin', 'confirm', 'manual'].includes(saved.step)) {
+          OB.i = LOGIN_STEPS.indexOf('pin');
+          OB.manual = saved.step === 'manual'; // 직접 입력하던 이름·회사는 지우지 않고 이어서
         }
       }
     }
@@ -2122,7 +2211,8 @@ window.ND_CONFIG = {
   function withCount(input, cls) {
     return h('div', { class: 'field' + (cls ? ' ' + cls : '') }, input, limitCount(input));
   }
-  const exampleFor = (field) => EXAMPLES[field] || EXAMPLES['데이터'];
+  const NEUTRAL_EXAMPLE = { exps: ['로봇 손 관련 프로젝트 1건 진행', '관련 분야 3년 경력'], topic: '요즘 하는 일과 고민을 편하게 나누고 싶어요' };
+  const exampleFor = (field) => EXAMPLES[field] || NEUTRAL_EXAMPLE;
   // 직무 분야를 고르면 경험·이야기 칸의 예시도 그 분야에 맞게 바꿉니다.
   function applyExamples() {
     const ex = exampleFor(OB.d.field);
@@ -2200,7 +2290,8 @@ window.ND_CONFIG = {
   function renderEditMenu() {
     const d = OB.d;
     const items = [
-      ['job', '직무', [d.field, cleanText(d.experiences[0], 60)].filter(Boolean).join(' · ')],
+      ['manual', '회사·직급', [d.company, d.title].filter(Boolean).join(' · ')],
+      ['job', '직무·대표 경험', [d.field, cleanText(d.experiences[0], 60)].filter(Boolean).join(' · ')],
       ['topic', '나누고 싶은 이야기', d.topic],
       ['tags', '관심 키워드·찾고 있어요', d.keywords.concat(d.lookingFor).join(', ') || '없음'],
     ];
@@ -2232,9 +2323,8 @@ window.ND_CONFIG = {
     if (id === 'pin' && !/^\d{4}$/.test(d.pin)) return one('휴대폰 번호 뒤 4자리를 숫자로 입력해 주세요.', 'in-pin');
     if (id === 'manual') {
       const miss = [];
-      if (cleanText(d.name, 20).length < 2) miss.push(['이름', '이름을 두 글자 이상 입력해 주세요.', ['lbl-m-name', 'in-name']]);
+      if (Array.from(cleanText(d.name, 20)).length < 2) miss.push(['이름', '이름을 두 글자 이상 입력해 주세요.', ['lbl-m-name', 'in-name']]);
       if (!cleanText(d.company, 30)) miss.push(['회사', '회사·기관명을 입력해 주세요.', ['lbl-m-company', 'in-company']]);
-      if (!cleanText(d.title, 30)) miss.push(['직급', '직급을 입력해 주세요.', ['lbl-m-title', 'in-title']]);
       if (miss.length === 1) return one(miss[0][1], ...miss[0][2]);
       if (miss.length) return { text: '빠진 항목이 있어요: ' + miss.map((m) => m[0]).join(', '), els: miss.flatMap((m) => m[2]) };
     }
@@ -2259,7 +2349,7 @@ window.ND_CONFIG = {
     if (id === 'welcome') return '시작하기';
     if (id === 'rules') return '동의합니다';
     if (id === 'confirm') return '네, 맞아요';
-    if (isEdit()) return id === 'editmenu' ? '완료' : '저장하기';
+    if (isEdit()) return id === 'editmenu' ? '프로필로 돌아가기' : '저장하기';
     if (OB.i === obSteps().length - 1) return '완료';
     return '계속';
   }
@@ -2298,9 +2388,19 @@ window.ND_CONFIG = {
     flagMissing(null);
     if (id === 'confirm') applyMatch();
     if (id === 'editmenu') renderEditMenu();
+    if (id === 'manual') {
+      // 프로필 수정에서는 회사·직급만 고칩니다 (이름은 다시 들어올 때 쓰는 열쇠라 바꾸지 않음).
+      $('manual-h').textContent = edit ? '회사·직급' : '직접 입력해 주세요';
+      $('manual-help').hidden = edit;
+      $('m-name-note').hidden = !edit;
+      $('in-name').disabled = edit;
+      $('in-name').value = OB.d.name;
+      $('in-company').value = OB.d.company;
+      $('in-title').value = OB.d.title;
+    }
     syncNext();
     if (canGoBackInApp()) armBack();
-    const focusTarget = { pin: 'in-pin', manual: 'in-name', topic: 'in-topic' }[id];
+    const focusTarget = { pin: 'in-pin', manual: edit ? 'in-company' : 'in-name', topic: 'in-topic' }[id];
     const target = focusTarget ? $(focusTarget) : null;
     if (target) setTimeout(() => { if (S.view === 'onboard' && stepId() === id) target.focus({ preventScroll: true }); }, 60);
   }
@@ -2347,6 +2447,14 @@ window.ND_CONFIG = {
       return;
     }
     hideToast();
+    if (id === 'rules') OB.skippedRules = false;
+    if (id === 'rules' && OB.rulesThenProfile) {
+      OB.rulesThenProfile = false;
+      OB.i = obSteps().indexOf('job');
+      shield();
+      showStep();
+      return;
+    }
     if (id === 'pin') { await findInRoster(); return; }
     if (id === 'confirm') {
       // 입력하던 내용을 새로고침으로 불러온 뒤에는 번호가 없으므로 번호부터 다시
@@ -2354,7 +2462,7 @@ window.ND_CONFIG = {
       await lookup();
       return;
     }
-    if (id === 'manual') { await lookup(); return; }
+    if (id === 'manual' && !isEdit()) { await lookup(); return; }
     if (isEdit() || OB.i === obSteps().length - 1) { await saveProfile(); return; }
     OB.i++;
     shield();
@@ -2365,7 +2473,10 @@ window.ND_CONFIG = {
   async function findInRoster() {
     OB.busy = true; syncNext();
     try {
-      OB.matches = await S.store.findRoster(OB.d.pin);
+      await storeReady;
+      const pre = OB.rpre && OB.rpre.pin === OB.d.pin ? OB.rpre.p : null;
+      OB.rpre = null;
+      OB.matches = await (pre || S.store.findRoster(OB.d.pin));
     } catch (ex) {
       console.error(ex);
       OB.matches = null;
@@ -2380,15 +2491,16 @@ window.ND_CONFIG = {
     OB.mi = 0;
     if (!OB.matches.length) { showNotFound(); return; }
     OB.manual = false;
+    OB.notFound = false;
     OB.i++;
     shield();
     showStep();
   }
   // 명단에 없으면 안내와 함께 '직접 입력하기'를 보여 줍니다.
-  function showNotFound() {
+  function showNotFound(text) {
     OB.notFound = true;
     $('ob-manual').hidden = false;
-    flagMissing({ text: NOT_FOUND, els: [] });
+    flagMissing({ text: text || NOT_FOUND, els: [] });
   }
   function goManual() {
     // 명단에서 고른 사람의 정보가 남아 있으면 비우고 시작 (직접 입력하다 뒤로 갔다 온 경우는 그대로)
@@ -2407,6 +2519,12 @@ window.ND_CONFIG = {
     Object.assign(OB.d, { name: m.name, company: m.company, title: m.title });
     // 이름과 '님'이 다른 줄로 갈라지지 않게 붙여 둡니다.
     $('confirm-q').textContent = m.company + ' ' + m.name + ' 님 맞으신가요?';
+    const nm = cleanText(m.name, 20);
+    const pin = OB.d.pin;
+    if (S.store && pin) {
+      OB.pre = { nm, pin, p: keyHash(nm, pin).then((h) => S.store.findKey(h).then((pid) => ({ h, pid }))) };
+      OB.pre.p.catch(() => {});
+    }
   }
   function notMe() {
     OB.mi++;
@@ -2414,7 +2532,8 @@ window.ND_CONFIG = {
     OB.i--;
     shield();
     showStep();
-    if (OB.matches.length) showNotFound();
+    // 번호는 맞게 넣었으니 '번호를 확인하라'가 아니라 직접 입력으로 안내합니다.
+    if (OB.matches.length) showNotFound('이 번호로 신청한 분 중에는 없어요. 직접 입력해 주세요.');
   }
 
   async function lookup() {
@@ -2422,20 +2541,38 @@ window.ND_CONFIG = {
     OB.busy = true; syncNext();
     try {
       d.name = cleanText(d.name, 20);
-      const hash = await keyHash(d.name, d.pin);
-      const pid = await S.store.findKey(hash);
-      if (pid) await S.store.claim(hash, pid);
-      if (pid && (!S.profilesLoaded || S.profiles.has(pid))) {
+      await storeReady;
+      const pre = OB.pre && OB.pre.nm === d.name && OB.pre.pin === d.pin ? OB.pre.p : null;
+      OB.pre = null;
+      let r = pre ? await pre.catch(() => null) : null;
+      if (!r) { const h = await keyHash(d.name, d.pin); r = { h, pid: await S.store.findKey(h) }; }
+      const hash = r.h;
+      const pid = r.pid;
+      if (pid && (!S.profilesServer || S.profiles.has(pid))) {
+        // 다시 온 사람: 이 기기 연결(주인 표시)은 뒤에서 하고 화면부터 넘깁니다. 내 기록 듣기는 연결 뒤에 켭니다.
+        const claimed = S.store.claim(hash, pid);
+        claimed.catch((e) => {
+          console.error(e);
+          if (S.pid === pid) { signOut(); route(); toast('확인하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.', 3200); }
+        });
         OB.mode = null;
         clearDraft();
-        await enterAs(pid);
+        enterAs(pid, claimed);
         toast(d.name + '님, 다시 오셨네요.');
         route();
       } else {
+        if (pid) await S.store.claim(hash, pid); // 지워진 프로필을 다시 만들 때는 연결이 먼저 있어야 저장됩니다
         // 처음 왔거나, 운영진이 프로필을 지운 경우(키는 남아 있음) 새로 입력
         OB.hash = hash;
         OB.pid = pid || null;
-        OB.i++;
+        if (OB.skippedRules) {
+          // 바로가기로 왔지만 처음 만드는 사람: 참가 안내를 먼저 보고 직무로
+          OB.skippedRules = false;
+          OB.rulesThenProfile = true;
+          OB.i = obSteps().indexOf('rules');
+        } else {
+          OB.i++;
+        }
         shield();
         showStep();
       }
@@ -2491,16 +2628,18 @@ window.ND_CONFIG = {
     }
     OB.busy = true; syncNext();
     try {
+      await storeReady;
       const name = OB.d.name;
+      const hash = OB.hash;
+      const oldPid = OB.pid;
       S.creating = true;
-      const pid = await S.store.createProfile(OB.hash, Object.assign({ name }, data), OB.pid);
-      if (OB.pid) await S.store.savePrivate(pid, { linkedin: '', met: [] }, []);
-      await enterAs(pid);
+      const { pid, saved } = await S.store.createProfile(hash, Object.assign({ name }, data), oldPid);
+      if (oldPid) enqueue(() => S.store.savePrivate(pid, { linkedin: '', met: [] }, []));
+      enterAs(pid, saved);
       S.me = S.profiles.get(pid) || Object.assign({ id: pid, name, hidden: false, done: false }, data);
-      S.creating = false;
       OB.mode = null;
-      clearDraft();
       route();
+      saved.then(() => { S.creating = false; clearDraft(); }, (ex) => onCreateFail(ex, hash));
     } catch (ex) {
       console.error(ex);
       S.creating = false;
@@ -2509,6 +2648,19 @@ window.ND_CONFIG = {
       OB.busy = false;
       if (S.view === 'onboard') syncNext();
     }
+  }
+
+  // 프로필 저장이 서버에서 거절·실패했을 때: 이미 저장돼 있으면 그대로 들어가고, 아니면 입력 화면으로 되돌립니다.
+  async function onCreateFail(ex, hash) {
+    console.error(ex);
+    S.creating = false;
+    try {
+      const old = await S.store.findKey(hash);
+      if (old && await S.store.isOwner(old)) { enterAs(old); route(); return; }
+    } catch (e) { /* 아래로 */ }
+    signOut(); // 입력하던 내용(임시 저장)은 남아 있어 마지막 단계로 돌아갑니다
+    toast('저장하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.', 3200);
+    route();
   }
 
   // ---------- 메인 ----------
@@ -2526,7 +2678,7 @@ window.ND_CONFIG = {
   function passedPeople() {
     return S.swipes.passes.slice().reverse().map((id) => S.profiles.get(id)).filter((p) => p && !p.hidden && p.id !== S.pid);
   }
-  const canPick = (p) => !!p && S.phase === 'swipe' && !picksFull() && p.id !== S.pid && !S.swipes.likes.includes(p.id);
+  const canPick = (p) => S.swipesLoaded && !!p && S.phase === 'swipe' && !picksFull() && p.id !== S.pid && !S.swipes.likes.includes(p.id);
   const unviewedCount = () => inboxPeople().filter((x) => !S.viewed.has(x.p.id)).length;
 
   function renderApp() {
@@ -2539,13 +2691,13 @@ window.ND_CONFIG = {
     else if (S.tab === 'likes') renderLikesTab();
     else renderMeTab();
     // 배지: 아직 확인하지 않은 '나를 고른 사람' 수
-    const n = unviewedCount();
+    const n = unlocked() ? unviewedCount() : 0;
     $('tb-badge').hidden = n === 0;
     $('tb-badge').textContent = String(n);
   }
   function goTab(t) {
     if (t !== S.tab) { hideToast(); shield(); }
-    if (t === 'likes') { S.newIds = new Set(); likesKey = ''; }
+    if (t === 'likes') { S.newIds = new Set(); likesKey = ''; if (t !== S.tab) $('tab-likes').scrollTop = 0; }
     S.tab = t;
     renderApp();
   }
@@ -2601,6 +2753,7 @@ window.ND_CONFIG = {
   function showMatch(p) {
     if (!p || !S.me) return;
     matchWho = p;
+    shield(500);
     $('match-logos').replaceChildren(h('span', { class: 'fl' }, logoEl(S.me)), h('span', { class: 'fl' }, logoEl(p)));
     $('match-text').textContent = p.name + '님(' + p.company + ')과 서로 대화하고 싶어해요.';
     $('match').hidden = false;
@@ -2642,6 +2795,7 @@ window.ND_CONFIG = {
   function swipeMode() {
     if (S.phase === 'registration') return 'wait';
     if (S.phase === 'ended') return 'ended';
+    if (!S.swipesLoaded) return 'loading';
     if (!S.deckOrder.length) { S.browsing = false; return S.me && S.me.done ? 'done' : 'empty'; }
     if (picksFull()) return S.browsing ? 'deck' : 'done';
     if (S.me && S.me.done && !S.continuing && !S.browsing) return 'done';
@@ -2651,6 +2805,8 @@ window.ND_CONFIG = {
   function renderSwipeTab() {
     syncDeck();
     $('pick-count').replaceChildren(icon('heart'), S.swipes.likes.length + ' / ' + MAX);
+    $('pick-count').hidden = S.phase === 'registration';
+    renderTimer();
     const mode = swipeMode();
     $('deck-area').hidden = mode !== 'deck';
     $('radar').hidden = mode === 'deck';
@@ -2740,16 +2896,19 @@ window.ND_CONFIG = {
       ? h('button', { type: 'button', class: 'ghost-btn', onclick: revisitPasses }, '넘긴 ' + passed + '명 다시 보기')
       : null);
     const browse = () => (likes >= MAX && left && swiping
-      ? h('button', { type: 'button', class: 'ghost-btn', onclick: () => { S.browsing = true; session.save(); render(); } }, '남은 카드 ' + left + '장 둘러보기')
+      ? h('button', { type: 'button', class: 'ghost-btn', onclick: () => { S.browsing = true; S.history = []; session.save(); render(); } }, '남은 카드 ' + left + '장 둘러보기')
       : null);
     const content = {
-      wait: ['곧 카드가 열려요', '지금 ' + n + '명 참여 중이에요. 운영진이 시작하면 이 화면이 바로 바뀌어요.', []],
+      loading: ['불러오는 중이에요', '잠시만 기다려 주세요.', []],
+      wait: ['곧 카드가 열려요', '지금 ' + n + '명 참여 중이에요. 운영진이 카드 고르기를 시작하면 이 화면이 바로 바뀌어요. 그동안 화면을 꺼 둬도 괜찮아요.',
+        [h('button', { type: 'button', class: 'ghost-btn', onclick: () => goTab('me') }, '내 프로필 확인하기')]],
       empty: ['새 참가자를 기다리는 중', '다른 참가자가 등록하면 바로 카드가 나타나요.', [revisit()]],
-      done: [likes >= MAX ? MAX + '명을 모두 골랐어요' : likes + '명을 골랐어요',
-        likes >= MAX ? 'LIKE에서 누가 나를 골랐는지 확인하고 찾아가 인사해 보세요.' : '남은 자리는 더 고르거나, 이대로 LIKE를 확인해도 돼요.',
+      done: [likes >= MAX ? MAX + '명을 모두 골랐어요' : likes ? likes + '명을 골랐어요' : '아직 아무도 고르지 않았어요',
+        likes >= MAX ? 'LIKE에서 누가 나를 골랐는지 확인해 보세요. 결과가 공개되면 찾아가 인사해요.'
+          : '남은 자리는 더 고를 수 있어요. 누가 나를 골랐는지는 ' + MAX + '명을 채우거나 결과 공개 때 보여요.',
         likes >= MAX
           ? [goLikes('in', 'LIKE 확인하기'), swiping ? goLikes('out', '고른 사람 바꾸기', 'ghost-btn') : null, browse()]
-          : [goLikes('in', 'LIKE 확인하기'), more(), revisit()]],
+          : [revisit() || more(), goLikes('out', '내가 고른 사람 보기', 'ghost-btn')]],
       ended: ['네트워킹 시간이에요', '명찰의 이름과 회사를 보고 찾아가 인사해 보세요.', [goLikes('in', 'LIKE 확인하기')]],
     }[mode];
     $('radar-title').textContent = content[0];
@@ -2770,6 +2929,8 @@ window.ND_CONFIG = {
   }
   // 아직 되돌릴 수 있는 마지막 동작 (LIKE 목록에서 취소한 것 등은 건너뜀)
   function lastAction() {
+    // 고른 기록이 도착하기 전(새로고침 직후)에는 되돌리기 기록을 버리지 않습니다.
+    if (!S.swipesLoaded) return null;
     while (S.history.length) {
       const e = S.history[S.history.length - 1];
       if ((e.kind === 'like' && S.swipes.likes.includes(e.id)) || (e.kind === 'pass' && S.swipes.passes.includes(e.id))) return e;
@@ -2802,7 +2963,7 @@ window.ND_CONFIG = {
     S.browsing = false;
     likesKey = '';
     saveSwipes({ remove: id }, null);
-    toast('선택을 취소했어요.');
+    toast('선택을 취소했어요. 아래 ‘넘긴 사람’에서 다시 고를 수 있어요.', 3200);
     render();
   }
   // LIKE 목록·프로필에서 바로 고르기
@@ -2824,7 +2985,7 @@ window.ND_CONFIG = {
   function bindDrag(card) {
     if (card._drag) return;
     card._drag = true;
-    let sx = 0, sy = 0, dx = 0, pointer = null, decided = false, dragging = false, moved = false;
+    let sx = 0, sy = 0, dx = 0, pointer = null, decided = false, dragging = false, moved = false, tapOk = true;
     let samples = [];
     const like = card.querySelector('.stamp.like');
     const nope = card.querySelector('.stamp.nope');
@@ -2840,7 +3001,9 @@ window.ND_CONFIG = {
     card.addEventListener('animationend', () => card.classList.remove('nudge-l', 'nudge-r'));
     card.addEventListener('pointerdown', (e) => {
       if (e.button !== 0 || !card.classList.contains('top') || e.target.closest('.card-more')) return;
+      dismissCoach();
       sx = e.clientX; sy = e.clientY; dx = 0; pointer = e.pointerId; decided = false; dragging = false; moved = false;
+      tapOk = !e.ndShielded;
       samples = [{ x: 0, t: e.timeStamp }];
     });
     card.addEventListener('pointermove', (e) => {
@@ -2867,7 +3030,7 @@ window.ND_CONFIG = {
     card.addEventListener('pointerup', (e) => {
       if (e.pointerId !== pointer) return;
       pointer = null;
-      if (!moved) { tapCard(card, e.clientX, e.target); return; }
+      if (!moved) { if (tapOk) tapCard(card, e.clientX, e.target); return; }
       if (!dragging) return;
       dragging = false;
       // 멀리 밀었거나, 짧아도 빠르게 튕겼으면 넘김
@@ -2929,6 +3092,9 @@ window.ND_CONFIG = {
   // 여러 번 되돌릴 수 있습니다. 마지막 고르기로 완료됐던 경우에는 완료도 되돌립니다.
   function undo() {
     if (S.phase !== 'swipe') return;
+    const now = performance.now();
+    if (now < btnLockUntil) return; // 두 번 눌린 것
+    btnLockUntil = now + 400;
     const last = lastAction();
     if (!last) return;
     S.history.pop();
@@ -2938,10 +3104,13 @@ window.ND_CONFIG = {
     if (setDone && S.me) S.me = Object.assign({}, S.me, { done: false });
     else if (S.me && S.me.done) { if (picksFull()) S.browsing = true; else S.continuing = true; }
     saveSwipes(kind === 'like' ? { remove: id } : null, setDone ? false : null);
+    const who = S.profiles.get(id);
+    if (kind === 'like' && who) toast(who.name + '님 선택을 되돌렸어요.');
     render();
   }
 
   function showFinish() {
+    shield(500); // 5번째를 고른 두 번째 탭이 '방금 선택 되돌리기'를 누르지 않게
     $('finish').hidden = false;
     renderFinish();
     renderNet();
@@ -2950,18 +3119,22 @@ window.ND_CONFIG = {
   function renderFinish() {
     const picks = minePeople();
     const mineIds = new Set(picks.map((p) => p.id));
-    const mutual = inboxPeople().filter((x) => mineIds.has(x.p.id));
-    $('finish-title').textContent = picks.length >= MAX ? MAX + '명 선택 완료!' : '카드를 다 넘겼어요';
+    const full = picks.length >= MAX;
+    const mutual = unlocked() ? inboxPeople().filter((x) => mineIds.has(x.p.id)) : [];
+    $('finish-title').textContent = full ? MAX + '명 선택 완료!' : '카드를 다 넘겼어요';
     $('finish-logos').replaceChildren(...picks.map((p) => h('span', { class: 'fl' }, logoEl(p))));
     const text = mutual.length === 1 ? mutual[0].p.name + '님도 나를 골랐어요. 서로 선택!'
       : mutual.length ? '나를 고른 사람 중 ' + mutual.length + '명을 나도 골랐어요. 서로 선택!'
-        : '이제 누가 나를 골랐는지 확인해 보세요.';
+        : full ? '이제 누가 나를 골랐는지 확인해 보세요.'
+          : (picks.length ? picks.length + '명을 골랐어요. ' : '') + '넘긴 사람에서 더 고를 수 있어요. 누가 나를 골랐는지는 ' + MAX + '명을 채우거나 결과 공개 때 보여요.';
     const el = $('finish-text');
     if (el.textContent !== text) {
       el.textContent = text;
       el.classList.toggle('hot', mutual.length > 0);
       if (mutual.length) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
     }
+    // 잠겨 있으면 '누가 나를 골랐는지 보기' 대신 넘긴 사람에서 더 고르기
+    $('finish-go').textContent = unlocked() ? '누가 나를 골랐는지 보기' : '내가 고른 사람 보기';
     const last = lastAction();
     $('finish-undo').hidden = !(S.phase === 'swipe' && last && last.kind === 'like');
   }
@@ -3006,14 +3179,18 @@ window.ND_CONFIG = {
     const body = $('likes-body');
     if (S.likesTab === 'in') {
       if (!inList.length) {
-        body.replaceChildren(h('div', { class: 'empty-box' }, h('b', null, '아직 나를 고른 사람이 없어요'),
-          h('span', null, '다른 참가자들이 카드를 넘기는 중이에요. 누군가 나를 고르면 바로 여기에 나타나요.')));
+        body.replaceChildren(S.phase === 'ended'
+          ? h('div', { class: 'empty-box' }, h('b', null, '이번엔 나를 고른 사람이 없어요'),
+            h('span', null, '내가 고른 사람에게 먼저 인사해 보세요.'),
+            h('button', { type: 'button', class: 'ghost-btn', onclick: () => { S.likesTab = 'out'; renderLikesTab(); } }, '내가 고른 사람 보기'))
+          : h('div', { class: 'empty-box' }, h('b', null, '아직 나를 고른 사람이 없어요'),
+            h('span', null, '다른 참가자들이 카드를 넘기는 중이에요. 누군가 나를 고르면 바로 여기에 나타나요.')));
       } else if (!open) {
         // 설명을 먼저 (작은 화면에서도 스크롤 없이 보이게)
         body.replaceChildren(
           h('div', { class: 'lock-box' }, icon('lock'),
             h('b', null, inList.length + '명이 나와 대화하고 싶어해요'),
-            h('p', null, MAX + '명을 모두 고르면 누군지 볼 수 있어요.'),
+            h('p', null, MAX + '명을 모두 고르거나 결과가 공개되면 누군지 볼 수 있어요.'),
             S.phase === 'swipe' ? h('button', { type: 'button', class: 'cta', onclick: () => goTab('swipe') }, '계속 고르기') : null),
           h('div', { class: 'locked-grid' }, inList.map((x) => h('div', { class: 'locked-tile', 'aria-hidden': 'true' }, ...visualEls(x.p)))));
       } else {
@@ -3042,7 +3219,8 @@ window.ND_CONFIG = {
     }
     if (!mine.length) {
       if (!parts.length) {
-        parts.push(h('div', { class: 'empty-box' }, h('b', null, '아직 고른 사람이 없어요'),
+        parts.push(h('div', { class: 'empty-box' }, h('b', null, S.phase === 'ended' ? '고른 사람이 없어요' : '아직 고른 사람이 없어요'),
+          S.phase === 'ended' ? h('span', null, '명찰을 보고 이야기 나누고 싶은 분께 인사해 보세요.') : null,
           S.phase === 'swipe' ? h('button', { type: 'button', class: 'ghost-btn', onclick: () => goTab('swipe') }, '카드 넘기러 가기') : null));
       }
     } else {
@@ -3064,6 +3242,8 @@ window.ND_CONFIG = {
   }
 
   function toggleMet(id) {
+    if (!S.privLoaded) return; // 대화 완료 기록이 오기 전에는 덮어쓰지 않게
+    shield(400);
     const met = S.met.includes(id) ? S.met.filter((x) => x !== id) : S.met.concat(id);
     S.met = met;
     likesKey = '';
@@ -3114,7 +3294,7 @@ window.ND_CONFIG = {
             isNew ? h('span', { class: 'li-new' }, 'NEW') : null,
             mutual ? h('span', { class: 'li-mutual' }, '서로 선택') : null,
             pickedMe ? h('span', { class: 'li-tag' }, '나를 골랐어요') : null),
-          h('span', { class: 'li-sub', text: p.title + ' · ' + p.company }),
+          h('span', { class: 'li-sub', text: [p.title, p.company].filter(Boolean).join(' · ') }),
           kind !== 'passed' ? h('span', { class: 'li-q', text: '“' + p.topic + '”' }) : null)),
       actions.length ? h('div', { class: 'li-actions' }, actions) : null);
   }
@@ -3130,7 +3310,8 @@ window.ND_CONFIG = {
   }
   async function leaveDevice() {
     $('me-out-note').hidden = true;
-    try { if (S.store.resetDevice) await S.store.resetDevice(S.pid); } catch (e) { console.error(e); }
+    const pid = S.pid;
+    if (S.store.resetDevice) enqueue(() => S.store.resetDevice(pid));
     try { sessionStorage.removeItem(ssSession()); } catch (e) { /* 무시 */ }
     signOut();
     clearDraft();
@@ -3173,7 +3354,7 @@ window.ND_CONFIG = {
       h('div', { class: 'sh-content' },
         h('h2', { class: 'sh-name', text: p.name }),
         mutual ? h('span', { class: 'li-mutual' }, '서로 선택') : null,
-        h('div', { class: 'sh-lines' }, line('briefcase', p.title + ' · ' + p.field), line('building', p.company), p.years ? line('history', yearsLabel(p.years)) : null),
+        h('div', { class: 'sh-lines' }, line('briefcase', [p.title, p.field].filter(Boolean).join(' · ')), line('building', p.company), p.years ? line('history', yearsLabel(p.years)) : null),
         sec('이런 이야기를 나누고 싶어요', h('p', { class: 'sh-quote', text: p.topic })),
         (p.lookingFor || []).length ? sec('찾고 있어요', h('div', { class: 'ci-chips' },
           p.lookingFor.map((k) => h('span', { class: 'ci-chip', text: k })))) : null,
@@ -3202,12 +3383,13 @@ window.ND_CONFIG = {
   function showBanner(text, ms) {
     $('notice-msg').textContent = text;
     $('notice-banner').hidden = false;
+    syncBannerSpace();
     clearTimeout(noticeTimer);
     noticeTimer = setTimeout(hideBanner, ms || 20000);
   }
-  function hideBanner() { clearTimeout(noticeTimer); $('notice-banner').hidden = true; }
+  function hideBanner() { clearTimeout(noticeTimer); $('notice-banner').hidden = true; syncBannerSpace(); }
   function showNotice(s) {
-    if (!s || !s.noticeAt) return;
+    if (!s || !s.noticeAt || location.hash === '#admin') return;
     const last = Number(store.get(LS_NOTICE) || 0);
     if (s.noticeAt <= last) return;
     store.set(LS_NOTICE, String(s.noticeAt));
@@ -3222,26 +3404,66 @@ window.ND_CONFIG = {
   let adminBusy = false;
   let hideArmed = { id: null, at: 0 };
   let progressUnsub = null;
-  const ADMIN_BTNS = ['test-add', 'test-remove', 'test-reset', 'test-yes', 'notice-send', 'notice-clear', 'phase-yes', 'roster-save'];
+  let adminRedraw = 0;
+  let rowsKey = '';
+  const ADMIN_BTNS = ['test-add', 'test-remove', 'test-reset', 'test-yes', 'notice-send', 'notice-clear', 'phase-yes', 'roster-save', 'roster-yes'];
   // 신청 명단: 몇 명 들어 있는지 보여 주고, 붙여 넣은 명단으로 통째로 바꿉니다.
   let rosterShown = false;
+  let rosterDraft = null; // 확인 전 미리 읽은 명단 { people, badLines }
   function showRosterCount() {
-    S.store.rosterCount().then((n) => {
-      $('roster-count').textContent = '지금 명단 ' + n + '명. 아래에 붙여 넣으면 명단 전체가 바뀌어요.';
+    S.store.rosterList().then((list) => {
+      S.roster = list;
+      $('roster-count').textContent = '지금 명단 ' + list.length + '명. 아래에 붙여 넣으면 명단 전체가 바뀌어요.';
+      render();
     }).catch((e) => { console.error(e); });
   }
-  // 한 줄: 이름, 회사, 직급, 휴대폰 번호 (쉼표나 탭으로 구분). 번호는 뒤 4자리만 저장합니다.
+  // 한 줄 나누기: 엑셀에서 복사하면 탭, 아니면 쉼표 (따옴표로 묶은 칸은 하나로)
+  function splitRow(line) {
+    if (line.includes('\t')) return line.split('\t').map((c) => c.trim());
+    const out = [];
+    let cur = '';
+    let quoted = false;
+    for (const ch of line) {
+      if (ch === '"') quoted = !quoted;
+      else if (ch === ',' && !quoted) { out.push(cur.trim()); cur = ''; } else cur += ch;
+    }
+    out.push(cur.trim());
+    return out;
+  }
+  const isPhoneCell = (c) => /^(\+?82[\s.-]?)?0?1[016789][\s.-]?\d{3,4}[\s.-]?\d{4}$/.test(c);
+  const HEAD = { name: /이름|성명|name/i, company: /회사|소속|기관|company|org/i, title: /직급|직책|직함|직위|title|position/i, phone: /휴대|전화|연락처|핸드폰|phone|mobile|tel/i };
+  // 명단 읽기: 제목 줄이 있으면 그 칸 이름으로, 없으면 휴대폰 번호 칸을 찾고 나머지를 이름·회사·직급 순으로 읽습니다.
+  // 번호는 뒤 4자리만 저장합니다.
   function parseRoster(text) {
+    const rows = text.split(/\r?\n/).filter((l) => l.replace(/[\t,\s]/g, '')).map((l) => ({ line: l, cols: splitRow(l) }));
+    let map = null;
+    if (rows.length && !rows[0].cols.some(isPhoneCell)) {
+      const find = (re) => rows[0].cols.findIndex((c) => re.test(c));
+      const m = { name: find(HEAD.name), company: find(HEAD.company), title: find(HEAD.title), phone: find(HEAD.phone) };
+      if (m.name >= 0 && m.phone >= 0) { map = m; rows.shift(); }
+    }
     const people = [];
-    let bad = 0;
-    text.split(/\r?\n/).forEach((lineText) => {
-      if (!lineText.trim()) return;
-      const cols = lineText.split(/\t|,/).map((c) => c.trim());
-      const digits = (cols[cols.length - 1] || '').replace(/\D/g, '');
-      if (cols.length < 4 || digits.length < 4 || !cols[0]) { bad++; return; }
-      people.push({ name: cleanText(cols[0], 20), company: cleanText(cols[1], 30), title: cleanText(cols[2], 30), phone4: digits.slice(-4) });
+    const badLines = [];
+    rows.forEach(({ line, cols }) => {
+      let name;
+      let company;
+      let title;
+      let phone;
+      if (map) {
+        [name, company, title, phone] = [map.name, map.company, map.title, map.phone].map((i) => (i >= 0 ? cols[i] || '' : ''));
+      } else {
+        const pi = cols.findIndex(isPhoneCell);
+        phone = pi >= 0 ? cols[pi] : '';
+        // 순번(숫자만)·이메일 칸은 건너뜁니다.
+        // 빈 칸도 자리를 지킵니다 (회사가 비어 있으면 회사가 빈 채로). 맨 앞 순번과 이메일 칸만 뺍니다.
+        const rest = cols.filter((c, i) => i !== pi && !c.includes('@') && !(i === 0 && /^\d+$/.test(c)));
+        [name = '', company = '', title = ''] = rest;
+      }
+      const digits = String(phone).replace(/\D/g, '');
+      if (!cleanText(name, 20) || digits.length < 4) { badLines.push(line); return; }
+      people.push({ name: cleanText(name, 20), company: cleanText(company, 30), title: cleanText(title, 30), phone4: digits.slice(-4) });
     });
-    return { people, bad };
+    return { people, badLines };
   }
   async function adminTask(fn, done) {
     if (adminBusy) return false;
@@ -3262,10 +3484,13 @@ window.ND_CONFIG = {
   }
   function watchAdmin() {
     if (progressUnsub || !S.store.watchProgress) return;
-    progressUnsub = S.store.watchProgress((list) => { S.progress = new Map(list.map((x) => [x.id, x])); render(); });
+    progressUnsub = S.store.watchProgress((list) => {
+      S.progress = new Map(list.map((x) => [x.id, x]));
+      if (!adminRedraw) adminRedraw = setTimeout(() => { adminRedraw = 0; render(); }, 1000);
+    });
   }
   async function enterAdmin() {
-    S.admin = await S.store.isAdmin();
+    try { S.admin = await S.store.isAdmin(); } catch (e) { console.error(e); S.admin = false; }
     if (S.admin) watchAdmin();
     render();
   }
@@ -3300,10 +3525,37 @@ window.ND_CONFIG = {
   }
   // 단계 이름은 참가자 화면에 실제로 일어나는 일 기준입니다. '결과 공개'가 곧 네트워킹 시작입니다.
   const PHASES = {
-    registration: { yes: '등록 단계로 돌리기', text: () => '프로필 등록 단계로 돌릴까요? 참가자 화면이 대기 화면으로 바뀌고 카드를 더 넘길 수 없어요.' },
-    swipe: { yes: '카드 고르기 시작', text: (n) => '카드 고르기를 시작할까요? 등록한 ' + n + '명의 화면이 바로 카드로 바뀌어요.' },
-    ended: { yes: '결과 공개', text: (n) => '결과를 공개할까요? 더는 고를 수 없고, ' + n + '명 모두 LIKE에서 나를 고른 사람을 볼 수 있어요. 네트워킹을 시작할 때 누르세요.' },
+    registration: { yes: '등록 단계로 돌리기', done: '프로필 등록 단계로 돌렸어요.',
+      text: () => (S.phase === 'ended'
+        ? '프로필 등록 단계로 돌릴까요? 공개된 결과가 다시 가려지고 참가자 화면이 대기 화면으로 바뀌어요.'
+        : '프로필 등록 단계로 돌릴까요? 참가자 화면이 대기 화면으로 바뀌고 카드를 더 넘길 수 없어요.') },
+    swipe: { yes: '카드 고르기 시작', done: '카드 고르기를 시작했어요. 참가자 화면이 카드로 바뀌었어요.',
+      text: (n) => (S.phase === 'ended'
+        ? '카드 고르기로 되돌릴까요? 공개된 결과가 다시 가려지고 참가자가 이어서 고를 수 있어요.'
+        : '카드 고르기를 시작할까요? 등록한 ' + n + '명의 화면이 바로 카드로 바뀌어요.') },
+    ended: { yes: '결과 공개', done: '결과를 공개했어요.',
+      text: (n) => (S.phase === 'registration' ? '주의: 아직 카드 고르기를 하지 않았어요. 지금 공개하면 아무도 고르지 못한 채 끝나요. ' : '')
+        + '결과를 공개할까요? 더는 고를 수 없고, ' + n + '명 모두 LIKE에서 나를 고른 사람을 볼 수 있어요. 네트워킹을 시작할 때 누르세요.' },
   };
+  const NEXT_PHASE = { registration: 'swipe', swipe: 'ended' };
+
+  // ---------- 남은 시간 ('2분 남음'·'1분 남음'을 보내면 참가자·운영자 화면 위에 표시) ----------
+  let timerTick = null;
+  const fmtLeft = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  const hhmm = (t) => new Date(t).toTimeString().slice(0, 5);
+  function renderTimer() {
+    const swiping = S.phase === 'swipe';
+    const on = swiping && S.endsAt > 0;
+    const left = on ? S.endsAt - Date.now() : 0;
+    $('top-timer').hidden = !on;
+    if (on) $('top-timer').textContent = left > 0 ? fmtLeft(left) + ' 남음' : '시간 끝';
+    // 운영자: 남은 시간을 보냈으면 남은 시간, 아니면 시작한 지 몇 분째인지
+    $('admin-timer').hidden = !swiping;
+    if (on) $('admin-timer').textContent = left > 0 ? '카드 고르기 ' + fmtLeft(left) + ' 남음' : '시간이 끝났어요. ‘결과 공개하기’를 눌러 주세요.';
+    else if (swiping) $('admin-timer').textContent = S.phaseAt ? '카드 고르기 ' + Math.floor((Date.now() - S.phaseAt) / 60000) + '분째 · ' + hhmm(S.phaseAt) + ' 시작' : '카드 고르기 중';
+    if (on && left > 0) { if (!timerTick) timerTick = setInterval(renderTimer, 1000); }
+    else if (timerTick) { clearInterval(timerTick); timerTick = null; }
+  }
   function ago(t) {
     const s = Math.max(0, Math.round((Date.now() - t) / 1000));
     return s < 60 ? '방금' : Math.round(s / 60) + '분 전';
@@ -3315,7 +3567,7 @@ window.ND_CONFIG = {
     const likes = pr ? pr.likes || 0 : 0;
     if (p.done && (!pr || likes >= MAX)) return { key: 'full', label: MAX + '명 완료' };
     if (p.done && pr && pr.left === 0) return { key: 'empty', label: '카드 소진 · ' + likes + '명' };
-    if (pr && (pr.seen > 0 || likes > 0)) return { key: 'doing', label: '고르는 중 · ' + likes + '명' };
+    if (pr && (pr.seen > 0 || likes > 0)) return { key: 'doing', label: (S.phase === 'ended' ? '덜 고르고 마침 · ' : '고르는 중 · ') + likes + '명' };
     return { key: 'start', label: '시작 전' };
   }
   function renderNoticeLast() {
@@ -3340,7 +3592,7 @@ window.ND_CONFIG = {
     $('phase-confirm').hidden = !pendingPhase;
     if (pendingPhase) {
       $('phase-confirm-text').textContent = PHASES[pendingPhase].text(realVisible.length);
-      $('phase-yes').textContent = PHASES[pendingPhase].yes;
+      $('phase-yes').textContent = pendingPhase === 'swipe' && S.phase === 'ended' ? '카드 고르기로 되돌리기' : PHASES[pendingPhase].yes;
       $('phase-notice-row').hidden = pendingPhase !== 'ended';
     }
 
@@ -3351,18 +3603,26 @@ window.ND_CONFIG = {
       h('div', { class: 'stat wide' },
         h('b', { id: 'st-reg' }, String(realVisible.length)),
         h('span', { text: '등록 (실제 참가자)' }),
-        h('small', { class: 'stat-sub', text: '테스트 ' + tests.length + '명 · 숨김 ' + all.filter((p) => p.hidden).length + '명' })),
-      stat('st-start', c.start, '시작 전'), stat('st-doing', c.doing, '고르는 중'),
+        h('small', { class: 'stat-sub', text: (S.roster ? '신청 명단 ' + S.roster.length + '명 중 · ' : '') + '테스트 ' + tests.length + '명 · 숨김 ' + all.filter((p) => p.hidden).length + '명' })),
+      stat('st-start', c.start, '시작 전'), stat('st-doing', c.doing, S.phase === 'ended' ? '덜 고르고 마침' : '고르는 중'),
       stat('st-full', c.full, MAX + '명 완료'), stat('st-empty', c.empty, '카드 소진'));
 
-    // 전체 알림: 남은 시간 안내는 카드 고르기 단계에서만
+    const next = NEXT_PHASE[S.phase];
+    $('phase-next').hidden = !next || !!pendingPhase;
+    if (next) $('phase-next').textContent = PHASES[next].yes + '하기';
+    renderTimer();
+
+    // 전체 알림: 남은 시간 안내는 카드 고르기 단계에서만 (그 전에는 버튼을 숨기고 안내만)
     const swiping = S.phase === 'swipe';
-    $('notice-presets').querySelectorAll('button').forEach((b) => { b.disabled = !swiping || adminBusy; });
-    $('notice-preset-note').hidden = swiping;
+    $('notice-presets').hidden = !swiping;
+    $('notice-presets').querySelectorAll('button').forEach((b) => { b.disabled = adminBusy; });
+    $('notice-preset-note').hidden = swiping || S.phase === 'ended';
     renderNoticeLast();
 
     // 테스트 도구
     const isDemo = S.store.mode === 'demo';
+    $('admin-mode').textContent = isDemo ? '시연 모드 · 이 브라우저에만 저장' : '실제 서버 연결됨';
+    $('admin-mode').classList.toggle('demo', isDemo);
     $('test-add').textContent = tests.length ? '예시 참가자 들어 있음 (' + tests.length + '명)' : '예시 참가자 34명 넣기';
     $('test-add').disabled = adminBusy || (!isDemo && (tests.length > 0 || S.phase !== 'registration'));
     $('test-add-note').hidden = isDemo || tests.length > 0 || S.phase === 'registration';
@@ -3382,7 +3642,7 @@ window.ND_CONFIG = {
         $('test-confirm-text').textContent = '테스트 참가자 ' + tests.length + '명을 지울까요? 실제 참가자의 프로필과 기록은 그대로 남고, 테스트 참가자를 고른 자리는 비워져요.';
         $('test-yes').textContent = '테스트만 지우기';
       } else {
-        $('test-confirm-text').textContent = '실제 참가자 ' + real.length + '명과 테스트 ' + tests.length + '명의 프로필, 고른 기록, LIKE, 링크드인이 모두 지워지고 진행 단계가 ‘프로필 등록’으로 돌아가요. 참가자는 처음부터 다시 등록해야 해요. 되돌릴 수 없어요.';
+        $('test-confirm-text').textContent = '실제 참가자 ' + real.length + '명과 테스트 ' + tests.length + '명의 프로필, 고른 기록, LIKE가 모두 지워지고 진행 단계가 ‘프로필 등록’으로 돌아가요. 참가자는 처음부터 다시 등록해야 해요. 되돌릴 수 없어요. 신청 명단과 운영자 로그인은 그대로 남아요.';
         $('test-yes').textContent = '모두 지우기';
       }
     }
@@ -3392,9 +3652,18 @@ window.ND_CONFIG = {
       b.setAttribute('aria-pressed', String(b.dataset.filter === S.adminFilter));
       b.textContent = (b.dataset.filter === 'real' ? '실제 참가자 ' + real.length : '전체 ' + all.length);
     });
-    const list = S.adminFilter === 'real' ? real : all;
-    $('admin-rows').replaceChildren(...(list.length ? list.map(adminRow) : [h('p', { class: 'ob-help', text: '아직 등록한 참가자가 없어요.' })]));
-    $('qr-url').textContent = entryUrl();
+    const q = $('admin-search').value.trim();
+    const list = (S.adminFilter === 'real' ? real : all).slice().sort((a, b) => (!!a.test - !!b.test) || ((b.createdAt || 0) - (a.createdAt || 0)))
+      .filter((p) => !q || (p.name + ' ' + p.company).includes(q));
+    const k = q + '|' + list.map((p) => [p.id, p.name, p.company, p.title, p.hidden, statusOf(p).label,
+      hideArmed.id === p.id && Date.now() - hideArmed.at < 3000].join(':')).join('|');
+    if (k !== rowsKey) {
+      rowsKey = k;
+      $('admin-rows').replaceChildren(...(list.length ? list.map(adminRow)
+        : [h('p', { class: 'ob-help', text: q ? '‘' + q + '’로 찾은 참가자가 없어요.' : '아직 등록한 참가자가 없어요.' })]));
+    }
+    $('qr-url').textContent = entryUrl() + (isDemo ? ' (시연 주소예요. 참가자끼리 연결되지 않아요)' : '');
+    $('qr-large-count').textContent = '지금 ' + realVisible.length + '명 등록';
     drawQr($('qr'), 280);
   }
   function adminRow(p) {
@@ -3403,7 +3672,7 @@ window.ND_CONFIG = {
     return h('div', { class: 'prow' + (p.hidden ? ' is-hidden' : '') },
       h('div', { class: 'p-main' },
         h('b', { text: p.name }), p.test ? h('span', { class: 'tag-test' }, '테스트') : null,
-        h('span', { class: 'p-sub', text: p.company + ' · ' + p.title })),
+        h('span', { class: 'p-sub', text: [p.company, p.title, p.createdAt ? hhmm(p.createdAt) + ' 등록' : ''].filter(Boolean).join(' · ') })),
       h('span', { class: 'state s-' + st.key, text: p.hidden ? '숨김' : st.label }),
       h('button', {
         type: 'button', class: 'ghost-btn' + (isArmed ? ' armed' : ''),
@@ -3414,7 +3683,7 @@ window.ND_CONFIG = {
             if (now - hideArmed.at < 400) return;
             hideArmed = { id: null, at: 0 };
             enqueue(() => S.store.setHidden(p.id, true));
-            toast(p.name + '님 프로필을 숨겼어요.');
+            toast(p.name + '님 프로필을 숨겼어요. 이 사람을 고른 기록에서도 빠져요.', 3200);
             return;
           }
           hideArmed = { id: p.id, at: now };
@@ -3453,7 +3722,7 @@ window.ND_CONFIG = {
   // 운영진이 테스트 참가자를 지웠는데 내가 그 사람을 골라 두었다면, 목록에서 빼고 자리를 돌려받습니다.
   function pruneGone() {
     if (!S.profilesServer || !S.swipesLoaded) return;
-    const gone = (id) => !S.profiles.has(id);
+    const gone = (id) => !S.profiles.has(id) || !!S.profiles.get(id).hidden;
     const likesGone = S.swipes.likes.filter(gone);
     if (!likesGone.length && !S.swipes.passes.some(gone)) return;
     S.swipes = { likes: S.swipes.likes.filter((id) => !gone(id)), passes: S.swipes.passes.filter((id) => !gone(id)) };
@@ -3473,6 +3742,7 @@ window.ND_CONFIG = {
     $('ob-next').addEventListener('click', obNext);
     $('ob-no').addEventListener('click', notMe);
     $('ob-manual').addEventListener('click', goManual);
+    $('ob-returning').addEventListener('click', () => { OB.skippedRules = true; gotoStep('pin'); });
     $('in-name').addEventListener('input', (e) => { OB.d.name = e.target.value; syncNext(); });
     $('in-company').addEventListener('input', (e) => { OB.d.company = e.target.value; syncNext(); });
     $('in-title').addEventListener('input', (e) => { OB.d.title = e.target.value; syncNext(); });
@@ -3491,7 +3761,15 @@ window.ND_CONFIG = {
     });
     $('in-pin').addEventListener('input', (e) => {
       e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+      // 번호를 고치면 '명단에 없어요' 안내와 '직접 입력하기'는 내립니다.
+      if (OB.notFound && e.target.value !== OB.d.pin) { OB.notFound = false; $('ob-manual').hidden = true; OB.flagged = false; }
       OB.d.pin = e.target.value;
+      // 4자리가 되면 명단을 미리 찾아 둡니다 ('계속'을 누르면 바로 넘어가게)
+      if (OB.d.pin.length === 4 && S.store) {
+        const pin = OB.d.pin;
+        OB.rpre = { pin, p: S.store.findRoster(pin) };
+        OB.rpre.p.catch(() => {});
+      }
       syncNext();
     });
     $('in-topic').addEventListener('input', (e) => { OB.d.topic = e.target.value; updateTopicCount(); syncNext(); });
@@ -3511,13 +3789,17 @@ window.ND_CONFIG = {
     $('seg-in').addEventListener('click', () => seg('in'));
     $('seg-out').addEventListener('click', () => seg('out'));
     $('me-edit').addEventListener('click', () => { S.editing = true; route(); });
-    $('me-out').addEventListener('click', () => { $('me-out-note').hidden = false; });
+    $('me-out').addEventListener('click', () => {
+      $('me-out-note').hidden = false;
+      $('me-out-note').scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+    $('me-out-no').addEventListener('click', () => { $('me-out-note').hidden = true; });
     $('me-out-yes').addEventListener('click', leaveDevice);
     $('btn-like').addEventListener('click', () => act('like', true));
     $('btn-nope').addEventListener('click', () => act('pass', true));
     $('btn-undo').addEventListener('click', undo);
     $('top-stop').addEventListener('click', () => { S.browsing = false; S.continuing = false; session.save(); render(); });
-    $('finish-go').addEventListener('click', () => { closeFinish(); S.likesTab = 'in'; goTab('likes'); });
+    $('finish-go').addEventListener('click', () => { const open = unlocked(); closeFinish(); S.likesTab = open ? 'in' : 'out'; if (!open) S.showPasses = true; goTab('likes'); });
     $('finish-undo').addEventListener('click', () => { closeFinish(); undo(); });
     $('finish-close').addEventListener('click', closeFinish);
     $('match-view').addEventListener('click', () => { const p = matchWho; closeMatch(); if (p) openSheet(p, { mutual: true, from: 'list' }); });
@@ -3541,7 +3823,12 @@ window.ND_CONFIG = {
       e.preventDefault();
       const pin = $('admin-pin').value.trim();
       if (!pin) { adminError('PIN을 입력해 주세요.'); return; }
-      const ok = await S.store.becomeAdmin(pin);
+      const btn = $('admin-login').querySelector('button[type="submit"]');
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = '확인 중…';
+      let ok = false;
+      try { ok = await S.store.becomeAdmin(pin); } finally { btn.disabled = false; btn.textContent = '들어가기'; }
       adminError(ok ? '' : 'PIN이 맞지 않아요.');
       if (ok) { S.admin = true; $('admin-pin').value = ''; watchAdmin(); render(); }
     });
@@ -3558,14 +3845,26 @@ window.ND_CONFIG = {
       pendingPhase = null;
       // 결과 공개와 '네트워킹 시작' 알림은 한 번에 (알림만 보내고 결과를 안 여는 실수가 없게)
       const withNotice = next === 'ended' && $('phase-notice').checked;
-      adminTask(() => (withNotice ? S.store.sendNotice(NETWORKING_NOTICE, next) : S.store.setPhase(next)),
-        withNotice ? '결과를 공개하고 네트워킹 시작 알림을 보냈어요.' : '진행 단계를 바꿨어요.');
+      adminTask(() => (withNotice ? S.store.sendNotice(NETWORKING_NOTICE, next, 0) : S.store.setPhase(next)),
+        withNotice ? '결과를 공개하고 네트워킹 시작 알림을 보냈어요.' : PHASES[next].done);
     });
     $('phase-no').addEventListener('click', () => { pendingPhase = null; render(); });
-    const sendNotice = (text) => adminTask(() => S.store.sendNotice(text, S.phase), '알림을 보냈어요. 참가자 화면 맨 위에 20초 동안 떠요.');
+    // 다음 단계 버튼: 지금 단계에서 이어지는 단계로 (확인 한 번 더)
+    $('phase-next').addEventListener('click', () => {
+      const next = NEXT_PHASE[S.phase];
+      if (!next) return;
+      pendingPhase = next;
+      $('phase-notice').checked = true;
+      render();
+    });
+    // 알림은 진행 단계를 건드리지 않습니다 (다른 운영자 기기가 바꾼 단계를 되돌리지 않게).
+    const sendNotice = (text) => adminTask(() => S.store.sendNotice(text), '알림을 보냈어요. 참가자 화면 맨 위에 20초 동안 떠요.');
     $('notice-presets').addEventListener('click', (e) => {
       const b = e.target.closest('button[data-notice]');
-      if (b && !b.disabled) sendNotice(b.dataset.notice);
+      if (!b || b.disabled) return;
+      // '2분 남음'·'1분 남음': 알림과 함께 참가자 화면 위에 남은 시간을 띄웁니다.
+      const endsAt = Date.now() + Number(b.dataset.min) * 60000;
+      adminTask(() => S.store.sendNotice(b.dataset.notice, undefined, endsAt), '알림을 보냈어요. 참가자 화면 위에 남은 시간이 떠요.');
     });
     $('notice-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -3573,7 +3872,7 @@ window.ND_CONFIG = {
       if (!text) { toast('보낼 문구를 입력해 주세요.'); $('notice-text').focus(); return; }
       if (await sendNotice(text)) $('notice-text').value = '';
     });
-    $('notice-clear').addEventListener('click', () => adminTask(() => S.store.sendNotice('', S.phase), '알림을 내렸어요.'));
+    $('notice-clear').addEventListener('click', () => adminTask(() => S.store.sendNotice(''), '알림을 내렸어요.'));
     $('test-add').addEventListener('click', () => {
       if (S.store.mode === 'demo') { toast('시연 모드에는 예시 참가자가 이미 들어 있어요.'); return; }
       testConfirm = 'add';
@@ -3599,19 +3898,55 @@ window.ND_CONFIG = {
         adminTask(() => S.store.resetAll(all.map((p) => p.id)), '모두 지웠어요. 진행 단계가 프로필 등록으로 돌아갔어요.');
       }
     });
-    $('roster-save').addEventListener('click', async () => {
-      const { people, bad } = parseRoster($('roster-text').value);
-      if (!people.length) { toast('읽을 수 있는 줄이 없어요. 한 줄에 이름, 회사, 직급, 휴대폰 번호를 넣어 주세요.', 3500); return; }
-      const ok = await adminTask(() => S.store.saveRoster(people),
-        '명단 ' + people.length + '명을 넣었어요.' + (bad ? ' 못 읽은 줄 ' + bad + '개는 뺐어요.' : ''));
-      if (ok) { $('roster-text').value = ''; showRosterCount(); }
+    $('roster-save').addEventListener('click', () => {
+      const draft = parseRoster($('roster-text').value);
+      if (!draft.people.length) {
+        $('roster-confirm').hidden = true;
+        $('roster-result').textContent = '읽을 수 있는 줄이 없어요. 엑셀에서 이름·회사·직급·휴대폰 번호 칸을 복사해 붙여 넣어 주세요.';
+        $('roster-result').hidden = false;
+        return;
+      }
+      rosterDraft = draft;
+      const now = S.roster ? S.roster.length : 0;
+      $('roster-confirm-text').textContent = '지금 명단 ' + now + '명을 새 명단 ' + draft.people.length + '명으로 바꿀까요?'
+        + (draft.badLines.length ? ' 못 읽은 줄 ' + draft.badLines.length + '개는 빠져요: ' + draft.badLines.slice(0, 3).join(' / ') + (draft.badLines.length > 3 ? ' …' : '') : '');
+      $('roster-preview').replaceChildren(...draft.people.slice(0, 5).map((r) => h('li', { text: [r.name, r.company, r.title, '뒤 4자리 ' + r.phone4].filter(Boolean).join(' · ') })),
+        ...(draft.people.length > 5 ? [h('li', { text: '… 외 ' + (draft.people.length - 5) + '명' })] : []));
+      $('roster-confirm').hidden = false;
+      $('roster-result').hidden = true;
     });
+    $('roster-no').addEventListener('click', () => { rosterDraft = null; $('roster-confirm').hidden = true; });
+    $('roster-yes').addEventListener('click', async () => {
+      const draft = rosterDraft;
+      if (!draft) return;
+      const ok = await adminTask(() => S.store.saveRoster(draft.people));
+      if (!ok) return;
+      rosterDraft = null;
+      $('roster-confirm').hidden = true;
+      // 못 읽은 줄은 고쳐서 다시 넣을 수 있게 입력칸에 남겨 둡니다.
+      $('roster-text').value = draft.badLines.join('\n');
+      $('roster-result').textContent = '명단 ' + draft.people.length + '명을 넣었어요.'
+        + (draft.badLines.length ? ' 못 읽은 줄 ' + draft.badLines.length + '개는 입력칸에 남겨 뒀어요.' : '');
+      $('roster-result').hidden = false;
+      showRosterCount();
+    });
+    $('roster-find').addEventListener('input', () => {
+      const q = $('roster-find').value.trim();
+      const box = $('roster-found');
+      box.hidden = !q;
+      if (!q) return;
+      const hits = (S.roster || []).filter((r) => r.name.includes(q) || r.phone4 === q || (q.length < 4 && /^\d+$/.test(q) && r.phone4.startsWith(q)));
+      box.replaceChildren(...(hits.length
+        ? hits.slice(0, 8).map((r) => h('li', { text: [r.name, r.company, r.title, '뒤 4자리 ' + r.phone4].filter(Boolean).join(' · ') }))
+        : [h('li', { text: '명단에 없어요. 현장에서 ‘직접 입력하기’로 등록하면 돼요.' })]));
+    });
+    $('admin-search').addEventListener('input', render);
     $('admin-filter').addEventListener('click', (e) => {
       const b = e.target.closest('button[data-filter]');
       if (b) { S.adminFilter = b.dataset.filter; render(); }
     });
     // '몇 분 전'과 '알림 내리기' 버튼을 제때 바꾸려고 가끔 다시 그립니다.
-    setInterval(() => { if (S.view === 'admin' && S.admin) renderNoticeLast(); }, 5000);
+    setInterval(() => { if (S.view === 'admin' && S.admin) { renderNoticeLast(); renderTimer(); } }, 5000);
     $('qr-big').addEventListener('click', () => {
       $('qr-large-url').textContent = entryUrl();
       hideToast();
@@ -3658,36 +3993,54 @@ window.ND_CONFIG = {
     }
   }
 
+  let storeReady = null;
   async function boot() {
+    S.booting = !!store.get(LS_PID);
     wire();
     if (!window.crypto || !crypto.subtle) {
       showFatal('이 브라우저에서는 열 수 없어요', 'https 주소로 접속했는지 확인해 주세요.');
       return;
     }
+    storeReady = C.firebase && !C.demo ? ND.createFirebaseStore(C) : Promise.resolve(ND.createDemoStore(C));
+    const saved = store.get(LS_PID);
+    if (!saved && location.hash !== '#admin') {
+      // 환영·안내·번호 입력은 서버가 필요 없으므로 바로 보여 줍니다.
+      VIEWS.forEach((v) => { $('view-' + v).hidden = v !== 'onboard'; });
+      S.view = 'onboard';
+      startOnboarding('login');
+    }
     try {
-      if (C.firebase && !C.demo) {
-        S.store = await ND.createFirebaseStore(C);
-      } else {
-        S.store = ND.createDemoStore(C);
-      }
+      S.store = await storeReady;
     } catch (ex) {
       console.error(ex);
       const code = ex && ex.code ? String(ex.code) : '';
       showFatal('서버에 연결하지 못했어요',
         code.includes('operation-not-allowed')
           ? 'Firebase 콘솔에서 익명 로그인을 켜 주세요. (README 2단계)'
-          : '인터넷 연결을 확인하고 새로고침해 주세요. 계속 안 되면 운영진에게 알려 주세요.',
+          : code.includes('too-many-requests')
+            ? '지금 접속이 몰렸어요. 와이파이를 끄고 LTE로 다시 열어 주세요.'
+            : '인터넷 연결을 확인하고 새로고침해 주세요. 계속 안 되면 운영진에게 알려 주세요.',
         code);
       return;
     }
 
     $('pin-demo').hidden = S.store.mode !== 'demo';
+    $('demo-chip').hidden = !(S.store.mode === 'demo' && S.view === 'onboard');
     S.store.watchSettings((s) => {
       const prev = S.phase;
+      const wasSwiping = S.settingsLoaded && prev === 'swipe';
+      S.settingsLoaded = true;
       S.phase = ['registration', 'swipe', 'ended'].includes(s.phase) ? s.phase : 'registration';
       S.noticeText = s.notice || '';
       S.noticeAt = s.noticeAt || 0;
+      S.endsAt = s.endsAt || 0;
+      S.phaseAt = s.phaseAt || 0;
       if (prev !== 'swipe' && S.phase === 'swipe') { S.tab = 'swipe'; S.deckInitAt = 0; }
+      // 카드를 고르는 중에 운영진이 단계를 바꾸면: 카드에서 연 프로필을 닫고 고른 기록이 저장됐다고 알려 줍니다.
+      if (wasSwiping && S.phase !== 'swipe' && S.pid && S.view === 'app') {
+        if (!$('sheet').hidden && $('sheet-body').querySelector('.sheet-bar.trio')) closeSheet();
+        toast('카드 고르기가 끝났어요. 고른 ' + S.swipes.likes.length + '명은 저장됐어요.', 3500);
+      }
       showNotice(s);
       onData();
     });
@@ -3698,13 +4051,17 @@ window.ND_CONFIG = {
       onData();
     });
 
-    const saved = store.get(LS_PID);
-    if (saved && await S.store.isOwner(saved)) {
-      await enterAs(saved);
-      // 프로필을 고치던 중 새로고침했으면 이어서
-      const ed = store.json(LS_EDIT);
-      if (fresh12h(ed) && ed.pid === saved) S.editing = true;
+    if (saved) {
+      let own = true;
+      try { own = await S.store.isOwner(saved); } catch (e) { console.error(e); }
+      if (own) {
+        enterAs(saved, S.store.synced());
+        // 프로필을 고치던 중 새로고침했으면 이어서
+        const ed = store.json(LS_EDIT);
+        if (fresh12h(ed) && ed.pid === saved) S.editing = true;
+      }
     }
+    S.booting = false;
     route();
     renderNet();
   }
