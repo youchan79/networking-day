@@ -183,7 +183,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .tab-scroll { overflow-y: auto; overflow-x: hidden; padding-bottom: 24px; }
 .tab-scroll > * { flex-shrink: 0; }
 .topbar { display: flex; align-items: center; gap: 12px; height: 60px; flex: none; }
-.top-timer { height: 46px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 999px; background: #3a2412; color: #ffb36b; font-weight: 800; font-size: 21px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.top-timer { margin-left: auto; height: 46px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 999px; background: #3a2412; color: #ffb36b; font-weight: 800; font-size: 21px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .admin-timer { font-size: 16px; font-weight: 800; color: #ffb36b; font-variant-numeric: tabular-nums; }
 
 /* 테마별 사람 카드: 테마 제목 아래 한 줄씩, → 버튼으로 옆으로 넘김 */
@@ -2931,7 +2931,7 @@ window.ND_CONFIG = {
     { text: '관심 가는 분의 카드를 누르면 프로필을 볼 수 있어요.', target: () => document.querySelector('#theme-list .pc') },
     { text: '→ 버튼을 누르면 같은 테마의 다른 분들이 나와요.', target: () => [...document.querySelectorAll('#theme-list .theme-arrow.next')].find((b) => !b.hidden) },
     { text: '프로필 아래에서 ‘대화해보고 싶어요’나 ‘넘어갈게요’를 누르면 이 화면으로 돌아와요.', mock: true },
-    { text: '시간 안에는 몇 명이든 고를 수 있고, 위의 시간이 끝나면 결과가 공개돼요.', target: () => document.querySelector('#top-timer') },
+    { text: '시간 안에는 몇 명이든 고를 수 있고, 위의 시간이 끝나면 결과가 공개돼요.', target: () => ($('top-timer').hidden ? null : $('top-timer')) },
   ];
   let tutStep = -1;
   function maybeStartTutorial() {
@@ -4042,8 +4042,9 @@ window.ND_CONFIG = {
       S.serverPhase = ['registration', 'swipe', 'ended'].includes(s.phase) ? s.phase : 'registration';
       S.noticeText = s.notice || '';
       S.noticeAt = s.noticeAt || 0;
-      S.endsAt = s.endsAt || 0;
       S.phaseAt = s.phaseAt || 0;
+      // 끝나는 시각 없이 시작된 카드 고르기(새로고침 안 한 예전 운영자 화면 등)는 시작 시각 + 3분으로 봅니다.
+      S.endsAt = s.endsAt || (S.serverPhase === 'swipe' && S.phaseAt ? S.phaseAt + PICK_MS : 0);
       S.phase = effectivePhase();
       onPhaseChange(prev, S.phase, wasLoaded);
       showNotice(s);
