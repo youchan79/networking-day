@@ -183,8 +183,13 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .tab-scroll { overflow-y: auto; overflow-x: hidden; padding-bottom: 24px; }
 .tab-scroll > * { flex-shrink: 0; }
 .topbar { display: flex; align-items: center; gap: 12px; height: 60px; flex: none; }
-.top-timer { margin-left: auto; height: 46px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 999px; background: #3a2412; color: #ffb36b; font-weight: 800; font-size: 21px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.top-timer { margin-left: auto; height: 46px; display: inline-flex; align-items: center; justify-content: center; min-width: 92px; padding: 0 18px; border-radius: 999px; background: #3a2412; color: #ffb36b; font-weight: 800; font-size: 21px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .admin-timer { font-size: 16px; font-weight: 800; color: #ffb36b; font-variant-numeric: tabular-nums; }
+.time-box { display: flex; flex-direction: column; gap: 8px; }
+.time-h { font-size: 15px; font-weight: 800; }
+.time-add { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.time-add .ghost-btn { height: 54px; padding: 0 8px; font-size: 18px; font-weight: 800; }
+.time-add .ghost-btn:disabled { opacity: 0.35; cursor: default; }
 
 /* 테마별 사람 카드: 테마 제목 아래 한 줄씩, → 버튼으로 옆으로 넘김 */
 .themes { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-bottom: 18px; margin-right: calc(-1 * var(--gutter-r)); }
@@ -811,10 +816,14 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
             <button type="button" role="radio" data-phase="ended">결과 공개</button>
           </div>
           <p class="admin-timer" id="admin-timer" hidden></p>
-          <div class="row-btns" id="time-add" hidden>
-            <button type="button" class="ghost-btn" data-add="30">+30초</button>
-            <button type="button" class="ghost-btn" data-add="60">+1분</button>
-            <button type="button" class="ghost-btn" data-add="120">+2분</button>
+          <div class="time-box">
+            <p class="time-h">시간 연장</p>
+            <div class="time-add" id="time-add">
+              <button type="button" class="ghost-btn" data-add="30">+30초</button>
+              <button type="button" class="ghost-btn" data-add="60">+1분</button>
+              <button type="button" class="ghost-btn" data-add="120">+2분</button>
+            </div>
+            <p class="ob-help" id="time-help">카드 고르기 중에 누를 수 있어요.</p>
           </div>
           <button type="button" class="cta" id="phase-next" hidden></button>
           <div class="confirm" id="phase-confirm" hidden>
@@ -3573,9 +3582,10 @@ window.ND_CONFIG = {
     const on = swiping && S.endsAt > 0;
     const left = on ? S.endsAt - Date.now() : 0;
     $('top-timer').hidden = !on;
-    if (on) $('top-timer').textContent = fmtLeft(left) + ' 남음';
+    if (on) $('top-timer').textContent = fmtLeft(left);
     $('admin-timer').hidden = !swiping;
-    $('time-add').hidden = !swiping;
+    $('time-help').hidden = swiping;
+    $('time-add').querySelectorAll('button').forEach((b) => { b.disabled = adminBusy || !swiping; });
     if (on) $('admin-timer').textContent = '카드 고르기 ' + fmtLeft(left) + ' 남음';
     else if (swiping) $('admin-timer').textContent = '카드 고르기 중';
     if (on) { if (!timerTick) timerTick = setInterval(renderTimer, 1000); }
@@ -3641,7 +3651,6 @@ window.ND_CONFIG = {
     if (next) $('phase-next').textContent = PHASES[next].yes + '하기';
     renderTimer();
 
-    $('time-add').querySelectorAll('button').forEach((b) => { b.disabled = adminBusy; });
     renderNoticeLast();
 
     // 테스트 도구
