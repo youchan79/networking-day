@@ -130,13 +130,13 @@ body:has(#top-timer:not([hidden])) #demo-chip { display: none; }
 .ob-label.need { color: var(--like); }
 .pills.need .pill { border-color: rgba(255, 68, 88, 0.75); }
 .pick-n { color: var(--text-2); font-weight: 800; margin-left: 4px; font-variant-numeric: tabular-nums; }
-.ob-mode { margin-left: auto; height: 30px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); font-size: 13px; font-weight: 800; }
+.ob-mode { margin-left: auto; height: 30px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); font-size: 14px; font-weight: 800; }
 .edit-list { display: flex; flex-direction: column; gap: 8px; }
 .edit-item {
   width: 100%; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; column-gap: 10px; row-gap: 3px; align-items: center;
   padding: 14px 16px; border-radius: 16px; border: 0; background: var(--surface); color: var(--text); text-align: left;
 }
-.edit-item .ei-k { font-size: 14px; font-weight: 700; color: var(--text-2); }
+.edit-item .ei-k { font-size: 15px; font-weight: 700; color: var(--text-2); }
 .edit-item .ei-v { grid-column: 1; font-size: 16px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .edit-item .ei-go { grid-column: 2; grid-row: 1 / 3; font-size: 24px; color: var(--text-3); }
 .edit-item:disabled { opacity: 0.6; cursor: default; }
@@ -159,7 +159,7 @@ body:has(#top-timer:not([hidden])) #demo-chip { display: none; }
 .rules span { color: var(--text-2); font-size: 15px; }
 .ob-foot { padding: 10px 0 calc(14px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 10px; }
 html.kb-open .ob-foot { padding-bottom: 10px; }
-.ob-foot-note { text-align: center; font-size: 13px; color: var(--text-3); line-height: 1.6; }
+.ob-foot-note { text-align: center; font-size: 15px; color: var(--text-3); line-height: 1.6; }
 .ob-msg { color: var(--like); font-size: 15px; font-weight: 700; text-align: center; }
 .ob-label.first { margin-top: 0; }
 
@@ -183,8 +183,10 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .tab-scroll { overflow-y: auto; overflow-x: hidden; padding-bottom: 24px; }
 .tab-scroll > * { flex-shrink: 0; }
 .topbar { display: flex; align-items: center; gap: 12px; height: 60px; flex: none; }
+.top-timer.soon { background: #4a1216; color: #ff7a7a; }
 .top-timer { margin-left: auto; height: 46px; display: inline-flex; align-items: center; justify-content: center; min-width: 92px; padding: 0 18px; border-radius: 999px; background: #3a2412; color: #ffb36b; font-weight: 800; font-size: 21px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .admin-timer { font-size: 16px; font-weight: 800; color: #ffb36b; font-variant-numeric: tabular-nums; }
+.admin-keep { padding: 10px 12px; border-radius: 12px; background: #3a2412; color: #ffcf9e; font-size: 15px; font-weight: 700; }
 .time-box { display: flex; flex-direction: column; gap: 8px; }
 .time-h { font-size: 15px; font-weight: 800; }
 .time-add { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -206,6 +208,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .tut-mock { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .tut-mock .duo-btn { display: grid; place-items: center; height: 54px; font-size: 17px; }
 .tut-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.tut-skip { margin-left: auto; height: 52px; padding: 0 6px; border: 0; background: none; color: #6b6b72; font-size: 16px; font-weight: 700; }
 .tut-dots { display: flex; gap: 6px; }
 .tut-dots i { width: 8px; height: 8px; border-radius: 4px; background: #d0d0d6; }
 .tut-dots i.on { width: 22px; background: #111; }
@@ -223,8 +226,9 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .pc-logo .logo { width: 100%; height: 100%; }
 .pc-logo .logo.mono-logo { font-size: 38px; }
 .pc-text { display: flex; flex-direction: column; gap: 4px; padding: 10px 10px 12px; }
-.pc-org { font-size: 15px; line-height: 1.35; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
-.pc-name { font-size: 19px; font-weight: 800; overflow-wrap: anywhere; }
+.pc-org { font-size: 15px; line-height: 1.35; font-weight: 700; color: #d6d6db; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.pc-title { font-size: 15px; line-height: 1.35; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-name { font-size: 19px; font-weight: 800; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .pc.picked { border-color: var(--like); }
 .pc.passed { opacity: 0.5; }
 .pc-tag { position: absolute; top: 7px; left: 7px; padding: 4px 9px; border-radius: 999px; font-size: 14px; font-weight: 800; background: rgba(0, 0, 0, 0.72); color: #fff; }
@@ -321,6 +325,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .ci-line { display: flex; align-items: flex-start; gap: 8px; font-size: 16px; line-height: 1.4; }
 /* 띄어쓰기 없는 긴 이름·회사도 카드 밖으로 나가지 않게 */
 .ci-name > *, .ci-line > span { min-width: 0; overflow-wrap: anywhere; }
+.ci-name > span:first-child { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .ci-line svg { width: 19px; height: 19px; flex: none; margin-top: 1px; opacity: 0.95; }
 .ci-k { font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-top: 6px; }
 .ci-list li { font-size: 15.5px; line-height: 1.45; padding-left: 12px; position: relative; }
@@ -366,7 +371,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .seg-row { display: grid; grid-template-columns: 1fr 1fr 0.62fr; gap: 8px; margin: 4px 0 20px; flex: none; }
 .seg { min-height: 54px; padding: 6px 4px; border-radius: 16px; border: 1px solid #2c2c30; background: #000; color: #fff; font-size: 15px; font-weight: 700; white-space: nowrap;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.2; }
-.seg small { font-size: 13px; font-weight: 600; opacity: 0.75; }
+.seg small { font-size: 14px; font-weight: 600; opacity: 0.75; }
 .seg[aria-pressed="true"] { background: #ececef; color: #111; border-color: #ececef; }
 /* 한 사람 한 줄: 로고 · 이름 · 직함·회사 · 나누고 싶은 이야기. 네트워킹 중 사람을 찾아다니기 쉽게 촘촘하게 */
 .lis { display: flex; flex-direction: column; gap: 10px; }
@@ -378,9 +383,10 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .li-logo .logo.mono-logo { font-size: 24px; }
 .li-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .li-top { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
-.li-nm { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
+.li-nm { min-width: 0; overflow-wrap: anywhere; font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
 .li-new { height: 20px; padding: 0 7px; border-radius: 6px; background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); color: #fff; font-size: 13px; font-weight: 900; letter-spacing: 0.04em; display: inline-flex; align-items: center; }
-.li-tag { font-size: 13px; font-weight: 700; color: var(--gold); }
+.like-next { margin: 0 0 12px; padding: 12px 14px; border-radius: 14px; background: #1f2a1f; color: #c9f2c9; font-size: 15px; font-weight: 700; line-height: 1.45; }
+.li-tag { font-size: 14px; font-weight: 700; color: var(--gold); }
 .li-mutual { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--ok); }
 .li-mutual::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ok); }
 .li-sub { font-size: 15px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -393,7 +399,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .li.met .li-logo { opacity: 0.55; }
 .list-tools { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: -6px 0 14px; }
 .list-tools .met-count { margin: 0; }
-.list-tools .chip-btn { height: 34px; font-size: 13.5px; }
+.list-tools .chip-btn { height: 44px; font-size: 15px; }
 .slot-box { margin-bottom: 14px; padding: 16px; border-radius: 18px; background: #24161b; display: flex; flex-direction: column; gap: 12px; }
 .slot-box b { font-size: 16px; }
 .slot-actions { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -402,7 +408,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
   width: 100%; margin: 20px 0 10px; display: flex; justify-content: space-between; align-items: center; padding: 12px 4px; border: 0;
   border-top: 1px solid var(--line); background: none; color: var(--text-2); font-size: 15px; font-weight: 800;
 }
-.passes-toggle span { color: var(--text-3); font-size: 13.5px; font-weight: 700; }
+.passes-toggle span { color: var(--text-3); font-size: 15px; font-weight: 700; }
 .locked-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .locked-tile { position: relative; aspect-ratio: 3 / 4; border-radius: 18px; overflow: hidden; background: #202024; }
 .locked-tile .v-bg { filter: blur(22px) saturate(1.4); }
@@ -426,7 +432,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 /* ---------- 탭바 ---------- */
 .tabbar { flex: none; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #1c1c1f; background: var(--bg); padding: 8px 0 8px; }
 html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)); }
-.tabbar button { position: relative; border: 0; background: none; color: #8a8a90; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 13px; font-weight: 600; padding: 4px 0; }
+.tabbar button { position: relative; border: 0; background: none; color: #8a8a90; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 15px; font-weight: 600; padding: 4px 0; }
 .tabbar button[aria-current="page"] { color: #fff; font-weight: 800; }
 .tb-icon svg { width: 28px; height: 28px; }
 .tb-badge {
@@ -453,16 +459,11 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .sh-visual { position: relative; height: 54vh; min-height: 300px; overflow: hidden; background: #202024; }
 .sh-visual .v-logo { top: 46%; width: 44%; }
 .sh-visual .v-shade { background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(11,11,12,1) 100%); }
-.sh-close {
-  position: absolute; right: var(--gutter-r); bottom: 4px; z-index: 3; width: 52px; height: 52px; border-radius: 50%; border: 0;
-  background: linear-gradient(135deg, var(--brand-a), var(--brand-b)); color: #fff; display: grid; place-items: center;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
-}
-.sh-close svg { width: 26px; height: 26px; }
 /* 프로필 왼쪽 위 뒤로가기 */
 .sh-back { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); left: 12px; z-index: 3; width: 48px; height: 48px; border-radius: 50%; border: 0;
   display: grid; place-items: center; background: rgba(0, 0, 0, 0.55); color: #fff; }
 .sh-back svg { width: 26px; height: 26px; }
+.sh-timer { position: absolute; top: calc(13px + env(safe-area-inset-top, 0px)); right: 12px; z-index: 3; }
 .sh-content { padding: 8px var(--gutter-r) 0 var(--gutter-l); display: flex; flex-direction: column; gap: 14px; }
 .sh-name { font-size: 34px; font-weight: 900; letter-spacing: -0.02em; }
 .sh-lines { display: flex; flex-direction: column; gap: 6px; color: var(--text-2); }
@@ -511,7 +512,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 
 .toast {
   position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px) + var(--net-h, 0px)); transform: translateX(-50%); z-index: 60; pointer-events: none;
-  max-width: min(420px, calc(100% - 32px)); padding: 12px 18px; border-radius: 999px; background: rgba(44, 44, 48, 0.97);
+  width: max-content; max-width: min(420px, calc(100vw - 32px)); padding: 12px 18px; border-radius: 999px; background: rgba(44, 44, 48, 0.97);
   color: #fff; font-size: 15px; font-weight: 600; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
@@ -543,7 +544,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .confirm .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
 .confirm .row .cta.small { margin-left: auto; }
 .cta.danger { background: var(--like); }
-.check { display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; }
+.check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 15px; font-weight: 700; }
 .check input { width: 20px; height: 20px; accent-color: var(--brand); }
 .type-confirm { display: flex; flex-direction: column; gap: 8px; font-size: 15px; color: var(--text-2); }
 .type-confirm b { color: var(--like); }
@@ -620,13 +621,13 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .net-banner { background: #3a2a10; color: #ffd98a; }
 .notice-banner { display: flex; align-items: center; gap: 10px; text-align: left; background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); color: #fff; font-size: 15px; }
 .notice-banner span { flex: 1; }
-.notice-x { flex: none; height: 44px; padding: 0 12px; border-radius: 999px; border: 0; background: rgba(0, 0, 0, 0.25); color: #fff; font-size: 13px; font-weight: 800; }
+.notice-x { flex: none; height: 44px; padding: 0 12px; border-radius: 999px; border: 0; background: rgba(0, 0, 0, 0.25); color: #fff; font-size: 15px; font-weight: 800; }
 
 /* ---------- 추가: LIKE 목록 동작 버튼 ---------- */
 .li-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding-left: 72px; }
 .li.slim .li-actions { padding-left: 56px; margin-top: 8px; }
 @media (max-width: 360px) { .li-actions, .li.slim .li-actions { padding-left: 0; } }
-.chip-btn { height: 40px; }
+.chip-btn { height: 44px; }
 .chip-btn {
   display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; border-radius: 999px; border: 1.5px solid #46464b;
   background: transparent; color: var(--text); font-size: 15px; font-weight: 700; white-space: nowrap;
@@ -725,7 +726,8 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
       <div class="ob-step" data-step="topic" hidden>
         <h2>어떤 이야기를<br>나누고 싶나요?</h2>
         <p class="ob-help">카드 첫 장에 크게 보여요. 상대가 나에게 말을 걸 때 첫마디가 돼요.</p>
-        <textarea id="in-topic" class="box-input" maxlength="60" rows="3" enterkeyhint="next" aria-label="나누고 싶은 이야기"></textarea>
+        <p class="ob-label" id="lbl-topic">나누고 싶은 이야기 <span>선택</span></p>
+        <textarea id="in-topic" class="box-input" maxlength="60" rows="3" enterkeyhint="next" aria-labelledby="lbl-topic"></textarea>
         <p class="counter" id="topic-count">0/60</p>
       </div>
 
@@ -754,7 +756,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   <section class="view main" id="view-app" hidden>
     <div class="tab tab-swipe" id="tab-swipe">
       <header class="topbar">
-        <span class="top-timer" id="top-timer" hidden></span>
+        <span class="top-timer js-timer" id="top-timer" hidden></span>
       </header>
       <div class="themes" id="themes" hidden>
         <div id="theme-list"></div>
@@ -771,7 +773,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
     </div>
 
     <div class="tab tab-scroll" id="tab-likes" hidden>
-      <header class="page-head"><h1>LIKE</h1><span class="count-pill" id="likes-count">0</span></header>
+      <header class="page-head"><h1>LIKE</h1><span class="count-pill" id="likes-count">0</span><span class="top-timer js-timer" id="likes-timer" hidden></span></header>
       <div class="seg-row" id="likes-seg">
         <button type="button" class="seg" data-lt="in" id="seg-in">나를 고른 사람</button>
         <button type="button" class="seg" data-lt="out" id="seg-out">내가 고른 사람</button>
@@ -800,7 +802,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   <!-- 운영자 -->
   <section class="view admin" id="view-admin" hidden>
     <div class="admin-scroll">
-      <header class="page-head"><h1>운영자</h1><span class="mode-chip" id="admin-mode"></span><a class="ghost-btn head-link" href="#">참가자 화면</a></header>
+      <header class="page-head"><h1>운영자</h1><span class="mode-chip" id="admin-mode"></span><a class="ghost-btn head-link" id="admin-leave" href="#">참가자 화면</a></header>
       <form id="admin-login" class="admin-login" novalidate>
         <p class="ob-help">진행 단계를 바꾸면 모든 참가자 화면이 바로 바뀌어요.</p>
         <input id="admin-pin" class="box-input" type="password" inputmode="numeric" autocomplete="off" placeholder="운영자 PIN" aria-label="운영자 PIN">
@@ -816,6 +818,8 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
             <button type="button" role="radio" data-phase="ended">결과 공개</button>
           </div>
           <p class="admin-timer" id="admin-timer" hidden></p>
+          <p class="admin-keep" id="admin-keep" hidden>시간이 끝날 때까지 이 화면을 켜 두세요.</p>
+          <p class="ob-help" id="proxy-note" hidden></p>
           <div class="time-box">
             <p class="time-h">시간 연장</p>
             <div class="time-add" id="time-add">
@@ -922,6 +926,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
     <div class="tut-mock" id="tut-mock" aria-hidden="true" hidden><span class="duo-btn pass">넘어갈게요</span><span class="duo-btn like">대화해보고 싶어요</span></div>
     <div class="tut-row">
       <div class="tut-dots" id="tut-dots" aria-hidden="true"></div>
+      <button type="button" class="tut-skip" id="tut-skip">건너뛰기</button>
       <button type="button" class="cta small" id="tut-next">다음</button>
     </div>
   </div>
@@ -1002,9 +1007,10 @@ window.ND_CONFIG = {
   // 시연 모드용 가상 명단: [이름, 회사, 직급, 휴대폰 번호 뒤 4자리, (true = 끝날 때 아무도 안 고른 사람을 대신 고르는 운영진)]
   // 실제 신청 명단은 운영자 화면에서 넣고, Firebase에만 저장합니다 (이 파일에는 넣지 않음).
   roster: [
-    ['김민준', '왓츠랩', '매니저', '1234', true],
+    ['김민준', '왓츠랩', '매니저', '1234'],
     ['이서윤', '그립스텝', '선임연구원', '5678'],
     ['박지호', '모션베이스', '대표', '1234'],
+    ['한지원', '왓츠랩', '주임', '0101', true],
   ],
 
   firebase: {
@@ -1385,8 +1391,11 @@ window.ND_CONFIG = {
         st.progress = st.progress || {};
         if (progress && Number.isInteger(progress.left)) st.progress[pid] = progress.left;
         if (typeof done === 'boolean' && st.users[pid]) st.users[pid].done = done;
+        if (change && change.add) st.inbox[change.add] = (st.inbox[change.add] || []).filter((x) => x.id !== pid).concat({ id: pid, at: Date.now() });
+        if (change && change.remove) [].concat(change.remove).forEach((id) => { st.inbox[id] = (st.inbox[id] || []).filter((x) => x.id !== pid); });
         save();
         emitKeyed(subs.swipes, pid, st.swipes[pid]);
+        if (change) [].concat(change.add || [], change.remove || []).forEach((id) => emitKeyed(subs.inbox, id, inboxOf(id)));
         if (typeof done === 'boolean') emitProfiles(); else emitProgress();
       },
       async isAdmin() { return !!st.admin; },
@@ -1483,12 +1492,34 @@ window.ND_CONFIG = {
       }
     }
     const refsOf = async (path) => (await fs.getDocs(COL(path))).docs.map((d) => d.ref);
+    const REST = 'https://firestore.googleapis.com/v1/projects/' + C.firebase.projectId + '/databases/(default)/documents/';
+    const restVal = (v) => ('stringValue' in v ? v.stringValue : 'integerValue' in v ? Number(v.integerValue) : 'doubleValue' in v ? v.doubleValue
+      : 'booleanValue' in v ? v.booleanValue : 'arrayValue' in v ? (v.arrayValue.values || []).map(restVal)
+        : 'mapValue' in v ? restFields(v.mapValue.fields) : null);
+    const restFields = (f) => Object.fromEntries(Object.entries(f || {}).map(([k, v]) => [k, restVal(v)]));
+    // 문서 하나 읽기: 없으면 null
+    async function restGet(path) {
+      const token = await auth.currentUser.getIdToken();
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), 8000);
+      try {
+        const r = await fetch(REST + path, { headers: { Authorization: 'Bearer ' + token }, signal: ctl.signal });
+        if (r.status === 404) return null;
+        if (!r.ok) throw new Error('rest ' + r.status);
+        return restFields((await r.json()).fields);
+      } finally { clearTimeout(timer); }
+    }
+    // 일반 요청과 Firestore 중 먼저 성공한 답 (둘 다 실패하면 오류)
+    const fastGet = (path) => Promise.any([
+      restGet(path),
+      fs.getDoc(D(path)).then((x) => (x.exists() ? x.data() : null)),
+    ]).catch((e) => { throw (e && e.errors && e.errors[0]) || e; });
 
     return {
       mode: 'live',
       async findRoster(phone4) {
-        const s = await fs.getDoc(D('roster/' + phone4));
-        return s.exists() ? (s.data().people || []) : [];
+        const d = await fastGet('roster/' + phone4);
+        return d ? (d.people || []) : [];
       },
       async rosterList() {
         const s = await fs.getDocs(COL('roster'));
@@ -1512,8 +1543,8 @@ window.ND_CONFIG = {
       },
       isOwner,
       async findKey(hash) {
-        const s = await fs.getDoc(D('keys/' + hash));
-        return s.exists() ? s.data().pid : null;
+        const d = await fastGet('keys/' + hash);
+        return d ? d.pid || null : null;
       },
       async claim(hash, pid) {
         if (!(await isOwner(pid))) await fs.setDoc(ownerDoc(pid), { hash });
@@ -1818,6 +1849,8 @@ window.ND_CONFIG = {
     const buf = await crypto.subtle.digest('SHA-256', bytes);
     return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
   }
+  // 받침 있으면 '으로', 없거나 ㄹ 받침이면 '로'
+  const josaRo = (w) => { const c = String(w).charCodeAt(String(w).length - 1) - 0xAC00; return c >= 0 && c < 11172 && c % 28 && c % 28 !== 8 ? '으로' : '로'; };
   const cleanText = (v, max) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, max);
 
   let toastTimer = null;
@@ -2584,6 +2617,7 @@ window.ND_CONFIG = {
     const id = stepId();
     if (OB.busy) return;
     if (id === 'editmenu') { leaveEdit(); return; }
+    if (id === 'tags' && $('kw-custom').value.trim()) addCustomKeyword(); // 써 놓고 '추가'를 안 누른 키워드도 넣기
     const miss = missing(id);
     if (miss) {
       OB.flagged = true;
@@ -2955,7 +2989,8 @@ window.ND_CONFIG = {
     return h('button', { type: 'button', class: 'pc' + (state ? ' ' + state : ''), onclick: () => openSheet(p, { from: 'theme' }), 'aria-label': p.name + ' 프로필 보기' },
       h('span', { class: 'pc-logo' }, logoEl(p)),
       h('span', { class: 'pc-text' },
-        h('span', { class: 'pc-org', text: [p.company, p.title].filter(Boolean).join(' ') }),
+        h('span', { class: 'pc-org', text: p.company || '' }),
+        p.title ? h('span', { class: 'pc-title', text: p.title }) : null,
         h('b', { class: 'pc-name', text: p.name })),
       state ? h('span', { class: 'pc-tag ' + state }, state === 'picked' ? '♥ 골랐어요' : '넘어갈게요') : null);
   }
@@ -3020,12 +3055,12 @@ window.ND_CONFIG = {
     const r = el ? el.getBoundingClientRect() : null;
     const hole = $('tut-hole');
     hole.classList.toggle('none', !r);
-    // 화면 맨 위에 붙은 곳(위쪽 막대)은 테두리가 잘리지 않게 안쪽으로
-    const padTop = r ? Math.max(0, Math.min(6, r.top - 4)) : 0;
-    // 화면 양옆 끝에 붙은 곳(오른쪽 화살표 칸)도 테두리가 보이게 화면 안쪽으로
+    // 화면 끝에 붙은 곳(위쪽 타이머, 오른쪽 화살표 칸)도 흰 테두리가 다 보이게 화면 안쪽으로
     const holeL = r ? Math.max(6, r.left - 6) : 0;
     const holeR = r ? Math.min(innerWidth - 6, r.right + 6) : 0;
-    if (r) Object.assign(hole.style, { left: holeL + 'px', top: (r.top - padTop) + 'px', width: (holeR - holeL) + 'px', height: (r.height + padTop + 6) + 'px' });
+    const holeT = r ? Math.max(6, r.top - 6) : 0;
+    const holeB = r ? Math.min(innerHeight - 6, r.bottom + 6) : 0;
+    if (r) Object.assign(hole.style, { left: holeL + 'px', top: holeT + 'px', width: (holeR - holeL) + 'px', height: (holeB - holeT) + 'px' });
     const bubble = $('tut-bubble');
     bubble.classList.toggle('mid', !r);
     bubble.classList.toggle('top', !!r && r.top > innerHeight * 0.5);
@@ -3033,6 +3068,7 @@ window.ND_CONFIG = {
     $('tut-mock').hidden = !st.mock;
     $('tut-dots').replaceChildren(...TUT_STEPS.map((x, i) => h('i', { class: i === tutStep ? 'on' : '' })));
     $('tut-next').textContent = tutStep === TUT_STEPS.length - 1 ? '시작하기' : '다음';
+    $('tut-skip').hidden = tutStep === TUT_STEPS.length - 1;
     $('tut').hidden = false;
   }
   function endTutorial() {
@@ -3267,6 +3303,7 @@ window.ND_CONFIG = {
         const metN = inList.filter(met).length;
         const shown = S.hideMet ? sorted.filter((x) => !met(x)) : sorted;
         body.replaceChildren(...[
+          h('p', { class: 'like-next', text: '명찰의 이름과 회사를 보고 찾아가 인사해 보세요.' }),
           metN ? listTools(metN, inList.length) : null,
           h('ul', { class: 'lis' }, shown.map((x) => likeItem(x.p, { mutual: mineIds.has(x.p.id), kind: 'in' }))),
           S.hideMet && !shown.length ? h('p', { class: 'me-note', text: '나를 고른 사람과 모두 대화했어요.' }) : null,
@@ -3281,7 +3318,7 @@ window.ND_CONFIG = {
         h('b', null, mine.length ? '시간 안에는 더 고를 수 있어요' : '아직 고른 사람이 없어요'),
         h('div', { class: 'slot-actions' },
           h('button', { type: 'button', class: 'cta small', onclick: () => { S.browsing = false; if (S.me && S.me.done) S.continuing = true; session.save(); goTab('swipe'); } }, '카드 고르러 가기'),
-          passed.length && !S.showPasses ? h('button', { type: 'button', class: 'ghost-btn', onclick: () => { S.showPasses = true; renderLikesTab(); } }, '넘긴 사람에서 고르기') : null)));
+          passed.length && !S.showPasses ? h('button', { type: 'button', class: 'ghost-btn', onclick: () => { S.showPasses = true; renderLikesTab(); showPasses(); } }, '넘긴 사람에서 고르기') : null)));
     }
     if (!mine.length) {
       if (!parts.length) {
@@ -3294,11 +3331,16 @@ window.ND_CONFIG = {
       parts.push(h('ul', { class: 'lis' }, mine.map((p) => likeItem(p, { mutual: open && inIds.has(p.id), kind: 'out' }))));
     }
     if (passed.length) {
-      parts.push(h('button', { type: 'button', class: 'passes-toggle', 'aria-expanded': String(S.showPasses), onclick: () => { S.showPasses = !S.showPasses; renderLikesTab(); } },
+      parts.push(h('button', { type: 'button', class: 'passes-toggle', 'aria-expanded': String(S.showPasses), onclick: () => { S.showPasses = !S.showPasses; renderLikesTab(); if (S.showPasses) showPasses(); } },
         '넘긴 사람 ' + passed.length + '명', h('span', { 'aria-hidden': 'true' }, S.showPasses ? '접기' : '펼치기')));
       if (S.showPasses) parts.push(h('ul', { class: 'lis' }, passed.map((p) => likeItem(p, { kind: 'passed', pickedMe: open && inIds.has(p.id) }))));
     }
     body.replaceChildren(...parts);
+  }
+  // 펼친 '넘긴 사람' 목록이 화면 아래에 있으면 거기로 내려 줍니다.
+  function showPasses() {
+    const t = document.querySelector('#likes-body .passes-toggle');
+    if (t) t.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
   function listTools(metN, total) {
     return h('div', { class: 'list-tools' },
@@ -3404,10 +3446,18 @@ window.ND_CONFIG = {
     let barCls = '';
     if (from === 'theme' && S.phase === 'swipe' && S.swipesLoaded) {
       if (S.swipes.likes.includes(p.id)) {
-        bar = [h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'),
-          h('button', { type: 'button', class: 'cta small', onclick: () => { closeSheet(); unpick(p.id); } }, '선택 취소')];
+        // 선택 취소는 실수로 누르지 않게 눈에 덜 띄게, 두 번 눌러야 (LIKE 목록과 같게)
+        const cancel = h('button', { type: 'button', class: 'ghost-btn danger', onclick: () => {
+          const now = Date.now();
+          const at = Number(cancel.dataset.armed || 0);
+          if (at && now - at < 3000) { if (now - at < 400) return; closeSheet(); unpick(p.id); return; }
+          cancel.dataset.armed = String(now);
+          cancel.textContent = '한 번 더 누르면 취소돼요';
+          setTimeout(() => { if (cancel.isConnected) { cancel.dataset.armed = ''; cancel.textContent = '선택 취소'; } }, 3000);
+        } }, '선택 취소');
+        bar = [h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'), cancel];
       } else {
-        // 두 칸: 패스 | 대화해보고 싶어요 (닫기는 위쪽 ↓ 버튼·뒤로가기)
+        // 두 칸: 넘어갈게요 | 대화해보고 싶어요 (닫기는 왼쪽 위 뒤로가기)
         barCls = ' duo';
         bar = [h('button', { type: 'button', class: 'duo-btn pass', onclick: () => choose(p.id, 'pass') }, '넘어갈게요'),
           h('button', { type: 'button', class: 'duo-btn like', onclick: () => choose(p.id, 'like') }, '대화해보고 싶어요')];
@@ -3423,7 +3473,7 @@ window.ND_CONFIG = {
     $('sheet-body').replaceChildren(
       h('div', { class: 'sh-visual' }, ...visualEls(p),
         h('button', { type: 'button', class: 'sh-back', 'aria-label': '뒤로가기', 'data-close': '' }, icon('back')),
-        h('button', { type: 'button', class: 'sh-close', 'aria-label': '닫기', 'data-close': '' }, icon('down'))),
+        h('span', { class: 'top-timer sh-timer js-timer', hidden: true })),
       h('div', { class: 'sh-content' },
         h('h2', { class: 'sh-name', text: p.name }),
         mutual ? h('span', { class: 'li-mutual' }, '서로 선택') : null,
@@ -3432,7 +3482,7 @@ window.ND_CONFIG = {
         (p.lookingFor || []).length ? sec('찾고 있어요', h('div', { class: 'ci-chips' },
           p.lookingFor.map((k) => h('span', { class: 'ci-chip', text: k })))) : null,
         p.companyIntro ? sec('회사가 하는 일', h('p', { text: p.companyIntro })) : null,
-        sec('대표 경험', h('ul', { class: 'ci-list' }, (p.experiences || []).map((x) => h('li', { text: x })))),
+        (p.experiences || []).filter(Boolean).length ? sec('대표 경험', h('ul', { class: 'ci-list' }, p.experiences.filter(Boolean).map((x) => h('li', { text: x })))) : null,
         careers.length ? sec('이전 경력', h('ul', { class: 'ci-list' }, careers.map((c) => h('li', null,
           c.period ? h('span', { class: 'ci-period', text: c.period }) : null, [c.org, c.role].filter(Boolean).join(' · '))))) : null,
         (p.keywords || []).length ? sec('관심 키워드', h('div', { class: 'ci-chips' },
@@ -3440,7 +3490,8 @@ window.ND_CONFIG = {
       h('div', { class: 'sheet-bar' + (barCls || (bar.length === 3 ? ' trio' : '')) }, bar));
     $('sheet').hidden = false;
     $('sheet-body').scrollTop = 0;
-    $('sheet-body').querySelector('.sh-close').focus({ preventScroll: true });
+    $('sheet-body').querySelector('.sh-back').focus({ preventScroll: true });
+    renderTimer();
     armBack();
   }
   function closeSheet() {
@@ -3543,7 +3594,7 @@ window.ND_CONFIG = {
     adminBusy = true;
     ADMIN_BTNS.forEach((id) => { $(id).disabled = true; });
     let ok = false;
-    try { await fn(); ok = true; if (done) toast(done, 3000); }
+    try { await fn(); ok = true; if (done) toast(typeof done === 'function' ? done() : done, 3500); }
     catch (ex) {
       console.error(ex);
       const code = String((ex && ex.code) || '');
@@ -3555,7 +3606,15 @@ window.ND_CONFIG = {
     }
     return ok;
   }
+  function loadProxyNote() {
+    S.store.rosterList().then((list) => {
+      const px = list.find((r) => r.proxy);
+      $('proxy-note').hidden = !px;
+      if (px) $('proxy-note').textContent = '끝나기 1초 전까지 아무도 고르지 않은 분은 ' + [px.company, px.name].filter(Boolean).join(' ') + ' 님이 고른 것으로 채워요.';
+    }).catch((e) => console.error(e));
+  }
   function watchAdmin() {
+    loadProxyNote();
     if (progressUnsub || !S.store.watchProgress) return;
     progressUnsub = S.store.watchProgress((list) => {
       S.progress = new Map(list.map((x) => [x.id, x]));
@@ -3636,6 +3695,25 @@ window.ND_CONFIG = {
   let autoClosing = false;
   let proxyRound = 0;
   let proxyTask = null;
+  let proxyMsg = '';
+  // 운영자 화면이 켜져 있어야 끝날 때 대신 고르기·결과 공개가 되므로, 카드 고르기 중에는 화면이 꺼지지 않게 합니다.
+  let wakeLock = null;
+  let wakeBusy = false;
+  async function keepAwake(on) {
+    if (wakeBusy || !navigator.wakeLock) return;
+    wakeBusy = true;
+    try {
+      if (on && !wakeLock && document.visibilityState === 'visible') {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      } else if (!on && wakeLock) {
+        const w = wakeLock;
+        wakeLock = null;
+        await w.release();
+      }
+    } catch (e) { /* 지원하지 않거나 거부됨 */ }
+    wakeBusy = false;
+  }
   async function pickForEmpty() {
     try {
       const px = (await S.store.rosterList()).find((r) => r.proxy);
@@ -3643,7 +3721,7 @@ window.ND_CONFIG = {
       const hash = await keyHash(px.name, px.phone4);
       const ids = visibleProfiles().filter((p) => !p.test).map((p) => p.id);
       const n = await S.store.pickForEmpty(hash, { name: px.name, company: px.company || '', title: px.title || '' }, ids);
-      if (n) toast(px.name + ' 님이 아무도 고르지 않은 ' + n + '명을 골랐어요.', 4000);
+      proxyMsg = n ? px.name + ' 님이 아무도 고르지 않은 ' + n + '명을 골랐어요. ' : '';
       return n;
     } catch (e) {
       console.error(e);
@@ -3663,9 +3741,15 @@ window.ND_CONFIG = {
     const swiping = S.phase === 'swipe';
     const on = swiping && S.endsAt > 0;
     const left = on ? S.endsAt - Date.now() : 0;
-    $('top-timer').hidden = !on;
-    if (on) $('top-timer').textContent = fmtLeft(left);
+    document.querySelectorAll('.js-timer').forEach((el) => {
+      el.hidden = !on;
+      el.textContent = on ? fmtLeft(left) : '';
+      el.classList.toggle('soon', on && left <= 30000);
+    });
     $('admin-timer').hidden = !swiping;
+    const adminWatch = S.admin && S.view === 'admin' && S.serverPhase === 'swipe';
+    $('admin-keep').hidden = !adminWatch;
+    keepAwake(adminWatch);
     $('time-help').hidden = swiping;
     $('time-add').querySelectorAll('button').forEach((b) => { b.disabled = adminBusy || !swiping; });
     if (on) $('admin-timer').textContent = '카드 고르기 ' + fmtLeft(left) + ' 남음';
@@ -3682,7 +3766,7 @@ window.ND_CONFIG = {
       autoClosing = true;
       const endsAt = S.endsAt;
       Promise.resolve(proxyTask)
-        .then(() => adminTask(() => S.store.sendNotice(NETWORKING_NOTICE, 'ended', endsAt), '시간이 끝나 결과를 공개했어요.'))
+        .then(() => adminTask(() => S.store.sendNotice(NETWORKING_NOTICE, 'ended', endsAt), () => proxyMsg + '시간이 끝나 결과를 공개했어요.'))
         .finally(() => { autoClosing = false; });
     }
   }
@@ -3784,7 +3868,7 @@ window.ND_CONFIG = {
     if (k !== rowsKey) {
       rowsKey = k;
       $('admin-rows').replaceChildren(...(list.length ? list.map(adminRow)
-        : [h('p', { class: 'ob-help', text: q ? '‘' + q + '’로 찾은 참가자가 없어요.' : '아직 등록한 참가자가 없어요.' })]));
+        : [h('p', { class: 'ob-help', text: q ? '‘' + q + '’' + josaRo(q) + ' 찾은 참가자가 없어요.' : '아직 등록한 참가자가 없어요.' })]));
     }
     $('qr-url').textContent = entryUrl() + (isDemo ? ' (시연 주소예요. 참가자끼리 연결되지 않아요)' : '');
     $('qr-large-count').textContent = '지금 ' + realVisible.length + '명 등록';
@@ -3885,9 +3969,9 @@ window.ND_CONFIG = {
       if (OB.notFound && e.target.value !== OB.d.pin) { OB.notFound = false; $('ob-manual').hidden = true; OB.flagged = false; }
       OB.d.pin = e.target.value;
       // 4자리가 되면 명단을 미리 찾아 둡니다 ('계속'을 누르면 바로 넘어가게)
-      if (OB.d.pin.length === 4 && S.store) {
+      if (OB.d.pin.length === 4 && storeReady) {
         const pin = OB.d.pin;
-        OB.rpre = { pin, p: S.store.findRoster(pin) };
+        OB.rpre = { pin, p: storeReady.then((st) => st.findRoster(pin)) };
         OB.rpre.p.catch(() => {});
       }
       syncNext();
@@ -3917,6 +4001,7 @@ window.ND_CONFIG = {
     $('me-out-no').addEventListener('click', () => { $('me-out-note').hidden = true; });
     $('me-out-yes').addEventListener('click', leaveDevice);
     $('tut-next').addEventListener('click', () => { if (tutStep < TUT_STEPS.length - 1) { tutStep++; showTutStep(); } else endTutorial(); });
+    $('tut-skip').addEventListener('click', endTutorial);
     window.addEventListener('resize', () => { if (tutStep >= 0) showTutStep(); });
     $('finish-go').addEventListener('click', () => { const open = unlocked(); closeFinish(); S.likesTab = open ? 'in' : 'out'; if (!open) S.showPasses = true; goTab('likes'); });
     $('finish-undo').addEventListener('click', () => { closeFinish(); undo(); });
@@ -3934,6 +4019,9 @@ window.ND_CONFIG = {
     // 운영자
     const adminError = (text) => { $('admin-error').textContent = text; $('admin-error').hidden = !text; };
     $('admin-pin').addEventListener('input', () => adminError(''));
+    $('admin-leave').addEventListener('click', (e) => {
+      if (S.admin && S.serverPhase === 'swipe' && !confirm('이 화면을 나가면 시간이 끝나도 자동 채우기와 결과 공개가 되지 않아요. 나갈까요?')) e.preventDefault();
+    });
     $('admin-login').addEventListener('submit', async (e) => {
       e.preventDefault();
       const pin = $('admin-pin').value.trim();
@@ -3960,11 +4048,12 @@ window.ND_CONFIG = {
       pendingPhase = null;
       // 결과 공개와 '네트워킹 시작' 알림은 한 번에 (알림만 보내고 결과를 안 여는 실수가 없게)
       const withNotice = next === 'ended' && $('phase-notice').checked;
+      proxyMsg = '';
       adminTask(async () => {
         if (next === 'ended' && S.serverPhase === 'swipe') await pickForEmpty();
         return withNotice ? S.store.sendNotice(NETWORKING_NOTICE, next, 0) : S.store.setPhase(next, next === 'swipe' ? Date.now() + PICK_MS : 0);
       },
-        withNotice ? '결과를 공개하고 네트워킹 시작 알림을 보냈어요.' : PHASES[next].done);
+        () => proxyMsg + (withNotice ? '결과를 공개하고 네트워킹 시작 알림을 보냈어요.' : PHASES[next].done));
     });
     $('phase-no').addEventListener('click', () => { pendingPhase = null; render(); });
     // 다음 단계 버튼: 지금 단계에서 이어지는 단계로 (확인 한 번 더)
