@@ -183,17 +183,27 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .tab-scroll { overflow-y: auto; overflow-x: hidden; padding-bottom: 24px; }
 .tab-scroll > * { flex-shrink: 0; }
 .topbar { display: flex; align-items: center; gap: 12px; height: 60px; flex: none; }
-.top-pill { white-space: nowrap; flex: none; height: 40px; display: inline-flex; align-items: center; padding: 0 18px; border-radius: 999px; background: #000; border: 1px solid #2c2c30; font-weight: 800; font-size: 15px; }
-.top-count { white-space: nowrap; flex: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; }
-.top-count svg { width: 20px; height: 20px; color: var(--like); }
-.top-timer { margin-left: auto; height: 34px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 999px; background: #3a2412; color: #ffb36b; font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.top-timer { height: 46px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 999px; background: #3a2412; color: #ffb36b; font-weight: 800; font-size: 21px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .admin-timer { font-size: 16px; font-weight: 800; color: #ffb36b; font-variant-numeric: tabular-nums; }
 
 /* 테마별 사람 카드: 테마 제목 아래 한 줄씩, → 버튼으로 옆으로 넘김 */
-.themes { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 18px; }
-.theme-hint, .theme-done { display: flex; align-items: center; gap: 12px; margin: 4px 0 16px; padding: 14px 14px 14px 16px; border-radius: 16px; background: #fff; color: #111; }
-.theme-hint p, .theme-done p { flex: 1; font-size: 16px; font-weight: 600; line-height: 1.45; }
-.theme-hint .cta, .theme-done .cta { flex: none; width: auto; height: 46px; padding: 0 16px; font-size: 15px; }
+.themes { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-bottom: 18px; }
+/* 처음 한 번 보여 주는 사용법: 화면을 어둡게 하고 해당 부분만 밝게, 흰 말풍선에 한 문장씩 */
+.tut { position: fixed; inset: 0; z-index: 70; }
+.tut-hole { position: fixed; border-radius: 16px; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.68); outline: 3px solid #fff; outline-offset: 3px; pointer-events: none; transition: left 0.25s ease, top 0.25s ease, width 0.25s ease, height 0.25s ease; }
+.tut-hole.none { left: 50% !important; top: 50% !important; width: 0 !important; height: 0 !important; outline: none; }
+.tut-bubble { position: fixed; left: 50%; transform: translateX(-50%); width: min(448px, calc(100% - 32px)); bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  background: #fff; color: #111; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5); }
+.tut-bubble.top { bottom: auto; top: calc(16px + env(safe-area-inset-top, 0px)); }
+.tut-bubble.mid { bottom: auto; top: 50%; transform: translate(-50%, -50%); }
+.tut-bubble p { font-size: 19px; font-weight: 600; line-height: 1.45; }
+.tut-mock { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tut-mock .duo-btn { display: grid; place-items: center; height: 54px; font-size: 17px; }
+.tut-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.tut-dots { display: flex; gap: 6px; }
+.tut-dots i { width: 8px; height: 8px; border-radius: 4px; background: #d0d0d6; }
+.tut-dots i.on { width: 22px; background: #111; }
+.tut-bubble .cta { flex: none; width: auto; height: 52px; padding: 0 28px; font-size: 17px; }
 .theme { margin-bottom: 22px; }
 .theme-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0 0 12px; font-size: 25px; font-weight: 800; line-height: 1.25; }
 .theme-h span { font-size: 16px; font-weight: 700; color: var(--text-3); }
@@ -215,10 +225,10 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .theme-arrow { position: absolute; top: 28%; z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: 0; display: grid; place-items: center;
   background: rgba(255, 255, 255, 0.95); color: #111; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
 .theme-arrow svg { width: 22px; height: 22px; }
-.theme-arrow.next { right: -6px; }
+.theme-arrow.next { right: 2px; }
 .theme-arrow.next svg { transform: rotate(180deg); }
-.theme-arrow.prev { left: -6px; }
-/* 프로필 아래 두 칸: 패스 | 대화해보고 싶어요 */
+.theme-arrow.prev { left: 2px; }
+/* 프로필 아래 두 칸: 넘어갈게요 | 대화해보고 싶어요 */
 .sheet-bar.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .duo-btn { height: 62px; border: 0; border-radius: 16px; padding: 0 6px; font-size: 19px; font-weight: 800; color: #fff; white-space: nowrap; }
 .duo-btn.pass { background: #2c2c31; }
@@ -440,6 +450,10 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
 }
 .sh-close svg { width: 26px; height: 26px; }
+/* 프로필 왼쪽 위 뒤로가기 */
+.sh-back { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); left: 12px; z-index: 3; width: 48px; height: 48px; border-radius: 50%; border: 0;
+  display: grid; place-items: center; background: rgba(0, 0, 0, 0.55); color: #fff; }
+.sh-back svg { width: 26px; height: 26px; }
 .sh-content { padding: 8px var(--gutter-r) 0 var(--gutter-l); display: flex; flex-direction: column; gap: 14px; }
 .sh-name { font-size: 34px; font-weight: 900; letter-spacing: -0.02em; }
 .sh-lines { display: flex; flex-direction: column; gap: 6px; color: var(--text-2); }
@@ -525,14 +539,14 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .type-confirm { display: flex; flex-direction: column; gap: 8px; font-size: 15px; color: var(--text-2); }
 .type-confirm b { color: var(--like); }
 .head-link { min-height: 44px; margin-left: auto; padding: 0 14px; font-size: 15px; }
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .stat { background: var(--surface-2); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .stat.wide { grid-column: 1 / -1; }
 .stat b { font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; white-space: nowrap; }
 .stat b small { font-size: 15px; color: var(--text-3); font-weight: 600; }
 .stat span { font-size: 13px; color: var(--text-2); }
 .stat .stat-sub { font-size: 13px; color: var(--text-3); }
-@media (max-width: 420px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 420px) { .stats { grid-template-columns: repeat(3, 1fr); } }
 .notice-last { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); font-size: 15px; color: var(--text-2); }
 .notice-last p { flex: 1; min-width: 180px; }
 .notice-last .ghost-btn { min-height: 36px; font-size: 13.5px; }
@@ -646,7 +660,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
         <div class="welcome-art" aria-hidden="true"><i></i><i></i><i></i></div>
         <h1>오늘의 7명</h1>
         <p class="welcome-event">2026 Human Dexterity Networking Day</p>
-        <p class="welcome-sub">대화하고 싶은 사람 7명을 고르고<br>나를 고른 사람을 확인하세요</p>
+        <p class="welcome-sub">대화하고 싶은 사람을 고르고<br>나를 고른 사람을 확인하세요</p>
       </div>
 
       <div class="ob-step" data-step="pin" hidden>
@@ -732,18 +746,9 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   <section class="view main" id="view-app" hidden>
     <div class="tab tab-swipe" id="tab-swipe">
       <header class="topbar">
-        <span class="top-pill">오늘의 7명</span>
-        <span class="top-count" id="pick-count"></span>
         <span class="top-timer" id="top-timer" hidden></span>
       </header>
       <div class="themes" id="themes" hidden>
-        <div class="theme-hint" id="theme-hint" hidden>
-          <p>사람을 눌러 프로필을 보고 ‘대화해보고 싶어요’나 ‘패스’를 눌러 주세요.</p>
-          <button type="button" class="cta small" id="theme-hint-ok">알겠어요</button>
-        </div>
-        <div class="theme-done" id="theme-done" hidden>
-          <p id="theme-done-text"></p>
-        </div>
         <div id="theme-list"></div>
       </div>
       <div class="radar-area" id="radar" hidden>
@@ -897,6 +902,19 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   </section>
 </div>
 
+<!-- 카드 고르기 사용법 (처음 한 번) -->
+<div class="tut" id="tut" role="dialog" aria-label="사용법" hidden>
+  <div class="tut-hole none" id="tut-hole"></div>
+  <div class="tut-bubble" id="tut-bubble">
+    <p id="tut-text" aria-live="polite"></p>
+    <div class="tut-mock" id="tut-mock" aria-hidden="true" hidden><span class="duo-btn pass">넘어갈게요</span><span class="duo-btn like">대화해보고 싶어요</span></div>
+    <div class="tut-row">
+      <div class="tut-dots" id="tut-dots" aria-hidden="true"></div>
+      <button type="button" class="cta small" id="tut-next">다음</button>
+    </div>
+  </div>
+</div>
+
 <!-- 프로필 전체 보기 -->
 <div class="overlay sheet" id="sheet" hidden>
   <div class="sheet-scroll" id="sheet-body" role="dialog" aria-modal="true" aria-label="프로필"></div>
@@ -967,7 +985,6 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 // 그 밖(claude.ai 미리보기 등)에서는 시연 모드(예시 프로필 34명, 이 기기에만 저장)로 동작합니다.
 window.ND_CONFIG = {
   eventId: 'physical-ai-networking-day-2026',
-  maxLikes: 7,   // 고를 수 있는 사람 수
   pickSeconds: 180,   // 카드 고르기 시간 (3분). 끝나면 결과가 저절로 공개됩니다
 
   // 시연 모드용 가상 명단: [이름, 회사, 직급, 휴대폰 번호 뒤 4자리]
@@ -1585,7 +1602,6 @@ window.ND_CONFIG = {
 
   const ND = window.ND || {};
   const C = window.ND_CONFIG || {};
-  const MAX = C.maxLikes || 7;
   const PICK_MS = (C.pickSeconds || 180) * 1000;
   const EVENT_ID = C.eventId || 'physical-ai-networking-day-2026';
 
@@ -2080,8 +2096,7 @@ window.ND_CONFIG = {
   function visibleProfiles() {
     return [...S.profiles.values()].filter((p) => !p.hidden);
   }
-  const picksFull = () => S.swipes.likes.length >= MAX;
-  // 고를 수 있는 만큼(MAX명) 채우거나 결과가 공개되면 '나를 고른 사람'이 열립니다 (카드를 넘기기만 해서는 열리지 않음).
+  // 카드 고르기 시간이 끝나 결과가 공개되면 '나를 고른 사람'이 열립니다.
   const unlocked = () => S.phase === 'ended';
 
   function decide() {
@@ -2731,7 +2746,7 @@ window.ND_CONFIG = {
   function passedPeople() {
     return S.swipes.passes.slice().reverse().map((id) => S.profiles.get(id)).filter((p) => p && !p.hidden && p.id !== S.pid);
   }
-  const canPick = (p) => S.swipesLoaded && !!p && S.phase === 'swipe' && !picksFull() && p.id !== S.pid && !S.swipes.likes.includes(p.id);
+  const canPick = (p) => S.swipesLoaded && !!p && S.phase === 'swipe' && p.id !== S.pid && !S.swipes.likes.includes(p.id);
   const unviewedCount = () => inboxPeople().filter((x) => !S.viewed.has(x.p.id)).length;
 
   function renderApp() {
@@ -2854,14 +2869,13 @@ window.ND_CONFIG = {
 
   function renderSwipeTab() {
     syncDeck();
-    $('pick-count').replaceChildren(icon('heart'), S.swipes.likes.length + ' / ' + MAX);
-    $('pick-count').hidden = S.phase === 'registration';
     renderTimer();
     const mode = swipeMode();
     $('themes').hidden = mode !== 'themes';
     $('radar').hidden = mode === 'themes';
-    if (mode !== 'themes') { renderRadar(mode); return; }
+    if (mode !== 'themes') { renderRadar(mode); hideTutorial(); return; }
     renderThemes();
+    setTimeout(maybeStartTutorial, 300);
   }
 
   // --- 테마별 사람 카드 (스와이프 대신) ---
@@ -2876,7 +2890,7 @@ window.ND_CONFIG = {
       h('span', { class: 'pc-text' },
         h('span', { class: 'pc-org', text: [p.company, p.title].filter(Boolean).join(' ') }),
         h('b', { class: 'pc-name', text: p.name })),
-      state ? h('span', { class: 'pc-tag ' + state }, state === 'picked' ? '♥ 골랐어요' : '패스') : null);
+      state ? h('span', { class: 'pc-tag ' + state }, state === 'picked' ? '♥ 골랐어요' : '넘어갈게요') : null);
   }
   function renderThemes() {
     const people = visibleProfiles().filter((p) => p.id !== S.pid).sort((a, b) => String(a.name).localeCompare(String(b.name), 'ko'));
@@ -2884,11 +2898,7 @@ window.ND_CONFIG = {
     const passed = new Set(S.swipes.passes);
     const groups = new Map(THEME_ORDER.map((t) => [t, []]));
     people.forEach((p) => { (groups.get(themeOf(p)) || groups.get('기타')).push(p); });
-    const full = picksFull();
-    $('theme-hint').hidden = !!store.get(LS_COACH);
-    $('theme-done').hidden = !full;
-    if (full) $('theme-done-text').textContent = MAX + '명을 모두 골랐어요. 시간이 끝나기 전까지는 고른 분을 눌러 바꿀 수 있어요.';
-    const key = [full, LOGO_MAP.size, ...[...groups].map(([t, list]) => t + ':' + list.map((p) => p.id + (liked.has(p.id) ? 'L' : passed.has(p.id) ? 'P' : '') + (p.updatedAt || '')).join(','))].join('|');
+    const key = [LOGO_MAP.size, ...[...groups].map(([t, list]) => t + ':' + list.map((p) => p.id + (liked.has(p.id) ? 'L' : passed.has(p.id) ? 'P' : '') + (p.updatedAt || '')).join(','))].join('|');
     if (key === themesKey) return;
     themesKey = key;
     // 다시 그려도 줄마다 보던 위치는 그대로
@@ -2915,6 +2925,52 @@ window.ND_CONFIG = {
     });
     $('theme-list').replaceChildren(...(sections.length ? sections
       : [h('div', { class: 'empty-box' }, h('b', null, '아직 다른 참가자가 없어요'), h('span', null, '다른 참가자가 등록하면 바로 여기에 나타나요.'))]));
+  }
+
+  // --- 카드 고르기 사용법: 처음 한 번, 한 단계에 한 문장 ---
+  const TUT_STEPS = [
+    { text: '관심 가는 분의 카드를 누르면 프로필을 볼 수 있어요.', target: () => document.querySelector('#theme-list .pc') },
+    { text: '→ 버튼을 누르면 같은 테마의 다른 분들이 나와요.', target: () => [...document.querySelectorAll('#theme-list .theme-arrow.next')].find((b) => !b.hidden) },
+    { text: '프로필 아래에서 ‘대화해보고 싶어요’나 ‘넘어갈게요’를 누르면 이 화면으로 돌아와요.', mock: true },
+    { text: '시간 안에는 몇 명이든 고를 수 있고, 위의 시간이 끝나면 결과가 공개돼요.', target: () => document.querySelector('#top-timer') },
+  ];
+  let tutStep = -1;
+  function maybeStartTutorial() {
+    if (tutStep >= 0 || store.get(LS_COACH) || S.view !== 'app' || S.tab !== 'swipe' || $('themes').hidden
+      || !$('sheet').hidden || !$('match').hidden || !document.querySelector('#theme-list .pc')) return;
+    tutStep = 0;
+    showTutStep();
+  }
+  function showTutStep() {
+    // 비출 곳이 없는 단계(→ 버튼이 없을 때 등)는 건너뜁니다.
+    while (tutStep < TUT_STEPS.length && !TUT_STEPS[tutStep].mock && !TUT_STEPS[tutStep].target()) tutStep++;
+    if (tutStep >= TUT_STEPS.length) { endTutorial(); return; }
+    const st = TUT_STEPS[tutStep];
+    const el = st.mock ? null : st.target();
+    if (el) el.scrollIntoView({ block: 'nearest' });
+    $('themes').scrollLeft = 0; // 옆으로 밀리지 않게
+    const r = el ? el.getBoundingClientRect() : null;
+    const hole = $('tut-hole');
+    hole.classList.toggle('none', !r);
+    // 화면 맨 위에 붙은 곳(위쪽 막대)은 테두리가 잘리지 않게 안쪽으로
+    const padTop = r ? Math.max(0, Math.min(6, r.top - 4)) : 0;
+    if (r) Object.assign(hole.style, { left: (r.left - 6) + 'px', top: (r.top - padTop) + 'px', width: (r.width + 12) + 'px', height: (r.height + padTop + 6) + 'px' });
+    const bubble = $('tut-bubble');
+    bubble.classList.toggle('mid', !r);
+    bubble.classList.toggle('top', !!r && r.top > innerHeight * 0.5);
+    $('tut-text').textContent = st.text;
+    $('tut-mock').hidden = !st.mock;
+    $('tut-dots').replaceChildren(...TUT_STEPS.map((x, i) => h('i', { class: i === tutStep ? 'on' : '' })));
+    $('tut-next').textContent = tutStep === TUT_STEPS.length - 1 ? '시작하기' : '다음';
+    $('tut').hidden = false;
+  }
+  function endTutorial() {
+    store.set(LS_COACH, '1');
+    hideTutorial();
+  }
+  function hideTutorial() {
+    tutStep = -1;
+    $('tut').hidden = true;
   }
 
   function renderRadar(mode) {
@@ -2955,7 +3011,7 @@ window.ND_CONFIG = {
     }
     return null;
   }
-  // 고르기를 마쳤을 때 (MAX명을 채웠거나 카드를 다 넘김). 완료 화면은 처음 마칠 때와 다 채웠을 때만.
+  // 모든 분을 다 확인했을 때 (운영자 화면 현황용 표시).
   function finishPicking(show) {
     S.continuing = false;
     S.browsing = false;
@@ -2981,13 +3037,10 @@ window.ND_CONFIG = {
     if (!canPick(p)) return;
     S.swipes = { likes: S.swipes.likes.concat(id), passes: S.swipes.passes.filter((x) => x !== id) };
     S.deckOrder = S.deckOrder.filter((x) => x !== id);
-    const full = picksFull();
-    const setDone = full && !(S.me && S.me.done);
-    pushHistory({ id, kind: 'like', setDone });
-    saveSwipes({ add: id }, setDone ? true : null);
+    pushHistory({ id, kind: 'like', setDone: false });
+    saveSwipes({ add: id }, null);
     likesKey = '';
-    if (full) finishPicking(false);
-    toast(full ? MAX + '명을 모두 골랐어요. 시간이 끝나면 결과가 공개돼요.' : p.name + '님을 골랐어요 · ' + S.swipes.likes.length + '/' + MAX, 3000);
+    toast(p.name + '님을 골랐어요');
     render();
   }
 
@@ -2996,17 +3049,12 @@ window.ND_CONFIG = {
     const p = S.profiles.get(id);
     if (!p || S.phase !== 'swipe' || !S.swipesLoaded) return;
     const wasLiked = S.swipes.likes.includes(id);
-    if (kind === 'like' && !wasLiked && picksFull()) {
-      toast('이미 ' + MAX + '명을 골랐어요. 바꾸려면 고른 분을 눌러 선택 취소하세요.', 3500);
-      return;
-    }
     S.swipes = {
       likes: kind === 'like' ? (wasLiked ? S.swipes.likes.slice() : S.swipes.likes.concat(id)) : S.swipes.likes.filter((x) => x !== id),
       passes: S.swipes.passes.filter((x) => x !== id).concat(kind === 'pass' ? [id] : []),
     };
     syncDeck();
-    const full = picksFull();
-    const finished = (kind === 'like' && full) || !S.deckOrder.length;
+    const finished = !S.deckOrder.length;
     const setDone = finished && !(S.me && S.me.done);
     pushHistory({ id, kind, setDone });
     const change = kind === 'like' && !wasLiked ? { add: id } : kind === 'pass' && wasLiked ? { remove: id } : null;
@@ -3014,8 +3062,7 @@ window.ND_CONFIG = {
     likesKey = '';
     closeSheet();
     if (finished) finishPicking(false);
-    toast(kind === 'like' && full ? MAX + '명을 모두 골랐어요. 시간이 끝나면 결과가 공개돼요.'
-      : kind === 'like' ? p.name + '님을 골랐어요 · ' + S.swipes.likes.length + '/' + MAX : p.name + '님은 패스했어요', 3000);
+    toast(kind === 'like' ? p.name + '님을 골랐어요' : p.name + '님은 넘어갔어요');
     render();
   }
 
@@ -3045,14 +3092,14 @@ window.ND_CONFIG = {
   function renderFinish() {
     const picks = minePeople();
     const mineIds = new Set(picks.map((p) => p.id));
-    const full = picks.length >= MAX;
+    const full = false;
     const mutual = unlocked() ? inboxPeople().filter((x) => mineIds.has(x.p.id)) : [];
-    $('finish-title').textContent = full ? MAX + '명 선택 완료!' : '모든 분을 다 봤어요';
+    $('finish-title').textContent = '모든 분을 다 봤어요';
     $('finish-logos').replaceChildren(...picks.map((p) => h('span', { class: 'fl' }, logoEl(p))));
     const text = mutual.length === 1 ? mutual[0].p.name + '님도 나를 골랐어요. 서로 선택!'
       : mutual.length ? '나를 고른 사람 중 ' + mutual.length + '명을 나도 골랐어요. 서로 선택!'
         : full ? '이제 누가 나를 골랐는지 확인해 보세요.'
-          : (picks.length ? picks.length + '명을 골랐어요. ' : '') + '패스한 분도 다시 눌러 고를 수 있어요. 누가 나를 골랐는지는 ' + MAX + '명을 채우거나 결과 공개 때 보여요.';
+          : (picks.length ? picks.length + '명을 골랐어요. ' : '') + '넘어간 분도 다시 눌러 고를 수 있어요. 누가 나를 골랐는지는 시간이 끝나면 보여요.';
     const el = $('finish-text');
     if (el.textContent !== text) {
       el.textContent = text;
@@ -3099,7 +3146,7 @@ window.ND_CONFIG = {
       if (changed) store.set(lsViewed(), JSON.stringify([...S.viewed]));
     }
     const armedId = armed.id && Date.now() - armed.at < 3000 ? armed.id : '';
-    const key = [S.likesTab, open, S.phase, picksFull(), S.met.join(','), S.hideMet, S.showPasses, armedId, [...S.newIds].join(','),
+    const key = [S.likesTab, open, S.phase, S.met.join(','), S.hideMet, S.showPasses, armedId, [...S.newIds].join(','),
       inList.map((x) => x.p.id + ':' + (x.p.updatedAt || '')).join(','),
       mine.map((p) => p.id + ':' + (p.updatedAt || '')).join(','), passed.map((p) => p.id + ':' + (p.updatedAt || '')).join(','),
       S.likesTab === 'all' ? everyone.map((p) => p.id + ':' + (p.updatedAt || '')).join(',') : ''].join('|');
@@ -3145,12 +3192,11 @@ window.ND_CONFIG = {
       }
       return;
     }
-    const slots = MAX - mine.length;
     const metOut = mine.filter((p) => S.met.includes(p.id)).length;
     const parts = [];
-    if (S.phase === 'swipe' && slots > 0 && (mine.length || passed.length)) {
+    if (S.phase === 'swipe' && (mine.length || passed.length)) {
       parts.push(h('div', { class: 'slot-box' },
-        h('b', null, slots === MAX ? '아직 고른 사람이 없어요' : slots + '자리가 비어 있어요'),
+        h('b', null, mine.length ? '시간 안에는 더 고를 수 있어요' : '아직 고른 사람이 없어요'),
         h('div', { class: 'slot-actions' },
           h('button', { type: 'button', class: 'cta small', onclick: () => { S.browsing = false; if (S.me && S.me.done) S.continuing = true; session.save(); goTab('swipe'); } }, '카드 고르러 가기'),
           passed.length && !S.showPasses ? h('button', { type: 'button', class: 'ghost-btn', onclick: () => { S.showPasses = true; renderLikesTab(); } }, '넘긴 사람에서 고르기') : null)));
@@ -3281,7 +3327,7 @@ window.ND_CONFIG = {
       } else {
         // 두 칸: 패스 | 대화해보고 싶어요 (닫기는 위쪽 ↓ 버튼·뒤로가기)
         barCls = ' duo';
-        bar = [h('button', { type: 'button', class: 'duo-btn pass', onclick: () => choose(p.id, 'pass') }, '패스'),
+        bar = [h('button', { type: 'button', class: 'duo-btn pass', onclick: () => choose(p.id, 'pass') }, '넘어갈게요'),
           h('button', { type: 'button', class: 'duo-btn like', onclick: () => choose(p.id, 'like') }, '대화해보고 싶어요')];
       }
     } else if (from === 'list' && canPick(p)) {
@@ -3294,6 +3340,7 @@ window.ND_CONFIG = {
     }
     $('sheet-body').replaceChildren(
       h('div', { class: 'sh-visual' }, ...visualEls(p),
+        h('button', { type: 'button', class: 'sh-back', 'aria-label': '뒤로가기', 'data-close': '' }, icon('back')),
         h('button', { type: 'button', class: 'sh-close', 'aria-label': '닫기', 'data-close': '' }, icon('down'))),
       h('div', { class: 'sh-content' },
         h('h2', { class: 'sh-name', text: p.name }),
@@ -3536,12 +3583,11 @@ window.ND_CONFIG = {
     const s = Math.max(0, Math.round((Date.now() - t) / 1000));
     return s < 60 ? '방금' : Math.round(s / 60) + '분 전';
   }
-  // 운영자 화면의 참가자 상태: 시작 전 / 고르는 중 / MAX명 완료 / 카드 소진
+  // 운영자 화면의 참가자 상태: 시작 전 / 고르는 중 / 카드 소진
   function statusOf(p) {
     if (p.test) return { key: 'test', label: '테스트' };
     const pr = S.progress.get(p.id);
     const likes = pr ? pr.likes || 0 : 0;
-    if (p.done && (!pr || likes >= MAX)) return { key: 'full', label: MAX + '명 완료' };
     if (p.done && pr && pr.left === 0) return { key: 'empty', label: '카드 소진 · ' + likes + '명' };
     if (pr && (pr.seen > 0 || likes > 0)) return { key: 'doing', label: (S.phase === 'ended' ? '덜 고르고 마침 · ' : '고르는 중 · ') + likes + '명' };
     return { key: 'start', label: '시작 전' };
@@ -3572,7 +3618,7 @@ window.ND_CONFIG = {
       $('phase-notice-row').hidden = pendingPhase !== 'ended';
     }
 
-    const c = { start: 0, doing: 0, full: 0, empty: 0 };
+    const c = { start: 0, doing: 0, empty: 0 };
     realVisible.forEach((p) => { c[statusOf(p).key]++; });
     const stat = (id, n, label) => h('div', { class: 'stat' }, h('b', { id, text: String(n) }), h('span', { text: label }));
     $('stats').replaceChildren(
@@ -3581,7 +3627,7 @@ window.ND_CONFIG = {
         h('span', { text: '등록 (실제 참가자)' }),
         h('small', { class: 'stat-sub', text: (S.roster ? '신청 명단 ' + S.roster.length + '명 중 · ' : '') + '테스트 ' + tests.length + '명 · 숨김 ' + all.filter((p) => p.hidden).length + '명' })),
       stat('st-start', c.start, '시작 전'), stat('st-doing', c.doing, S.phase === 'ended' ? '덜 고르고 마침' : '고르는 중'),
-      stat('st-full', c.full, MAX + '명 완료'), stat('st-empty', c.empty, '카드 소진'));
+      stat('st-empty', c.empty, '카드 소진'));
 
     const next = NEXT_PHASE[S.phase];
     $('phase-next').hidden = !next || !!pendingPhase;
@@ -3764,7 +3810,8 @@ window.ND_CONFIG = {
     });
     $('me-out-no').addEventListener('click', () => { $('me-out-note').hidden = true; });
     $('me-out-yes').addEventListener('click', leaveDevice);
-    $('theme-hint-ok').addEventListener('click', () => { store.set(LS_COACH, '1'); $('theme-hint').hidden = true; });
+    $('tut-next').addEventListener('click', () => { if (tutStep < TUT_STEPS.length - 1) { tutStep++; showTutStep(); } else endTutorial(); });
+    window.addEventListener('resize', () => { if (tutStep >= 0) showTutStep(); });
     $('finish-go').addEventListener('click', () => { const open = unlocked(); closeFinish(); S.likesTab = open ? 'in' : 'out'; if (!open) S.showPasses = true; goTab('likes'); });
     $('finish-undo').addEventListener('click', () => { closeFinish(); undo(); });
     $('finish-close').addEventListener('click', closeFinish);
