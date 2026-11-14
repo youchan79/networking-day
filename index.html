@@ -187,7 +187,8 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .admin-timer { font-size: 16px; font-weight: 800; color: #ffb36b; font-variant-numeric: tabular-nums; }
 
 /* 테마별 사람 카드: 테마 제목 아래 한 줄씩, → 버튼으로 옆으로 넘김 */
-.themes { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-bottom: 18px; }
+.themes { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-bottom: 18px; margin-right: calc(-1 * var(--gutter-r)); }
+#theme-list > .empty-box { margin-right: var(--gutter-r); }
 /* 처음 한 번 보여 주는 사용법: 화면을 어둡게 하고 해당 부분만 밝게, 흰 말풍선에 한 문장씩 */
 .tut { position: fixed; inset: 0; z-index: 70; }
 .tut-hole { position: fixed; border-radius: 16px; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.68); outline: 3px solid #fff; outline-offset: 3px; pointer-events: none; transition: left 0.25s ease, top 0.25s ease, width 0.25s ease, height 0.25s ease; }
@@ -205,29 +206,32 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .tut-dots i.on { width: 22px; background: #111; }
 .tut-bubble .cta { flex: none; width: auto; height: 52px; padding: 0 28px; font-size: 17px; }
 .theme { margin-bottom: 22px; }
-.theme-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0 0 12px; font-size: 25px; font-weight: 800; line-height: 1.25; }
+.theme-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0 0 12px; padding-right: var(--gutter-r); font-size: 25px; font-weight: 800; line-height: 1.25; }
 .theme-h span { font-size: 16px; font-weight: 700; color: var(--text-3); }
 .theme-wrap { position: relative; }
 .theme-row { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 2px 0 4px; }
 .theme-row::-webkit-scrollbar { display: none; }
-.pc { position: relative; flex: none; width: calc((100% - 20px) / 3); scroll-snap-align: start; display: flex; flex-direction: column; padding: 0; text-align: left;
+.theme-row::after { content: ''; flex: none; width: 6px; } /* 마지막 카드 뒤 여백 */
+.pc { position: relative; flex: none; width: calc((100% - 20px) / 2.5); scroll-snap-align: start; display: flex; flex-direction: column; padding: 0; text-align: left;
   border: 2px solid #2c2c30; border-radius: 14px; overflow: hidden; background: #1c1c1f; color: #fff; }
 .pc-logo { display: block; aspect-ratio: 5 / 4; background: #fff; }
 .pc-logo .logo { width: 100%; height: 100%; }
-.pc-logo .logo.mono-logo { font-size: 30px; }
-.pc-text { display: flex; flex-direction: column; gap: 3px; padding: 8px 8px 10px; }
-.pc-org { font-size: 13px; line-height: 1.3; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
-.pc-name { font-size: 16px; font-weight: 800; overflow-wrap: anywhere; }
+.pc-logo .logo.mono-logo { font-size: 38px; }
+.pc-text { display: flex; flex-direction: column; gap: 4px; padding: 10px 10px 12px; }
+.pc-org { font-size: 15px; line-height: 1.35; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.pc-name { font-size: 19px; font-weight: 800; overflow-wrap: anywhere; }
 .pc.picked { border-color: var(--like); }
 .pc.passed { opacity: 0.5; }
-.pc-tag { position: absolute; top: 6px; left: 6px; padding: 3px 8px; border-radius: 999px; font-size: 13px; font-weight: 800; background: rgba(0, 0, 0, 0.72); color: #fff; }
+.pc-tag { position: absolute; top: 7px; left: 7px; padding: 4px 9px; border-radius: 999px; font-size: 14px; font-weight: 800; background: rgba(0, 0, 0, 0.72); color: #fff; }
 .pc-tag.picked { background: var(--like); }
 .theme-arrow { position: absolute; top: 28%; z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: 0; display: grid; place-items: center;
   background: rgba(255, 255, 255, 0.95); color: #111; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
 .theme-arrow svg { width: 22px; height: 22px; }
-.theme-arrow.next { right: 2px; }
+.theme-arrow.next { top: 2px; bottom: 4px; right: 0; width: calc((100% - 20px) / 5); height: auto; border-radius: 14px 0 0 14px; box-shadow: none;
+  background: rgba(8, 8, 10, 0.55); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
+.theme-arrow .arrow-dot { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: #111; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
 .theme-arrow.next svg { transform: rotate(180deg); }
-.theme-arrow.prev { left: 2px; }
+.theme-arrow.prev { left: 2px; top: calc(50% - 22px); }
 /* 프로필 아래 두 칸: 넘어갈게요 | 대화해보고 싶어요 */
 .sheet-bar.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .duo-btn { height: 62px; border: 0; border-radius: 16px; padding: 0 6px; font-size: 19px; font-weight: 800; color: #fff; white-space: nowrap; }
@@ -2906,16 +2910,17 @@ window.ND_CONFIG = {
     const sections = [...groups].filter(([, list]) => list.length).map(([t, list]) => {
       const row = h('div', { class: 'theme-row' }, list.map((p) => personCard(p, liked.has(p.id) ? 'picked' : passed.has(p.id) ? 'passed' : '')));
       const prev = h('button', { type: 'button', class: 'theme-arrow prev', 'aria-label': t + ' 앞으로' }, icon('back'));
-      const next = h('button', { type: 'button', class: 'theme-arrow next', 'aria-label': t + ' 더 보기' }, icon('back'));
+      const next = h('button', { type: 'button', class: 'theme-arrow next', 'aria-label': t + ' 더 보기' }, h('span', { class: 'arrow-dot' }, icon('back')));
       prev.hidden = true;
-      next.hidden = list.length <= 3;
+      next.hidden = list.length <= 2;
       const sync = () => {
         const max = row.scrollWidth - row.clientWidth;
         prev.hidden = row.scrollLeft < 8;
         next.hidden = max <= 8 || row.scrollLeft > max - 8;
       };
-      prev.addEventListener('click', () => row.scrollBy({ left: -row.clientWidth, behavior: 'smooth' }));
-      next.addEventListener('click', () => row.scrollBy({ left: row.clientWidth, behavior: 'smooth' }));
+      const step = () => { const c = row.querySelector('.pc'); return c ? 2 * (c.offsetWidth + 10) : row.clientWidth; };
+      prev.addEventListener('click', () => row.scrollBy({ left: -step(), behavior: 'smooth' }));
+      next.addEventListener('click', () => row.scrollBy({ left: step(), behavior: 'smooth' }));
       row.addEventListener('scroll', sync, { passive: true });
       setTimeout(() => { if (scroll[t]) row.scrollLeft = scroll[t]; sync(); }, 0);
       return h('section', { class: 'theme', 'data-theme': t },
@@ -2953,7 +2958,10 @@ window.ND_CONFIG = {
     hole.classList.toggle('none', !r);
     // 화면 맨 위에 붙은 곳(위쪽 막대)은 테두리가 잘리지 않게 안쪽으로
     const padTop = r ? Math.max(0, Math.min(6, r.top - 4)) : 0;
-    if (r) Object.assign(hole.style, { left: (r.left - 6) + 'px', top: (r.top - padTop) + 'px', width: (r.width + 12) + 'px', height: (r.height + padTop + 6) + 'px' });
+    // 화면 양옆 끝에 붙은 곳(오른쪽 화살표 칸)도 테두리가 보이게 화면 안쪽으로
+    const holeL = r ? Math.max(6, r.left - 6) : 0;
+    const holeR = r ? Math.min(innerWidth - 6, r.right + 6) : 0;
+    if (r) Object.assign(hole.style, { left: holeL + 'px', top: (r.top - padTop) + 'px', width: (holeR - holeL) + 'px', height: (r.height + padTop + 6) + 'px' });
     const bubble = $('tut-bubble');
     bubble.classList.toggle('mid', !r);
     bubble.classList.toggle('top', !!r && r.top > innerHeight * 0.5);
