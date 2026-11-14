@@ -195,8 +195,8 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .theme-hint p, .theme-done p { flex: 1; font-size: 16px; font-weight: 600; line-height: 1.45; }
 .theme-hint .cta, .theme-done .cta { flex: none; width: auto; height: 46px; padding: 0 16px; font-size: 15px; }
 .theme { margin-bottom: 22px; }
-.theme-h { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; font-size: 20px; font-weight: 800; }
-.theme-h span { font-size: 14px; font-weight: 700; color: var(--text-3); }
+.theme-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0 0 12px; font-size: 25px; font-weight: 800; line-height: 1.25; }
+.theme-h span { font-size: 16px; font-weight: 700; color: var(--text-3); }
 .theme-wrap { position: relative; }
 .theme-row { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 2px 0 4px; }
 .theme-row::-webkit-scrollbar { display: none; }
@@ -218,10 +218,11 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .theme-arrow.next { right: -6px; }
 .theme-arrow.next svg { transform: rotate(180deg); }
 .theme-arrow.prev { left: -6px; }
-.sheet-bar .act .round { flex: none; }
-.act { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.act-label { font-size: 16px; font-weight: 800; color: var(--text-2); white-space: nowrap; }
-.act-label.like { color: var(--like); }
+/* 프로필 아래 두 칸: 패스 | 대화해보고 싶어요 */
+.sheet-bar.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.duo-btn { height: 62px; border: 0; border-radius: 16px; padding: 0 6px; font-size: 19px; font-weight: 800; color: #fff; white-space: nowrap; }
+.duo-btn.pass { background: #2c2c31; }
+.duo-btn.like { background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); }
 .round {
   border: 0; border-radius: 50%; background: #1e1e21; display: grid; place-items: center; color: #fff;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5); transition: transform 0.12s ease;
@@ -442,11 +443,17 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .sh-content { padding: 8px var(--gutter-r) 0 var(--gutter-l); display: flex; flex-direction: column; gap: 14px; }
 .sh-name { font-size: 34px; font-weight: 900; letter-spacing: -0.02em; }
 .sh-lines { display: flex; flex-direction: column; gap: 6px; color: var(--text-2); }
+/* 프로필 보기의 직함·회사 줄: 카드보다 조금 크게, 아이콘도 함께 */
+.sh-lines .ci-line { font-size: 19px; gap: 9px; }
+.sh-lines .ci-line svg { width: 22px; height: 22px; margin-top: 2px; }
 .sh-sec { background: var(--surface); border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
-.sh-sec h3 { font-size: 14.5px; font-weight: 700; color: var(--text-2); }
+.sh-sec h3 { font-size: 20px; font-weight: 700; color: var(--text-2); }
 .sh-sec .ci-list li::before { background: var(--text-2); }
-.sh-quote { font-size: 20px; font-weight: 800; line-height: 1.4; }
-.sh-sec .ci-chip { background: var(--surface-2); }
+.sh-quote { font-size: 20px; font-weight: 400; line-height: 1.4; }
+.sh-sec .ci-chip { background: var(--surface-2); height: 40px; padding: 0 16px; font-size: 20px; }
+/* 프로필 보기의 항목 글씨는 '이런 이야기' 문장과 같은 크기 */
+.sh-sec .ci-list li { font-size: 20px; }
+.sh-sec p { font-size: 20px; }
 .sh-sec .ci-chip.shared { background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); }
 
 .finish { background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px; }
@@ -2856,8 +2863,8 @@ window.ND_CONFIG = {
 
   // --- 테마별 사람 카드 (스와이프 대신) ---
   // 회사로 테마를 정하고(서버 대응표), 대응표에 없는 회사는 고른 직무 분야로, 그것도 없으면 '기타'.
-  const THEME_ORDER = ['로봇·제조', 'AI·데이터', '의료·재활', '연구·대학', '투자·컨설팅', '언론', '공공기관', '기타'];
-  const FIELD_THEME = { '하드웨어·기구': '로봇·제조', 'AI·소프트웨어': 'AI·데이터', '데이터': 'AI·데이터', '연구개발': '연구·대학', '투자': '투자·컨설팅', '기자': '언론', '정책·공공': '공공기관' };
+  const THEME_ORDER = ['피지컬AI(로봇/제조)', '피지컬AI(AI/데이터)', '의료·재활', '연구·대학', '투자·컨설팅', '언론', '공공기관', '기타'];
+  const FIELD_THEME = { '하드웨어·기구': '피지컬AI(로봇/제조)', 'AI·소프트웨어': '피지컬AI(AI/데이터)', '데이터': '피지컬AI(AI/데이터)', '연구개발': '연구·대학', '투자': '투자·컨설팅', '기자': '언론', '정책·공공': '공공기관' };
   const themeOf = (p) => THEME_MAP.get(normCompany(p.company)) || FIELD_THEME[p.field] || '기타';
   let themesKey = '';
   function personCard(p, state) {
@@ -3262,16 +3269,17 @@ window.ND_CONFIG = {
     const sec = (title, ...body) => h('section', { class: 'sh-sec' }, h('h3', { text: title }), ...body);
     // 아래쪽 고정 버튼: 스크롤해도 늘 보이는 닫기, 고를 수 있으면 고르기
     let bar;
-    const actBtn = (label, kind, name, fn) => h('div', { class: 'act' },
-      h('span', { class: 'act-label' + (kind === 'like' ? ' like' : ''), 'aria-hidden': 'true' }, label),
-      h('button', { type: 'button', class: 'round md ' + kind, 'aria-label': label, onclick: fn }, icon(name)));
+    let barCls = '';
     if (from === 'theme' && S.phase === 'swipe' && S.swipesLoaded) {
-      bar = S.swipes.likes.includes(p.id)
-        ? [h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'),
-          h('button', { type: 'button', class: 'cta small', onclick: () => { closeSheet(); unpick(p.id); } }, '선택 취소')]
-        : [actBtn('패스', 'nope', 'x', () => choose(p.id, 'pass')),
-          h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'),
-          actBtn('대화해보고 싶어요', 'like', 'heart', () => choose(p.id, 'like'))];
+      if (S.swipes.likes.includes(p.id)) {
+        bar = [h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'),
+          h('button', { type: 'button', class: 'cta small', onclick: () => { closeSheet(); unpick(p.id); } }, '선택 취소')];
+      } else {
+        // 두 칸: 패스 | 대화해보고 싶어요 (닫기는 위쪽 ↓ 버튼·뒤로가기)
+        barCls = ' duo';
+        bar = [h('button', { type: 'button', class: 'duo-btn pass', onclick: () => choose(p.id, 'pass') }, '패스'),
+          h('button', { type: 'button', class: 'duo-btn like', onclick: () => choose(p.id, 'like') }, '대화해보고 싶어요')];
+      }
     } else if (from === 'list' && canPick(p)) {
       bar = [
         h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'),
@@ -3296,7 +3304,7 @@ window.ND_CONFIG = {
           c.period ? h('span', { class: 'ci-period', text: c.period }) : null, [c.org, c.role].filter(Boolean).join(' · '))))) : null,
         (p.keywords || []).length ? sec('관심 키워드', h('div', { class: 'ci-chips' },
           p.keywords.map((k) => h('span', { class: 'ci-chip' + (shared.includes(k) ? ' shared' : ''), text: k })))) : null),
-      h('div', { class: 'sheet-bar' + (bar.length === 3 ? ' trio' : '') }, bar));
+      h('div', { class: 'sheet-bar' + (barCls || (bar.length === 3 ? ' trio' : '')) }, bar));
     $('sheet').hidden = false;
     $('sheet-body').scrollTop = 0;
     $('sheet-body').querySelector('.sh-close').focus({ preventScroll: true });
@@ -3970,7 +3978,7 @@ window.ND_CONFIG = {
         goTab('likes');
       }
       if (wasSwiping && S.phase !== 'swipe' && S.pid && S.view === 'app') {
-        if (!$('sheet').hidden && $('sheet-body').querySelector('.sheet-bar.trio')) closeSheet();
+        if (!$('sheet').hidden && $('sheet-body').querySelector('.sheet-bar.duo')) closeSheet();
         toast('카드 고르기가 끝났어요. 고른 ' + S.swipes.likes.length + '명은 저장됐어요.', 3500);
       }
       showNotice(s);
