@@ -743,7 +743,6 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
         </div>
         <div class="theme-done" id="theme-done" hidden>
           <p id="theme-done-text"></p>
-          <button type="button" class="cta small" id="theme-done-go">나를 고른 사람 보기</button>
         </div>
         <div id="theme-list"></div>
       </div>
@@ -804,6 +803,11 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
             <button type="button" role="radio" data-phase="ended">결과 공개</button>
           </div>
           <p class="admin-timer" id="admin-timer" hidden></p>
+          <div class="row-btns" id="time-add" hidden>
+            <button type="button" class="ghost-btn" data-add="30">+30초</button>
+            <button type="button" class="ghost-btn" data-add="60">+1분</button>
+            <button type="button" class="ghost-btn" data-add="120">+2분</button>
+          </div>
           <button type="button" class="cta" id="phase-next" hidden></button>
           <div class="confirm" id="phase-confirm" hidden>
             <p id="phase-confirm-text"></p>
@@ -818,11 +822,6 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
         <div class="panel">
           <h3>전체 알림</h3>
           <p class="ob-help">모든 참가자 화면 맨 위에 20초 동안 띄워요. 참가자가 눌러서 닫을 수 있어요.</p>
-          <div class="row-btns" id="notice-presets">
-            <button type="button" class="ghost-btn" data-notice="2분 뒤에 카드 고르기가 끝나요" data-min="2">2분 남음</button>
-            <button type="button" class="ghost-btn" data-notice="1분 뒤에 카드 고르기가 끝나요" data-min="1">1분 남음</button>
-          </div>
-          <p class="ob-help" id="notice-preset-note" hidden>카드 고르기를 시작하면 ‘2분 남음’, ‘1분 남음’ 버튼이 나와요. 누르면 참가자 화면 위에 남은 시간이 떠요.</p>
           <form class="add-row" id="notice-form" novalidate>
             <input id="notice-text" class="box-input" type="text" maxlength="60" placeholder="직접 입력" aria-label="알림 문구" enterkeyhint="send">
             <button type="submit" class="ghost-btn" id="notice-send">보내기</button>
@@ -968,7 +967,8 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 // 그 밖(claude.ai 미리보기 등)에서는 시연 모드(예시 프로필 34명, 이 기기에만 저장)로 동작합니다.
 window.ND_CONFIG = {
   eventId: 'physical-ai-networking-day-2026',
-  maxLikes: 7,   // 대화하고 싶은 사람을 이만큼 고르면 스와이프가 끝납니다
+  maxLikes: 7,   // 고를 수 있는 사람 수
+  pickSeconds: 180,   // 카드 고르기 시간 (3분). 끝나면 결과가 저절로 공개됩니다
 
   // 시연 모드용 가상 명단: [이름, 회사, 직급, 휴대폰 번호 뒤 4자리]
   // 실제 신청 명단은 운영자 화면에서 넣고, Firebase에만 저장합니다 (이 파일에는 넣지 않음).
@@ -1367,7 +1367,8 @@ window.ND_CONFIG = {
         save();
         return true;
       },
-      async setPhase(phase) { st.phase = phase; st.phaseAt = Date.now(); st.endsAt = 0; save(); emitSettings(); },
+      async setPhase(phase, endsAt) { st.phase = phase; st.phaseAt = Date.now(); st.endsAt = endsAt || 0; save(); emitSettings(); },
+      async setEndsAt(endsAt) { st.endsAt = endsAt; save(); emitSettings(); },
       async setHidden(pid, hidden) {
         if (hidden) st.hidden[pid] = true; else delete st.hidden[pid];
         save();
@@ -1543,7 +1544,8 @@ window.ND_CONFIG = {
           try { return (await fs.getDoc(D('admins/' + me()))).exists(); } catch (e2) { return false; }
         }
       },
-      async setPhase(phase) { await fs.setDoc(D('settings/main'), { phase, phaseAt: Date.now(), endsAt: 0 }, { merge: true }); },
+      async setPhase(phase, endsAt) { await fs.setDoc(D('settings/main'), { phase, phaseAt: Date.now(), endsAt: endsAt || 0 }, { merge: true }); },
+      async setEndsAt(endsAt) { await fs.setDoc(D('settings/main'), { endsAt }, { merge: true }); },
       async setHidden(pid, hidden) { await fs.updateDoc(D('profiles/' + pid), { hidden }); },
       async addTestProfiles(list) {
         const b = fs.writeBatch(db);
@@ -1584,6 +1586,7 @@ window.ND_CONFIG = {
   const ND = window.ND || {};
   const C = window.ND_CONFIG || {};
   const MAX = C.maxLikes || 7;
+  const PICK_MS = (C.pickSeconds || 180) * 1000;
   const EVENT_ID = C.eventId || 'physical-ai-networking-day-2026';
 
   const FIELDS = ['연구개발', 'AI·소프트웨어', '하드웨어·기구', '데이터', '제품·기획', '사업개발·영업', '투자', '정책·공공', '경영·창업', '기자'];
@@ -2079,7 +2082,7 @@ window.ND_CONFIG = {
   }
   const picksFull = () => S.swipes.likes.length >= MAX;
   // 고를 수 있는 만큼(MAX명) 채우거나 결과가 공개되면 '나를 고른 사람'이 열립니다 (카드를 넘기기만 해서는 열리지 않음).
-  const unlocked = () => picksFull() || S.phase === 'ended';
+  const unlocked = () => S.phase === 'ended';
 
   function decide() {
     if (location.hash === '#admin') return 'admin';
@@ -2884,7 +2887,7 @@ window.ND_CONFIG = {
     const full = picksFull();
     $('theme-hint').hidden = !!store.get(LS_COACH);
     $('theme-done').hidden = !full;
-    if (full) $('theme-done-text').textContent = MAX + '명을 모두 골랐어요. 바꾸려면 고른 분을 눌러 선택 취소하세요.';
+    if (full) $('theme-done-text').textContent = MAX + '명을 모두 골랐어요. 시간이 끝나기 전까지는 고른 분을 눌러 바꿀 수 있어요.';
     const key = [full, LOGO_MAP.size, ...[...groups].map(([t, list]) => t + ':' + list.map((p) => p.id + (liked.has(p.id) ? 'L' : passed.has(p.id) ? 'P' : '') + (p.updatedAt || '')).join(','))].join('|');
     if (key === themesKey) return;
     themesKey = key;
@@ -2983,8 +2986,8 @@ window.ND_CONFIG = {
     pushHistory({ id, kind: 'like', setDone });
     saveSwipes({ add: id }, setDone ? true : null);
     likesKey = '';
-    if (full) finishPicking(true);
-    else toast(p.name + '님을 골랐어요 · ' + S.swipes.likes.length + '/' + MAX);
+    if (full) finishPicking(false);
+    toast(full ? MAX + '명을 모두 골랐어요. 시간이 끝나면 결과가 공개돼요.' : p.name + '님을 골랐어요 · ' + S.swipes.likes.length + '/' + MAX, 3000);
     render();
   }
 
@@ -3010,8 +3013,9 @@ window.ND_CONFIG = {
     saveSwipes(change, setDone ? true : null);
     likesKey = '';
     closeSheet();
-    if (finished && (setDone || (kind === 'like' && full))) finishPicking(true);
-    else toast(kind === 'like' ? p.name + '님을 골랐어요 · ' + S.swipes.likes.length + '/' + MAX : p.name + '님은 패스했어요');
+    if (finished) finishPicking(false);
+    toast(kind === 'like' && full ? MAX + '명을 모두 골랐어요. 시간이 끝나면 결과가 공개돼요.'
+      : kind === 'like' ? p.name + '님을 골랐어요 · ' + S.swipes.likes.length + '/' + MAX : p.name + '님은 패스했어요', 3000);
     render();
   }
 
@@ -3124,7 +3128,7 @@ window.ND_CONFIG = {
         body.replaceChildren(
           h('div', { class: 'lock-box' }, icon('lock'),
             h('b', null, inList.length + '명이 나와 대화하고 싶어해요'),
-            h('p', null, MAX + '명을 모두 고르거나 결과가 공개되면 누군지 볼 수 있어요.'),
+            h('p', null, '카드 고르기 시간이 끝나면 누군지 볼 수 있어요.'),
             S.phase === 'swipe' ? h('button', { type: 'button', class: 'cta', onclick: () => goTab('swipe') }, '계속 고르기') : null),
           h('div', { class: 'locked-grid' }, inList.map((x) => h('div', { class: 'locked-tile', 'aria-hidden': 'true' }, ...visualEls(x.p)))));
       } else {
@@ -3469,32 +3473,64 @@ window.ND_CONFIG = {
       text: () => (S.phase === 'ended'
         ? '프로필 등록 단계로 돌릴까요? 공개된 결과가 다시 가려지고 참가자 화면이 대기 화면으로 바뀌어요.'
         : '프로필 등록 단계로 돌릴까요? 참가자 화면이 대기 화면으로 바뀌고 카드를 더 넘길 수 없어요.') },
-    swipe: { yes: '카드 고르기 시작', done: '카드 고르기를 시작했어요. 참가자 화면이 카드로 바뀌었어요.',
+    swipe: { yes: '카드 고르기 시작', done: '카드 고르기를 시작했어요. 시간이 끝나면 결과가 저절로 공개돼요.',
       text: (n) => (S.phase === 'ended'
         ? '카드 고르기로 되돌릴까요? 공개된 결과가 다시 가려지고 참가자가 이어서 고를 수 있어요.'
-        : '카드 고르기를 시작할까요? 등록한 ' + n + '명의 화면이 바로 카드로 바뀌어요.') },
+        : '카드 고르기를 시작할까요? 등록한 ' + n + '명이 ' + Math.round(PICK_MS / 60000) + '분 동안 프로필을 보고 고를 수 있어요. 시간이 끝나면 결과가 저절로 공개돼요.') },
     ended: { yes: '결과 공개', done: '결과를 공개했어요.',
       text: (n) => (S.phase === 'registration' ? '주의: 아직 카드 고르기를 하지 않았어요. 지금 공개하면 아무도 고르지 못한 채 끝나요. ' : '')
         + '결과를 공개할까요? 더는 고를 수 없고, ' + n + '명 모두 LIKE에서 나를 고른 사람을 볼 수 있어요. 네트워킹을 시작할 때 누르세요.' },
   };
   const NEXT_PHASE = { registration: 'swipe', swipe: 'ended' };
 
+  // 카드 고르기 시간이 지나면 서버 단계가 아직 '카드 고르기'여도 결과 공개로 봅니다 (운영자 화면이 꺼져 있어도 끝나게).
+  const effectivePhase = () => (S.serverPhase === 'swipe' && S.endsAt > 0 && Date.now() >= S.endsAt ? 'ended' : S.serverPhase || 'registration');
+  function onPhaseChange(prev, next, wasLoaded) {
+    if (prev !== 'swipe' && next === 'swipe') { S.tab = 'swipe'; S.deckInitAt = 0; }
+    if (!wasLoaded || prev === next) return;
+    // 결과가 공개되면 열린 화면을 닫고 바로 '나를 고른 사람'으로 넘어갑니다 (버튼을 누르지 않아도).
+    if (prev !== 'ended' && next === 'ended' && S.pid && S.view === 'app') {
+      closeFinish();
+      closeSheet();
+      S.likesTab = 'in';
+      goTab('likes');
+    }
+    if (prev === 'swipe' && next !== 'swipe' && S.pid && S.view === 'app') {
+      toast('카드 고르기 시간이 끝났어요. 고른 ' + S.swipes.likes.length + '명은 저장됐어요.', 3500);
+    }
+  }
+
   // ---------- 남은 시간 ('2분 남음'·'1분 남음'을 보내면 참가자·운영자 화면 위에 표시) ----------
   let timerTick = null;
   const fmtLeft = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
   const hhmm = (t) => new Date(t).toTimeString().slice(0, 5);
+  let autoClosing = false;
   function renderTimer() {
+    // 시간이 다 되면 이 기기에서 바로 결과 공개로 넘깁니다.
+    const now = effectivePhase();
+    if (S.settingsLoaded && now !== S.phase) {
+      const prev = S.phase;
+      S.phase = now;
+      onPhaseChange(prev, now, true);
+      render();
+      return;
+    }
     const swiping = S.phase === 'swipe';
     const on = swiping && S.endsAt > 0;
     const left = on ? S.endsAt - Date.now() : 0;
     $('top-timer').hidden = !on;
-    if (on) $('top-timer').textContent = left > 0 ? fmtLeft(left) + ' 남음' : '시간 끝';
-    // 운영자: 남은 시간을 보냈으면 남은 시간, 아니면 시작한 지 몇 분째인지
+    if (on) $('top-timer').textContent = fmtLeft(left) + ' 남음';
     $('admin-timer').hidden = !swiping;
-    if (on) $('admin-timer').textContent = left > 0 ? '카드 고르기 ' + fmtLeft(left) + ' 남음' : '시간이 끝났어요. ‘결과 공개하기’를 눌러 주세요.';
-    else if (swiping) $('admin-timer').textContent = S.phaseAt ? '카드 고르기 ' + Math.floor((Date.now() - S.phaseAt) / 60000) + '분째 · ' + hhmm(S.phaseAt) + ' 시작' : '카드 고르기 중';
-    if (on && left > 0) { if (!timerTick) timerTick = setInterval(renderTimer, 1000); }
+    $('time-add').hidden = !swiping;
+    if (on) $('admin-timer').textContent = '카드 고르기 ' + fmtLeft(left) + ' 남음';
+    else if (swiping) $('admin-timer').textContent = '카드 고르기 중';
+    if (on) { if (!timerTick) timerTick = setInterval(renderTimer, 1000); }
     else if (timerTick) { clearInterval(timerTick); timerTick = null; }
+    // 운영자 화면: 시간이 끝났는데 서버 단계가 아직 '카드 고르기'면 결과 공개 + 네트워킹 시작 알림을 씁니다.
+    if (S.admin && S.view === 'admin' && S.serverPhase === 'swipe' && S.endsAt > 0 && Date.now() >= S.endsAt && !autoClosing) {
+      autoClosing = true;
+      adminTask(() => S.store.sendNotice(NETWORKING_NOTICE, 'ended', S.endsAt), '시간이 끝나 결과를 공개했어요.').finally(() => { autoClosing = false; });
+    }
   }
   function ago(t) {
     const s = Math.max(0, Math.round((Date.now() - t) / 1000));
@@ -3552,11 +3588,7 @@ window.ND_CONFIG = {
     if (next) $('phase-next').textContent = PHASES[next].yes + '하기';
     renderTimer();
 
-    // 전체 알림: 남은 시간 안내는 카드 고르기 단계에서만 (그 전에는 버튼을 숨기고 안내만)
-    const swiping = S.phase === 'swipe';
-    $('notice-presets').hidden = !swiping;
-    $('notice-presets').querySelectorAll('button').forEach((b) => { b.disabled = adminBusy; });
-    $('notice-preset-note').hidden = swiping || S.phase === 'ended';
+    $('time-add').querySelectorAll('button').forEach((b) => { b.disabled = adminBusy; });
     renderNoticeLast();
 
     // 테스트 도구
@@ -3733,7 +3765,6 @@ window.ND_CONFIG = {
     $('me-out-no').addEventListener('click', () => { $('me-out-note').hidden = true; });
     $('me-out-yes').addEventListener('click', leaveDevice);
     $('theme-hint-ok').addEventListener('click', () => { store.set(LS_COACH, '1'); $('theme-hint').hidden = true; });
-    $('theme-done-go').addEventListener('click', () => { S.likesTab = 'in'; goTab('likes'); });
     $('finish-go').addEventListener('click', () => { const open = unlocked(); closeFinish(); S.likesTab = open ? 'in' : 'out'; if (!open) S.showPasses = true; goTab('likes'); });
     $('finish-undo').addEventListener('click', () => { closeFinish(); undo(); });
     $('finish-close').addEventListener('click', closeFinish);
@@ -3776,7 +3807,7 @@ window.ND_CONFIG = {
       pendingPhase = null;
       // 결과 공개와 '네트워킹 시작' 알림은 한 번에 (알림만 보내고 결과를 안 여는 실수가 없게)
       const withNotice = next === 'ended' && $('phase-notice').checked;
-      adminTask(() => (withNotice ? S.store.sendNotice(NETWORKING_NOTICE, next, 0) : S.store.setPhase(next)),
+      adminTask(() => (withNotice ? S.store.sendNotice(NETWORKING_NOTICE, next, 0) : S.store.setPhase(next, next === 'swipe' ? Date.now() + PICK_MS : 0)),
         withNotice ? '결과를 공개하고 네트워킹 시작 알림을 보냈어요.' : PHASES[next].done);
     });
     $('phase-no').addEventListener('click', () => { pendingPhase = null; render(); });
@@ -3790,12 +3821,12 @@ window.ND_CONFIG = {
     });
     // 알림은 진행 단계를 건드리지 않습니다 (다른 운영자 기기가 바꾼 단계를 되돌리지 않게).
     const sendNotice = (text) => adminTask(() => S.store.sendNotice(text), '알림을 보냈어요. 참가자 화면 맨 위에 20초 동안 떠요.');
-    $('notice-presets').addEventListener('click', (e) => {
-      const b = e.target.closest('button[data-notice]');
-      if (!b || b.disabled) return;
-      // '2분 남음'·'1분 남음': 알림과 함께 참가자 화면 위에 남은 시간을 띄웁니다.
-      const endsAt = Date.now() + Number(b.dataset.min) * 60000;
-      adminTask(() => S.store.sendNotice(b.dataset.notice, undefined, endsAt), '알림을 보냈어요. 참가자 화면 위에 남은 시간이 떠요.');
+    // 카드 고르기 시간 늘리기: 지금 남은 시간에 더합니다.
+    $('time-add').addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-add]');
+      if (!b || b.disabled || S.phase !== 'swipe') return;
+      const endsAt = Math.max(Date.now(), S.endsAt || 0) + Number(b.dataset.add) * 1000;
+      adminTask(() => S.store.setEndsAt(endsAt), '시간을 ' + b.textContent.replace('+', '') + ' 늘렸어요. 남은 시간 ' + fmtLeft(endsAt - Date.now()));
     });
     $('notice-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -3877,7 +3908,7 @@ window.ND_CONFIG = {
       if (b) { S.adminFilter = b.dataset.filter; render(); }
     });
     // '몇 분 전'과 '알림 내리기' 버튼을 제때 바꾸려고 가끔 다시 그립니다.
-    setInterval(() => { if (S.view === 'admin' && S.admin) { renderNoticeLast(); renderTimer(); } }, 5000);
+    setInterval(() => { if (S.settingsLoaded) renderTimer(); if (S.view === 'admin' && S.admin) renderNoticeLast(); }, 5000);
     $('qr-big').addEventListener('click', () => {
       $('qr-large-url').textContent = entryUrl();
       hideToast();
@@ -3905,7 +3936,7 @@ window.ND_CONFIG = {
     $('demo-admin').addEventListener('click', () => { $('demo-menu').hidden = true; });
     $('demo-phase').addEventListener('click', (e) => {
       const b = e.target.closest('button[data-phase]');
-      if (b) S.store.setPhase(b.dataset.phase);
+      if (b) S.store.setPhase(b.dataset.phase, b.dataset.phase === 'swipe' ? Date.now() + PICK_MS : 0);
     });
     $('demo-reset').addEventListener('click', () => {
       S.store.reset();
@@ -3961,26 +3992,14 @@ window.ND_CONFIG = {
     S.store.watchSettings((s) => {
       const prev = S.phase;
       const wasLoaded = S.settingsLoaded;
-      const wasSwiping = wasLoaded && prev === 'swipe';
       S.settingsLoaded = true;
-      S.phase = ['registration', 'swipe', 'ended'].includes(s.phase) ? s.phase : 'registration';
+      S.serverPhase = ['registration', 'swipe', 'ended'].includes(s.phase) ? s.phase : 'registration';
       S.noticeText = s.notice || '';
       S.noticeAt = s.noticeAt || 0;
       S.endsAt = s.endsAt || 0;
       S.phaseAt = s.phaseAt || 0;
-      if (prev !== 'swipe' && S.phase === 'swipe') { S.tab = 'swipe'; S.deckInitAt = 0; }
-      // 카드를 고르는 중에 운영진이 단계를 바꾸면: 카드에서 연 프로필을 닫고 고른 기록이 저장됐다고 알려 줍니다.
-      // 결과가 공개되면 완료 화면·프로필 보기를 닫고 바로 '나를 고른 사람'으로 넘어갑니다 (버튼을 누르지 않아도).
-      if (wasLoaded && prev !== 'ended' && S.phase === 'ended' && S.pid && S.view === 'app') {
-        closeFinish();
-        closeSheet();
-        S.likesTab = 'in';
-        goTab('likes');
-      }
-      if (wasSwiping && S.phase !== 'swipe' && S.pid && S.view === 'app') {
-        if (!$('sheet').hidden && $('sheet-body').querySelector('.sheet-bar.duo')) closeSheet();
-        toast('카드 고르기가 끝났어요. 고른 ' + S.swipes.likes.length + '명은 저장됐어요.', 3500);
-      }
+      S.phase = effectivePhase();
+      onPhaseChange(prev, S.phase, wasLoaded);
       showNotice(s);
       onData();
     });
