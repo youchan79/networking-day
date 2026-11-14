@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Networking Day 오늘의 5명</title>
+<title>Networking Day 오늘의 7명</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 
 <style>
@@ -486,8 +486,11 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .logo.mono-logo { background: var(--mono, #3b4656); color: #fff; font-weight: 800; font-size: 44px; }
 /* 투명 배경의 흰 로고는 어디서나 어두운 바탕에 */
 .logo.on-dark { background: #1c1c1f; }
-/* 동그란 자리에서 가로로 긴 로고가 잘리지 않게 */
-.fl .logo.wide img, .radar-logo .logo.wide img, .li-logo .logo.wide img { padding: 12%; }
+/* 로고가 칸의 둥근 모서리·동그라미에 잘리지 않게 안쪽 여백 (동그란 칸은 더 넉넉히) */
+.logo img { padding: 12%; }
+.v-logo .logo img { padding: 13%; }
+.v-logo.wide .logo img { padding: 9% 10%; }
+.fl .logo img, .radar-logo .logo img { padding: 18%; }
 .fl .logo.mono-logo, .radar-logo .logo.mono-logo { font-size: 28px; }
 
 /* ---------- 운영자 ---------- */
@@ -629,9 +632,9 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
     <div class="ob-body" id="ob-body">
       <div class="ob-step welcome" data-step="welcome">
         <div class="welcome-art" aria-hidden="true"><i></i><i></i><i></i></div>
-        <h1>오늘의 5명</h1>
+        <h1>오늘의 7명</h1>
         <p class="welcome-event">2026 Human Dexterity Networking Day</p>
-        <p class="welcome-sub">대화하고 싶은 사람 5명을 고르고<br>나를 고른 사람을 확인하세요</p>
+        <p class="welcome-sub">대화하고 싶은 사람 7명을 고르고<br>나를 고른 사람을 확인하세요</p>
       </div>
 
       <div class="ob-step" data-step="pin" hidden>
@@ -664,7 +667,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
         <p class="ob-help">시작하기 전에 확인해 주세요.</p>
         <ul class="rules">
           <li><b>프로필은 참가자에게 공개돼요</b><span>이름, 회사, 직무, 경험, 이야기, 키워드가 이 행사 참가자에게 보여요.</span></li>
-          <li><b>5명까지 고를 수 있어요</b><span>5명을 다 고르거나 결과가 공개되면 누가 나를 골랐는지 볼 수 있어요.</span></li>
+          <li><b>7명까지 고를 수 있어요</b><span>7명을 다 고르거나 결과가 공개되면 누가 나를 골랐는지 볼 수 있어요.</span></li>
           <li><b>누가 누구를 골랐는지는 당사자만 알아요</b><span>운영진도 볼 수 없어요.</span></li>
           <li><b>행사가 끝나면 삭제돼요</b><span>입력한 정보는 행사 후 모두 지워요.</span></li>
         </ul>
@@ -717,7 +720,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   <section class="view main" id="view-app" hidden>
     <div class="tab tab-swipe" id="tab-swipe">
       <header class="topbar">
-        <span class="top-pill">오늘의 5명</span>
+        <span class="top-pill">오늘의 7명</span>
         <span class="top-count" id="pick-count"></span>
         <span class="top-timer" id="top-timer" hidden></span>
         <button type="button" class="text-btn top-stop" id="top-stop" hidden>그만 보기</button>
@@ -886,7 +889,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   <div class="sheet-scroll" id="sheet-body" role="dialog" aria-modal="true" aria-label="프로필"></div>
 </div>
 
-<!-- 5명 선택 완료 -->
+<!-- 다 골랐을 때 (선택 완료) -->
 <div class="overlay finish" id="finish" hidden>
   <div class="finish-inner">
     <p class="finish-title" id="finish-title"></p>
@@ -946,12 +949,12 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
-// 오늘의 5명 설정 파일
+// 오늘의 7명 설정 파일
 // 실제 주소(github.io)와 내 컴퓨터(localhost)에서는 Firebase 공용 저장소에 연결하고,
 // 그 밖(claude.ai 미리보기 등)에서는 시연 모드(예시 프로필 34명, 이 기기에만 저장)로 동작합니다.
 window.ND_CONFIG = {
   eventId: 'physical-ai-networking-day-2026',
-  maxLikes: 5,   // 대화하고 싶은 사람을 이만큼 고르면 스와이프가 끝납니다
+  maxLikes: 7,   // 대화하고 싶은 사람을 이만큼 고르면 스와이프가 끝납니다
 
   // 시연 모드용 가상 명단: [이름, 회사, 직급, 휴대폰 번호 뒤 4자리]
   // 실제 신청 명단은 운영자 화면에서 넣고, Firebase에만 저장합니다 (이 파일에는 넣지 않음).
@@ -1557,13 +1560,13 @@ window.ND_CONFIG = {
   };
 })();
 
-// 오늘의 5명 — 화면과 흐름 (틴더식 카드 UI)
+// 오늘의 7명 — 화면과 흐름 (틴더식 카드 UI)
 (function () {
   'use strict';
 
   const ND = window.ND || {};
   const C = window.ND_CONFIG || {};
-  const MAX = C.maxLikes || 5;
+  const MAX = C.maxLikes || 7;
   const EVENT_ID = C.eventId || 'physical-ai-networking-day-2026';
 
   const FIELDS = ['연구개발', 'AI·소프트웨어', '하드웨어·기구', '데이터', '제품·기획', '사업개발·영업', '투자', '정책·공공', '경영·창업', '기자'];
@@ -1617,7 +1620,7 @@ window.ND_CONFIG = {
     creating: false,
     editing: false,
     continuing: false, // 다 고르기 전, 남은·새 카드 이어서 보기
-    browsing: false, // 5명을 다 고른 뒤 남은 카드 둘러보기
+    browsing: false, // 다 고른 뒤 남은 카드 둘러보기
     admin: false,
     progress: new Map(), // 운영자 화면: 참가자별 고른 수·본 카드 수
     adminFilter: 'real',
@@ -2055,7 +2058,7 @@ window.ND_CONFIG = {
     return [...S.profiles.values()].filter((p) => !p.hidden);
   }
   const picksFull = () => S.swipes.likes.length >= MAX;
-  // 5명을 채우거나 결과가 공개되면 '나를 고른 사람'이 열립니다 (카드를 넘기기만 해서는 열리지 않음).
+  // 고를 수 있는 만큼(MAX명) 채우거나 결과가 공개되면 '나를 고른 사람'이 열립니다 (카드를 넘기기만 해서는 열리지 않음).
   const unlocked = () => picksFull() || S.phase === 'ended';
 
   function decide() {
@@ -2985,7 +2988,7 @@ window.ND_CONFIG = {
     }
     return null;
   }
-  // 고르기를 마쳤을 때 (5명을 채웠거나 카드를 다 넘김). 완료 화면은 처음 마칠 때와 5명을 채웠을 때만.
+  // 고르기를 마쳤을 때 (MAX명을 채웠거나 카드를 다 넘김). 완료 화면은 처음 마칠 때와 다 채웠을 때만.
   function finishPicking(show) {
     S.continuing = false;
     S.browsing = false;
@@ -3620,7 +3623,7 @@ window.ND_CONFIG = {
     const s = Math.max(0, Math.round((Date.now() - t) / 1000));
     return s < 60 ? '방금' : Math.round(s / 60) + '분 전';
   }
-  // 운영자 화면의 참가자 상태: 시작 전 / 고르는 중 / 5명 완료 / 카드 소진
+  // 운영자 화면의 참가자 상태: 시작 전 / 고르는 중 / MAX명 완료 / 카드 소진
   function statusOf(p) {
     if (p.test) return { key: 'test', label: '테스트' };
     const pr = S.progress.get(p.id);
