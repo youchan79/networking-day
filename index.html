@@ -1002,7 +1002,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 // 그 밖(claude.ai 미리보기 등)에서는 시연 모드(예시 프로필 34명, 이 기기에만 저장)로 동작합니다.
 window.ND_CONFIG = {
   eventId: 'physical-ai-networking-day-2026',
-  pickSeconds: 180,   // 카드 고르기 시간 (3분). 끝나면 결과가 저절로 공개됩니다
+  pickSeconds: 210,   // 카드 고르기 시간 (3분 30초). 끝나면 결과가 저절로 공개됩니다
 
   // 시연 모드용 가상 명단: [이름, 회사, 직급, 휴대폰 번호 뒤 4자리, (true = 끝날 때 아무도 안 고른 사람을 대신 고르는 운영진)]
   // 실제 신청 명단은 운영자 화면에서 넣고, Firebase에만 저장합니다 (이 파일에는 넣지 않음).
@@ -1320,12 +1320,12 @@ window.ND_CONFIG = {
       mode: 'demo',
       // 신청 명단 (시연: 설정 파일의 가상 명단, 운영자가 바꾸면 이 브라우저에 저장)
       async findRoster(phone4) {
-        return (st.roster || C.roster || []).filter((r) => String(r[3]) === phone4).map(([name, company, title]) => ({ name, company, title }));
+        return (st.roster || C.roster || []).filter((r) => String(r[3]) === phone4).map(([name, company, title, , , presenter]) => ({ name, company, title, presenter: !!presenter }));
       },
       async rosterList() {
-        return (st.roster || C.roster || []).map(([name, company, title, phone4, proxy]) => ({ name, company, title, phone4: String(phone4), proxy: !!proxy }));
+        return (st.roster || C.roster || []).map(([name, company, title, phone4, proxy, presenter]) => ({ name, company, title, phone4: String(phone4), proxy: !!proxy, presenter: !!presenter }));
       },
-      async saveRoster(people) { st.roster = people.map((p) => [p.name, p.company, p.title, p.phone4].concat(p.proxy ? [true] : [])); save(); },
+      async saveRoster(people) { st.roster = people.map((p) => [p.name, p.company, p.title, p.phone4, !!p.proxy, !!p.presenter]); save(); },
       async isOwner(pid) { return st.owned.includes(pid); },
       async findKey(hash) { return st.keys[hash] || null; },
       async claim(hash, pid) {
@@ -1530,11 +1530,12 @@ window.ND_CONFIG = {
         const groups = {};
         const add = (k, q) => { (groups[k] = groups[k] || []).push(q); };
         const oldSnap = await fs.getDocs(COL('roster'));
-        // 대신 고르는 운영진은 새 명단(엑셀)에 없어도 그대로 남깁니다.
-        const proxies = oldSnap.docs.flatMap((d) => (d.data().people || []).filter((q) => q.proxy).map((q) => Object.assign({ phone4: d.id }, q)));
-        const isProxy = (p) => p.proxy || proxies.some((q) => q.phone4 === p.phone4 && q.name === p.name);
-        people.forEach((p) => add(p.phone4, Object.assign({ name: p.name, company: p.company, title: p.title }, isProxy(p) ? { proxy: true } : {})));
-        proxies.forEach((q) => { if (!people.some((p) => p.phone4 === q.phone4 && p.name === q.name)) add(q.phone4, { name: q.name, company: q.company, title: q.title, proxy: true }); });
+        // 대신 고르는 운영진·설명용 계정은 새 명단(엑셀)에 없어도 그대로 남깁니다.
+        const keep = oldSnap.docs.flatMap((d) => (d.data().people || []).filter((q) => q.proxy || q.presenter).map((q) => Object.assign({ phone4: d.id }, q)));
+        const flags = (q) => Object.assign({}, q.proxy ? { proxy: true } : {}, q.presenter ? { presenter: true } : {});
+        const kept = (p) => keep.find((q) => q.phone4 === p.phone4 && q.name === p.name) || {};
+        people.forEach((p) => add(p.phone4, Object.assign({ name: p.name, company: p.company, title: p.title }, flags(p), flags(kept(p)))));
+        keep.forEach((q) => { if (!people.some((p) => p.phone4 === q.phone4 && p.name === q.name)) add(q.phone4, Object.assign({ name: q.name, company: q.company, title: q.title }, flags(q))); });
         const old = oldSnap.docs.map((d) => d.ref);
         const b = fs.writeBatch(db);
         old.forEach((r) => { if (!groups[r.id]) b.delete(r); });
@@ -2194,7 +2195,8 @@ window.ND_CONFIG = {
 
   // ---------- 화면 결정 ----------
   function visibleProfiles() {
-    return [...S.profiles.values()].filter((p) => !p.hidden);
+    // 설명용 계정은 본인 화면에만 (다른 참가자 카드·목록·운영자 대신 고르기에서 빠짐)
+    return [...S.profiles.values()].filter((p) => !p.hidden && (!p.presenter || p.id === S.pid));
   }
   // 카드 고르기 시간이 끝나 결과가 공개되면 '나를 고른 사람'이 열립니다.
   const unlocked = () => S.phase === 'ended';
@@ -2680,7 +2682,7 @@ window.ND_CONFIG = {
   }
   function goManual() {
     // 명단에서 고른 사람의 정보가 남아 있으면 비우고 시작 (직접 입력하다 뒤로 갔다 온 경우는 그대로)
-    if (!OB.manual) Object.assign(OB.d, { name: '', company: '', title: '' });
+    if (!OB.manual) Object.assign(OB.d, { name: '', company: '', title: '', presenter: false });
     OB.manual = true;
     $('in-name').value = OB.d.name;
     $('in-company').value = OB.d.company;
@@ -2692,7 +2694,7 @@ window.ND_CONFIG = {
   }
   function applyMatch() {
     const m = OB.matches[OB.mi] || OB.d;
-    Object.assign(OB.d, { name: m.name, company: m.company, title: m.title });
+    Object.assign(OB.d, { name: m.name, company: m.company, title: m.title, presenter: !!m.presenter });
     // 이름과 '님'이 다른 줄로 갈라지지 않게 붙여 둡니다.
     $('confirm-q').textContent = m.company + ' ' + m.name + ' 님 맞으신가요?';
     const nm = cleanText(m.name, 20);
@@ -2802,10 +2804,10 @@ window.ND_CONFIG = {
       const hash = OB.hash;
       const oldPid = OB.pid;
       S.creating = true;
-      const { pid, saved } = await S.store.createProfile(hash, Object.assign({ name }, data), oldPid);
+      const { pid, saved } = await S.store.createProfile(hash, Object.assign({ name }, data, OB.d.presenter ? { presenter: true } : {}), oldPid);
       if (oldPid) enqueue(() => S.store.savePrivate(pid, { linkedin: '', met: [] }, []));
       enterAs(pid, saved);
-      S.me = S.profiles.get(pid) || Object.assign({ id: pid, name, hidden: false, done: false }, data);
+      S.me = S.profiles.get(pid) || Object.assign({ id: pid, name, hidden: false, done: false }, data, OB.d.presenter ? { presenter: true } : {});
       OB.mode = null;
       route();
       saved.then(() => { S.creating = false; clearDraft(); }, (ex) => onCreateFail(ex, hash));
@@ -3100,7 +3102,8 @@ window.ND_CONFIG = {
   function saveSwipes(change, done) {
     const sw = { likes: S.swipes.likes.slice(), passes: S.swipes.passes.slice() };
     const progress = { left: S.deckOrder.length };
-    enqueue(() => S.store.saveSwipe(S.pid, sw, change, done, progress));
+    const ch = S.me && S.me.presenter ? null : change; // 설명용 계정은 상대에게 보내지 않음
+    enqueue(() => S.store.saveSwipe(S.pid, sw, ch, done, progress));
     session.save();
   }
   function pushHistory(e) {
@@ -3664,7 +3667,7 @@ window.ND_CONFIG = {
     swipe: { yes: '카드 고르기 시작', done: '카드 고르기를 시작했어요. 시간이 끝나면 결과가 저절로 공개돼요.',
       text: (n) => (S.phase === 'ended'
         ? '카드 고르기로 되돌릴까요? 공개된 결과가 다시 가려지고 참가자가 이어서 고를 수 있어요.'
-        : '카드 고르기를 시작할까요? 등록한 ' + n + '명이 ' + Math.round(PICK_MS / 60000) + '분 동안 프로필을 보고 고를 수 있어요. 시간이 끝나면 결과가 저절로 공개돼요.') },
+        : '카드 고르기를 시작할까요? 등록한 ' + n + '명이 ' + Math.floor(PICK_MS / 60000) + '분' + (PICK_MS % 60000 ? ' ' + Math.round((PICK_MS % 60000) / 1000) + '초' : '') + ' 동안 프로필을 보고 고를 수 있어요. 시간이 끝나면 결과가 저절로 공개돼요.') },
     ended: { yes: '결과 공개', done: '결과를 공개했어요.',
       text: (n) => (S.phase === 'registration' ? '주의: 아직 카드 고르기를 하지 않았어요. 지금 공개하면 아무도 고르지 못한 채 끝나요. ' : '')
         + '결과를 공개할까요? 더는 고를 수 없고, ' + n + '명 모두 LIKE에서 나를 고른 사람을 볼 수 있어요. 네트워킹을 시작할 때 누르세요.' },
@@ -3719,7 +3722,7 @@ window.ND_CONFIG = {
       const px = (await S.store.rosterList()).find((r) => r.proxy);
       if (!px) return 0;
       const hash = await keyHash(px.name, px.phone4);
-      const ids = visibleProfiles().filter((p) => !p.test).map((p) => p.id);
+      const ids = visibleProfiles().filter((p) => !p.test && !p.presenter).map((p) => p.id);
       const n = await S.store.pickForEmpty(hash, { name: px.name, company: px.company || '', title: px.title || '' }, ids);
       proxyMsg = n ? px.name + ' 님이 아무도 고르지 않은 ' + n + '명을 골랐어요. ' : '';
       return n;
@@ -3777,6 +3780,7 @@ window.ND_CONFIG = {
   // 운영자 화면의 참가자 상태: 시작 전 / 고르는 중 / 카드 소진
   function statusOf(p) {
     if (p.test) return { key: 'test', label: '테스트' };
+    if (p.presenter) return { key: 'test', label: '설명용' };
     const pr = S.progress.get(p.id);
     const likes = pr ? pr.likes || 0 : 0;
     if (p.done && pr && pr.left === 0) return { key: 'empty', label: '카드 소진 · ' + likes + '명' };
@@ -3797,7 +3801,7 @@ window.ND_CONFIG = {
     if (!S.admin) return;
     if (!rosterShown) { rosterShown = true; showRosterCount(); }
     const all = [...S.profiles.values()].sort((a, b) => (!!a.test - !!b.test) || ((a.createdAt || 0) - (b.createdAt || 0)));
-    const real = all.filter((p) => !p.test);
+    const real = all.filter((p) => !p.test && !p.presenter);
     const tests = all.filter((p) => p.test);
     const realVisible = real.filter((p) => !p.hidden);
 
@@ -3879,7 +3883,7 @@ window.ND_CONFIG = {
     const isArmed = hideArmed.id === p.id && Date.now() - hideArmed.at < 3000;
     return h('div', { class: 'prow' + (p.hidden ? ' is-hidden' : '') },
       h('div', { class: 'p-main' },
-        h('b', { text: p.name }), p.test ? h('span', { class: 'tag-test' }, '테스트') : null,
+        h('b', { text: p.name }), p.test ? h('span', { class: 'tag-test' }, '테스트') : p.presenter ? h('span', { class: 'tag-test' }, '설명용') : null,
         h('span', { class: 'p-sub', text: [p.company, p.title, p.createdAt ? hhmm(p.createdAt) + ' 등록' : ''].filter(Boolean).join(' · ') })),
       h('span', { class: 'state s-' + st.key, text: p.hidden ? '숨김' : st.label }),
       h('button', {
@@ -4242,7 +4246,7 @@ window.ND_CONFIG = {
       S.noticeText = s.notice || '';
       S.noticeAt = s.noticeAt || 0;
       S.phaseAt = s.phaseAt || 0;
-      // 끝나는 시각 없이 시작된 카드 고르기(새로고침 안 한 예전 운영자 화면 등)는 시작 시각 + 3분으로 봅니다.
+      // 끝나는 시각 없이 시작된 카드 고르기(새로고침 안 한 예전 운영자 화면 등)는 시작 시각 + 카드 고르기 시간으로 봅니다.
       S.endsAt = s.endsAt || (S.serverPhase === 'swipe' && S.phaseAt ? S.phaseAt + PICK_MS : 0);
       S.phase = effectivePhase();
       onPhaseChange(prev, S.phase, wasLoaded);
