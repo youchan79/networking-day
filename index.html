@@ -100,6 +100,9 @@ body:has(#top-timer:not([hidden])) #demo-chip { display: none; }
 .ob-body { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 20px; }
 .ob-step h2 { font-size: 31px; font-weight: 800; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 26px; text-wrap: balance; }
 .ob-step h2 + .ob-help { margin: -14px 0 22px; }
+/* 명단 확인 질문은 화면 가운데에 */
+.ob-step[data-step="confirm"]:not([hidden]) { min-height: 100%; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+.ob-step[data-step="confirm"] h2 { margin-bottom: 0; }
 .ob-help { color: var(--text-3); font-size: 15px; line-height: 1.5; margin-top: 12px; }
 .ob-error { color: var(--like); font-size: 15px; font-weight: 600; margin-top: 12px; }
 .ob-label { font-size: 16px; font-weight: 800; margin: 28px 0 12px; }
@@ -1929,7 +1932,7 @@ window.ND_CONFIG = {
         null, // 이름 자리
         p.title ? line('briefcase', p.title) : null,
         line('building', p.company),
-        h('p', { class: 'ci-bio' }, h('span', { class: 'ci-bio-text', text: '“' + p.topic + '”' })),
+        p.topic ? h('p', { class: 'ci-bio' }, h('span', { class: 'ci-bio-text', text: '“' + p.topic + '”' })) : null,
         h('button', { type: 'button', class: 'ci-more', 'data-more': '' }, '프로필 전체 보기'),
       ];
     }
@@ -2335,7 +2338,6 @@ window.ND_CONFIG = {
       if (miss.length === 1) return one(miss[0][1], ...miss[0][2]);
       if (miss.length) return { text: '빠진 항목이 있어요: ' + miss.map((m) => m[0]).join(', '), els: miss.flatMap((m) => m[2]) };
     }
-    if (id === 'topic' && !cleanText(d.topic, 60)) return one('나누고 싶은 이야기를 한 줄 적어 주세요.', 'in-topic');
     return null;
   }
   function flagMissing(miss) {
@@ -3295,7 +3297,7 @@ window.ND_CONFIG = {
             mutual ? h('span', { class: 'li-mutual' }, '서로 선택') : null,
             pickedMe ? h('span', { class: 'li-tag' }, '나를 골랐어요') : null),
           h('span', { class: 'li-sub', text: [p.title, p.company].filter(Boolean).join(' · ') }),
-          kind !== 'passed' ? h('span', { class: 'li-q', text: '“' + p.topic + '”' }) : null)),
+          kind !== 'passed' && p.topic ? h('span', { class: 'li-q', text: '“' + p.topic + '”' }) : null)),
       actions.length ? h('div', { class: 'li-actions' }, actions) : null);
   }
 
@@ -3355,7 +3357,7 @@ window.ND_CONFIG = {
         h('h2', { class: 'sh-name', text: p.name }),
         mutual ? h('span', { class: 'li-mutual' }, '서로 선택') : null,
         h('div', { class: 'sh-lines' }, line('briefcase', [p.title, p.field].filter(Boolean).join(' · ')), line('building', p.company), p.years ? line('history', yearsLabel(p.years)) : null),
-        sec('이런 이야기를 나누고 싶어요', h('p', { class: 'sh-quote', text: p.topic })),
+        p.topic ? sec('이런 이야기를 나누고 싶어요', h('p', { class: 'sh-quote', text: p.topic })) : null,
         (p.lookingFor || []).length ? sec('찾고 있어요', h('div', { class: 'ci-chips' },
           p.lookingFor.map((k) => h('span', { class: 'ci-chip', text: k })))) : null,
         p.companyIntro ? sec('회사가 하는 일', h('p', { text: p.companyIntro })) : null,
