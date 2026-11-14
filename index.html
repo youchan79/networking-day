@@ -1507,8 +1507,16 @@ window.ND_CONFIG = {
       async isAdmin() { return (await fs.getDoc(D('admins/' + me()))).exists(); },
       // 회사 이름 → 로고(그림 데이터) 대응표. 공개 코드에 회사 목록이 드러나지 않게 서버에 둡니다.
       async getLogos() {
+        // settings/logos: pairs [{c: 회사 이름, s: 로고 이름}] + imgs {로고 이름: 그림}, settings/logos2: 나머지 imgs
         const snaps = await Promise.all(['logos', 'logos2'].map((id) => fs.getDoc(D('settings/' + id)).catch(() => null)));
-        return Object.assign({}, ...snaps.map((x) => (x && x.exists() ? x.data().map || {} : {})));
+        const imgs = {};
+        let pairs = [];
+        snaps.forEach((x) => {
+          if (!x || !x.exists()) return;
+          Object.assign(imgs, x.data().imgs || {});
+          pairs = pairs.concat(x.data().pairs || []);
+        });
+        return Object.fromEntries(pairs.filter((q) => imgs[q.s]).map((q) => [q.c, imgs[q.s]]));
       },
       async becomeAdmin(pin) {
         try { await fs.setDoc(D('admins/' + me()), { pin }); return true; } catch (e) {
