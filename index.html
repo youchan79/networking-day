@@ -193,7 +193,10 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 
 .deck-area { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .deck { position: relative; flex: 1; min-height: 300px; }
-.actions { flex: none; display: flex; justify-content: center; align-items: center; gap: 22px; padding: 16px 0 14px; }
+.actions { flex: none; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; column-gap: 18px; padding: 12px 0 14px; }
+.act { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.act-label { font-size: 16px; font-weight: 800; color: var(--text-2); white-space: nowrap; }
+.act-label.like { color: var(--like); }
 .round {
   border: 0; border-radius: 50%; background: #1e1e21; display: grid; place-items: center; color: #fff;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5); transition: transform 0.12s ease;
@@ -295,17 +298,26 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .stamp.like { left: 22px; color: var(--like-stamp); border-color: var(--like-stamp); transform: rotate(-18deg); }
 .stamp.nope { right: 22px; color: var(--like); border-color: var(--like); transform: rotate(18deg); }
 
-/* 처음 한 번 보여 주는 사용 안내 */
-.coach .cta { pointer-events: auto; }
-.coach { pointer-events: none; position: absolute; inset: 0; z-index: 6; border-radius: 14px; background: rgba(8, 8, 10, 0.9); color: #fff; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto; text-align: center; }
-.coach-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; font-size: 15px; font-weight: 700; }
-.coach-zone + .coach-zone { border-left: 2px dashed rgba(255, 255, 255, 0.35); }
-.coach-zone b { font-size: 28px; }
-.coach-foot { grid-column: 1 / -1; padding: 12px 18px 20px; display: flex; flex-direction: column; gap: 12px; font-size: 15px; font-weight: 700; }
-.coach-list { display: flex; flex-direction: column; gap: 6px; text-align: left; font-size: 15px; font-weight: 600; color: rgba(255, 255, 255, 0.92); }
-.coach-list b { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 4px; border-radius: 50%; background: rgba(255, 255, 255, 0.16); font-size: 14px; }
-.coach-list b.c-like { color: var(--like); }
-.coach-foot .cta { height: 48px; }
+/* 처음 한 번 보여 주는 사용 안내: 단계마다 한 문장, 카드와 버튼이 직접 움직여 보여 줌 */
+.coach { pointer-events: none; position: absolute; inset: 0; z-index: 6; border-radius: 14px; background: rgba(0, 0, 0, 0.32); display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; }
+.coach-bubble { pointer-events: auto; background: #fff; color: #111; border-radius: 18px; padding: 18px 18px 14px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); display: flex; flex-direction: column; gap: 14px; }
+.coach-text { font-size: 19px; font-weight: 600; line-height: 1.45; }
+.coach-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.coach-dots { display: flex; gap: 6px; }
+.coach-dots i { width: 8px; height: 8px; border-radius: 4px; background: #d0d0d6; transition: width 0.2s ease; }
+.coach-dots i.on { width: 22px; background: #111; }
+.coach-bubble .cta { width: auto; height: 52px; padding: 0 28px; font-size: 17px; }
+.coach-tap { position: absolute; right: 18%; top: 34%; width: 60px; height: 60px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); animation: coachTap 1.3s ease-out infinite; }
+@keyframes coachTap { 0% { transform: scale(0.55); opacity: 0.95; } 100% { transform: scale(1.5); opacity: 0; } }
+@keyframes demoRight { 0%, 100% { transform: none; } 40%, 62% { transform: translateX(26%) rotate(8deg); } }
+@keyframes demoLeft { 0%, 100% { transform: none; } 40%, 62% { transform: translateX(-26%) rotate(-8deg); } }
+@keyframes demoStamp { 0%, 25%, 78%, 100% { opacity: 0; } 40%, 62% { opacity: 1; } }
+.card.top.demo-right { animation: demoRight 2s ease-in-out infinite; }
+.card.top.demo-left { animation: demoLeft 2s ease-in-out infinite; }
+.card.demo-right .stamp.like, .card.demo-left .stamp.nope { animation: demoStamp 2s ease-in-out infinite; }
+@keyframes btnPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+.round.pulse { animation: btnPulse 1.1s ease-in-out infinite; outline: 3px solid #fff; outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .card.top.demo-right, .card.top.demo-left, .round.pulse, .coach-tap { animation: none; } }
 
 /* ---------- 레이더(대기·완료) ---------- */
 .radar-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; padding-bottom: 30px; }
@@ -326,8 +338,10 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .page-head h1 { font-size: 42px; font-weight: 900; letter-spacing: -0.03em; }
 .page-head .text-link { margin-left: auto; }
 .count-pill { min-width: 44px; height: 38px; padding: 0 12px; border-radius: 999px; background: #1e1e21; display: grid; place-items: center; font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; }
-.seg-row { display: flex; gap: 8px; margin: 4px 0 20px; flex: none; }
-.seg { height: 42px; padding: 0 18px; border-radius: 999px; border: 1px solid #2c2c30; background: #000; color: #fff; font-size: 15px; font-weight: 700; white-space: nowrap; }
+.seg-row { display: grid; grid-template-columns: 1fr 1fr 0.62fr; gap: 8px; margin: 4px 0 20px; flex: none; }
+.seg { min-height: 54px; padding: 6px 4px; border-radius: 16px; border: 1px solid #2c2c30; background: #000; color: #fff; font-size: 15px; font-weight: 700; white-space: nowrap;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.2; }
+.seg small { font-size: 13px; font-weight: 600; opacity: 0.75; }
 .seg[aria-pressed="true"] { background: #ececef; color: #111; border-color: #ececef; }
 /* 한 사람 한 줄: 로고 · 이름 · 직함·회사 · 나누고 싶은 이야기. 네트워킹 중 사람을 찾아다니기 쉽게 촘촘하게 */
 .lis { display: flex; flex-direction: column; gap: 10px; }
@@ -695,7 +709,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
       <button type="button" class="cta" id="ob-next">계속</button>
       <button type="button" class="text-btn" id="ob-no" hidden>아니에요</button>
       <button type="button" class="text-btn" id="ob-manual" hidden>직접 입력하기</button>
-      <p class="ob-foot-note" id="ob-foot-note"><button type="button" class="text-btn" id="ob-returning">이미 프로필을 만들었어요 · 바로 들어가기</button><br>11월 16일(월) · 팁스타운 S6</p>
+      <p class="ob-foot-note" id="ob-foot-note">이미 등록했다면 같은 번호로 들어오면 돼요<br>11월 16일(월) · 팁스타운 S6</p>
     </div>
   </section>
 
@@ -711,9 +725,9 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
       <div class="deck-area" id="deck-area">
         <div class="deck" id="deck"></div>
         <div class="actions">
-          <button type="button" class="round sm undo" id="btn-undo" aria-label="되돌리기" disabled></button>
-          <button type="button" class="round lg nope" id="btn-nope" aria-label="넘기기"></button>
-          <button type="button" class="round lg like" id="btn-like" aria-label="대화하고 싶어요"></button>
+          <div class="act"><span class="act-label" aria-hidden="true">패스</span><button type="button" class="round lg nope" id="btn-nope" aria-label="패스"></button></div>
+          <div class="act"><button type="button" class="round sm undo" id="btn-undo" aria-label="되돌리기" disabled></button></div>
+          <div class="act"><span class="act-label like" aria-hidden="true">대화해보고 싶어요</span><button type="button" class="round lg like" id="btn-like" aria-label="대화해보고 싶어요"></button></div>
         </div>
       </div>
       <div class="radar-area" id="radar" hidden>
@@ -732,6 +746,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
       <div class="seg-row">
         <button type="button" class="seg" data-lt="in" id="seg-in">나를 고른 사람</button>
         <button type="button" class="seg" data-lt="out" id="seg-out">내가 고른 사람</button>
+        <button type="button" class="seg" data-lt="all" id="seg-all">전체</button>
       </div>
       <div id="likes-body"></div>
     </div>
@@ -1328,6 +1343,7 @@ window.ND_CONFIG = {
         if (typeof done === 'boolean') emitProfiles(); else emitProgress();
       },
       async isAdmin() { return !!st.admin; },
+      async getLogos() { return window.ND_LOGOS || {}; },
       async becomeAdmin(pin) {
         if (pin !== '0000') return false;
         st.admin = true;
@@ -1489,6 +1505,11 @@ window.ND_CONFIG = {
         await b.commit();
       },
       async isAdmin() { return (await fs.getDoc(D('admins/' + me()))).exists(); },
+      // 회사 이름 → 로고(그림 데이터) 대응표. 공개 코드에 회사 목록이 드러나지 않게 서버에 둡니다.
+      async getLogos() {
+        const snaps = await Promise.all(['logos', 'logos2'].map((id) => fs.getDoc(D('settings/' + id)).catch(() => null)));
+        return Object.assign({}, ...snaps.map((x) => (x && x.exists() ? x.data().map || {} : {})));
+      },
       async becomeAdmin(pin) {
         try { await fs.setDoc(D('admins/' + me()), { pin }); return true; } catch (e) {
           try { return (await fs.getDoc(D('admins/' + me()))).exists(); } catch (e2) { return false; }
@@ -1800,12 +1821,22 @@ window.ND_CONFIG = {
   // ---------- 로고 ----------
   const monoColor = (company) => MONO_COLORS[hash32(company || '') % MONO_COLORS.length];
 
-  // 회사 이름 → 로고 대응표(logos/logos.js). 띄어쓰기, 영문 대소문자, (주)·㈜·주식회사는 무시하고 맞춥니다.
+  // 회사 이름 → 로고 대응표(서버 settings/logos). 띄어쓰기, 영문 대소문자, (주)·㈜·주식회사는 무시하고 맞춥니다.
   const normCompany = (v) => String(v || '').normalize('NFC').replace(/\(주\)|㈜|주식회사|\s+/g, '').toLowerCase();
   const LOGO_MAP = new Map(Object.entries(window.ND_LOGOS || {}).map(([k, v]) => [normCompany(k), v]));
   const mappedLogo = (company) => LOGO_MAP.get(normCompany(company)) || null;
   // 대응표에 있으면 그 로고, 없으면 참가자가 올린 로고
   const logoFor = (p) => mappedLogo(p.company) || p.logo || null;
+  // 서버에서 대응표가 오면 채우고, 이미 그려 둔 카드·프로필을 로고로 다시 그립니다. 못 찾은 회사는 글자 로고 그대로.
+  function applyLogos(obj) {
+    const before = LOGO_MAP.size;
+    Object.entries(obj || {}).forEach(([k, v]) => { if (v) LOGO_MAP.set(normCompany(k), v); });
+    if (LOGO_MAP.size === before) return;
+    meKey = '';
+    likesKey = '';
+    clearDeck();
+    render();
+  }
 
   // 로고에서 대표 색 두 개를 뽑아 카드 배경으로 씁니다 (19). 투명 배경에 밝은 로고면 어두운 바탕에 올립니다 (22).
   // 가로로 긴 로고(워드마크)는 타일도 가로로 넓혀 글자가 작아지지 않게 합니다.
@@ -2114,7 +2145,7 @@ window.ND_CONFIG = {
 
   // ---------- 가입·프로필 입력 (3, 6, 11, 12) ----------
   // 이름·회사·직급은 사전 신청 명단에서 가져오므로 묻지 않습니다.
-  const LOGIN_STEPS = ['welcome', 'rules', 'pin', 'confirm'];
+  const LOGIN_STEPS = ['welcome', 'pin', 'confirm'];
   const PROFILE_STEPS = ['job', 'topic', 'tags'];
   const OB = { mode: null, base: [], i: 0, d: null, hash: null, pid: null, busy: false, flagged: false, leaveAt: 0, matches: [], mi: 0, notFound: false, manual: false };
   // 명단에 없어 직접 입력하는 사람은 확인 화면 대신 직접 입력 화면
@@ -2449,14 +2480,6 @@ window.ND_CONFIG = {
       return;
     }
     hideToast();
-    if (id === 'rules') OB.skippedRules = false;
-    if (id === 'rules' && OB.rulesThenProfile) {
-      OB.rulesThenProfile = false;
-      OB.i = obSteps().indexOf('job');
-      shield();
-      showStep();
-      return;
-    }
     if (id === 'pin') { await findInRoster(); return; }
     if (id === 'confirm') {
       // 입력하던 내용을 새로고침으로 불러온 뒤에는 번호가 없으므로 번호부터 다시
@@ -2567,14 +2590,7 @@ window.ND_CONFIG = {
         // 처음 왔거나, 운영진이 프로필을 지운 경우(키는 남아 있음) 새로 입력
         OB.hash = hash;
         OB.pid = pid || null;
-        if (OB.skippedRules) {
-          // 바로가기로 왔지만 처음 만드는 사람: 참가 안내를 먼저 보고 직무로
-          OB.skippedRules = false;
-          OB.rulesThenProfile = true;
-          OB.i = obSteps().indexOf('rules');
-        } else {
-          OB.i++;
-        }
+        OB.i++;
         shield();
         showStep();
       }
@@ -2852,31 +2868,51 @@ window.ND_CONFIG = {
     if (back && (!second || stale(back, second))) { back.remove(); back = null; }
     if (!back && second && S.profiles.get(second)) deck.insertBefore(makeCard(second, 'back'), front);
     if (!store.get(LS_COACH) && !deck.querySelector('.coach')) deck.append(coachEl());
+    if (deck.querySelector('.coach')) syncCoach();
   }
   function clearDeck() {
     [...$('deck').children].forEach((c) => { if (!c.classList.contains('flying')) c.remove(); });
   }
 
   // 처음 한 번만 보여 주는 사용 안내 (2)
+  // 나이 드신 분도 따라 하기 쉽게: 한 단계에 한 문장, 해당 동작을 카드·버튼이 직접 보여 줍니다.
+  let coachStep = 0;
+  const COACH_STEPS = [
+    { text: '카드를 오른쪽으로 밀거나 ♥를 누르면 ‘대화해보고 싶어요’예요.', demo: 'demo-right', btn: 'btn-like' },
+    { text: '카드를 왼쪽으로 밀거나 ✕를 누르면 ‘패스’예요.', demo: 'demo-left', btn: 'btn-nope' },
+    { text: '카드를 누르면 그 사람의 다음 정보를 볼 수 있어요.', demo: 'tap', btn: null },
+    { text: '가운데 ↺ 버튼을 누르면 방금 고른 것을 되돌려요.', demo: null, btn: 'btn-undo' },
+  ];
+  function syncCoach() {
+    const coach = $('deck').querySelector('.coach');
+    const st = coach ? COACH_STEPS[coachStep] : null;
+    $('deck').querySelectorAll('.card').forEach((c) => c.classList.remove('demo-right', 'demo-left'));
+    const front = $('deck').querySelector('.card.top');
+    if (front && st && (st.demo === 'demo-right' || st.demo === 'demo-left')) front.classList.add(st.demo);
+    ['btn-like', 'btn-nope', 'btn-undo'].forEach((id) => $(id).classList.toggle('pulse', !!st && st.btn === id));
+    if (!coach) return;
+    coach.querySelector('.coach-tap').hidden = st.demo !== 'tap';
+    coach.querySelector('.coach-text').textContent = st.text;
+    coach.querySelectorAll('.coach-dots i').forEach((d, i) => d.classList.toggle('on', i === coachStep));
+    coach.querySelector('.cta').textContent = coachStep === COACH_STEPS.length - 1 ? '시작하기' : '다음';
+  }
   function dismissCoach() {
     const coach = $('deck').querySelector('.coach');
     if (coach) { store.set(LS_COACH, '1'); coach.remove(); }
+    coachStep = 0;
+    syncCoach();
   }
   function coachEl() {
+    coachStep = 0;
     const el = h('div', { class: 'coach', role: 'dialog', 'aria-label': '사용 방법' },
-      h('div', { class: 'coach-zone' }, h('b', null, '‹'), '왼쪽을 탭하면', h('br'), '이전 정보'),
-      h('div', { class: 'coach-zone' }, h('b', null, '›'), '오른쪽을 탭하면', h('br'), '다음 정보'),
-      h('div', { class: 'coach-foot' },
-        h('ul', { class: 'coach-list' },
-          h('li', null, h('b', { class: 'c-like' }, '♥'), ' 또는 오른쪽으로 밀기 = 대화하고 싶어요'),
-          h('li', null, h('b', null, '✕'), ' 또는 왼쪽으로 밀기 = 넘기기'),
-          h('li', null, h('b', null, '↑'), ' = 프로필 전체 보기')),
-        h('button', { type: 'button', class: 'cta' }, '알겠어요')));
-    el.addEventListener('click', (e) => {
-      const zone = e.target.closest('.coach-zone');
-      dismissCoach();
-      const front = $('deck').querySelector('.card.top');
-      if (zone && front) tapCard(front, e.clientX, null); // 안내를 닫으면서 누른 쪽으로 넘김
+      h('span', { class: 'coach-tap', 'aria-hidden': 'true' }),
+      h('div', { class: 'coach-bubble' },
+        h('p', { class: 'coach-text', 'aria-live': 'polite' }),
+        h('div', { class: 'coach-row' },
+          h('div', { class: 'coach-dots', 'aria-hidden': 'true' }, COACH_STEPS.map(() => h('i'))),
+          h('button', { type: 'button', class: 'cta' }, '다음'))));
+    el.querySelector('.cta').addEventListener('click', () => {
+      if (coachStep < COACH_STEPS.length - 1) { coachStep++; syncCoach(); } else dismissCoach();
     });
     return el;
   }
@@ -3160,10 +3196,13 @@ window.ND_CONFIG = {
     const passed = passedPeople();
     const inIds = new Set(inList.map((x) => x.p.id));
     $('likes-count').textContent = String(inList.length);
-    $('seg-in').textContent = '나를 고른 사람 ' + inList.length;
-    $('seg-out').textContent = '내가 고른 사람 ' + mine.length;
-    $('seg-in').setAttribute('aria-pressed', String(S.likesTab === 'in'));
-    $('seg-out').setAttribute('aria-pressed', String(S.likesTab === 'out'));
+    // 전체: 나를 뺀 모든 참가자 (누르면 프로필 확인)
+    const everyone = visibleProfiles().filter((p) => p.id !== S.pid).sort((a, b) => String(a.name).localeCompare(String(b.name), 'ko'));
+    const segLabel = (id, label, n) => $(id).replaceChildren(h('span', null, label), h('small', null, n + '명'));
+    segLabel('seg-in', '나를 고른 사람', inList.length);
+    segLabel('seg-out', '내가 고른 사람', mine.length);
+    segLabel('seg-all', '전체', everyone.length);
+    ['in', 'out', 'all'].forEach((t) => $('seg-' + t).setAttribute('aria-pressed', String(S.likesTab === t)));
 
     // 지금 보이는 사람은 확인한 것으로 기록하고, 이번에 처음 보는 사람에게 NEW를 붙입니다.
     if (S.likesTab === 'in' && open) {
@@ -3174,11 +3213,20 @@ window.ND_CONFIG = {
     const armedId = armed.id && Date.now() - armed.at < 3000 ? armed.id : '';
     const key = [S.likesTab, open, S.phase, picksFull(), S.met.join(','), S.hideMet, S.showPasses, armedId, [...S.newIds].join(','),
       inList.map((x) => x.p.id + ':' + (x.p.updatedAt || '')).join(','),
-      mine.map((p) => p.id + ':' + (p.updatedAt || '')).join(','), passed.map((p) => p.id + ':' + (p.updatedAt || '')).join(',')].join('|');
+      mine.map((p) => p.id + ':' + (p.updatedAt || '')).join(','), passed.map((p) => p.id + ':' + (p.updatedAt || '')).join(','),
+      S.likesTab === 'all' ? everyone.map((p) => p.id + ':' + (p.updatedAt || '')).join(',') : ''].join('|');
     if (key === likesKey) return;
     likesKey = key;
 
     const body = $('likes-body');
+    if (S.likesTab === 'all') {
+      body.replaceChildren(everyone.length
+        ? h('ul', { class: 'lis' }, everyone.map((p) => likeItem(p, {
+          kind: 'all', mutual: open && mineIds.has(p.id) && inIds.has(p.id), pickedMe: open && inIds.has(p.id), iPicked: mineIds.has(p.id),
+        })))
+        : h('div', { class: 'empty-box' }, h('b', null, '아직 등록한 참가자가 없어요')));
+      return;
+    }
     if (S.likesTab === 'in') {
       if (!inList.length) {
         body.replaceChildren(S.phase === 'ended'
@@ -3275,7 +3323,7 @@ window.ND_CONFIG = {
   }
 
   // LIKE 목록 한 줄: 로고, 이름, 직함·회사, 나누고 싶은 이야기를 한눈에. 사람을 찾아다니기 쉽게 촘촘하게.
-  function likeItem(p, { mutual = false, kind, pickedMe = false }) {
+  function likeItem(p, { mutual = false, kind, pickedMe = false, iPicked = false }) {
     const met = S.met.includes(p.id);
     const isNew = kind === 'in' && S.newIds.has(p.id);
     const actions = [];
@@ -3295,7 +3343,8 @@ window.ND_CONFIG = {
             h('b', { class: 'li-nm', text: p.name }),
             isNew ? h('span', { class: 'li-new' }, 'NEW') : null,
             mutual ? h('span', { class: 'li-mutual' }, '서로 선택') : null,
-            pickedMe ? h('span', { class: 'li-tag' }, '나를 골랐어요') : null),
+            pickedMe && !mutual ? h('span', { class: 'li-tag' }, '나를 골랐어요') : null,
+            iPicked && !mutual ? h('span', { class: 'li-tag' }, '내가 골랐어요') : null),
           h('span', { class: 'li-sub', text: [p.title, p.company].filter(Boolean).join(' · ') }),
           kind !== 'passed' && p.topic ? h('span', { class: 'li-q', text: '“' + p.topic + '”' }) : null)),
       actions.length ? h('div', { class: 'li-actions' }, actions) : null);
@@ -3744,7 +3793,6 @@ window.ND_CONFIG = {
     $('ob-next').addEventListener('click', obNext);
     $('ob-no').addEventListener('click', notMe);
     $('ob-manual').addEventListener('click', goManual);
-    $('ob-returning').addEventListener('click', () => { OB.skippedRules = true; gotoStep('pin'); });
     $('in-name').addEventListener('input', (e) => { OB.d.name = e.target.value; syncNext(); });
     $('in-company').addEventListener('input', (e) => { OB.d.company = e.target.value; syncNext(); });
     $('in-title').addEventListener('input', (e) => { OB.d.title = e.target.value; syncNext(); });
@@ -3790,6 +3838,7 @@ window.ND_CONFIG = {
     };
     $('seg-in').addEventListener('click', () => seg('in'));
     $('seg-out').addEventListener('click', () => seg('out'));
+    $('seg-all').addEventListener('click', () => seg('all'));
     $('me-edit').addEventListener('click', () => { S.editing = true; route(); });
     $('me-out').addEventListener('click', () => {
       $('me-out-note').hidden = false;
@@ -4027,6 +4076,7 @@ window.ND_CONFIG = {
     }
 
     $('pin-demo').hidden = S.store.mode !== 'demo';
+    S.store.getLogos().then(applyLogos, (e) => console.error(e));
     $('demo-chip').hidden = !(S.store.mode === 'demo' && S.view === 'onboard');
     S.store.watchSettings((s) => {
       const prev = S.phase;
