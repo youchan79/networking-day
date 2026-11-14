@@ -183,17 +183,42 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .tab-scroll { overflow-y: auto; overflow-x: hidden; padding-bottom: 24px; }
 .tab-scroll > * { flex-shrink: 0; }
 .topbar { display: flex; align-items: center; gap: 12px; height: 60px; flex: none; }
-.top-stop { margin-left: auto; color: var(--text-2); font-size: 15px; white-space: nowrap; padding: 10px 4px; }
 .top-pill { white-space: nowrap; flex: none; height: 40px; display: inline-flex; align-items: center; padding: 0 18px; border-radius: 999px; background: #000; border: 1px solid #2c2c30; font-weight: 800; font-size: 15px; }
 .top-count { white-space: nowrap; flex: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; }
 .top-count svg { width: 20px; height: 20px; color: var(--like); }
 .top-timer { margin-left: auto; height: 34px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 999px; background: #3a2412; color: #ffb36b; font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.top-timer:not([hidden]) ~ .top-stop { margin-left: 0; }
 .admin-timer { font-size: 16px; font-weight: 800; color: #ffb36b; font-variant-numeric: tabular-nums; }
 
-.deck-area { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-.deck { position: relative; flex: 1; min-height: 300px; }
-.actions { flex: none; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; column-gap: 18px; padding: 12px 0 14px; }
+/* 테마별 사람 카드: 테마 제목 아래 한 줄씩, → 버튼으로 옆으로 넘김 */
+.themes { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 18px; }
+.theme-hint, .theme-done { display: flex; align-items: center; gap: 12px; margin: 4px 0 16px; padding: 14px 14px 14px 16px; border-radius: 16px; background: #fff; color: #111; }
+.theme-hint p, .theme-done p { flex: 1; font-size: 16px; font-weight: 600; line-height: 1.45; }
+.theme-hint .cta, .theme-done .cta { flex: none; width: auto; height: 46px; padding: 0 16px; font-size: 15px; }
+.theme { margin-bottom: 22px; }
+.theme-h { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; font-size: 20px; font-weight: 800; }
+.theme-h span { font-size: 14px; font-weight: 700; color: var(--text-3); }
+.theme-wrap { position: relative; }
+.theme-row { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 2px 0 4px; }
+.theme-row::-webkit-scrollbar { display: none; }
+.pc { position: relative; flex: none; width: calc((100% - 20px) / 3); scroll-snap-align: start; display: flex; flex-direction: column; padding: 0; text-align: left;
+  border: 2px solid #2c2c30; border-radius: 14px; overflow: hidden; background: #1c1c1f; color: #fff; }
+.pc-logo { display: block; aspect-ratio: 5 / 4; background: #fff; }
+.pc-logo .logo { width: 100%; height: 100%; }
+.pc-logo .logo.mono-logo { font-size: 30px; }
+.pc-text { display: flex; flex-direction: column; gap: 3px; padding: 8px 8px 10px; }
+.pc-org { font-size: 13px; line-height: 1.3; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.pc-name { font-size: 16px; font-weight: 800; overflow-wrap: anywhere; }
+.pc.picked { border-color: var(--like); }
+.pc.passed { opacity: 0.5; }
+.pc-tag { position: absolute; top: 6px; left: 6px; padding: 3px 8px; border-radius: 999px; font-size: 13px; font-weight: 800; background: rgba(0, 0, 0, 0.72); color: #fff; }
+.pc-tag.picked { background: var(--like); }
+.theme-arrow { position: absolute; top: 28%; z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: 0; display: grid; place-items: center;
+  background: rgba(255, 255, 255, 0.95); color: #111; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
+.theme-arrow svg { width: 22px; height: 22px; }
+.theme-arrow.next { right: -6px; }
+.theme-arrow.next svg { transform: rotate(180deg); }
+.theme-arrow.prev { left: -6px; }
+.sheet-bar .act .round { flex: none; }
 .act { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .act-label { font-size: 16px; font-weight: 800; color: var(--text-2); white-space: nowrap; }
 .act-label.like { color: var(--like); }
@@ -298,26 +323,6 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .stamp.like { left: 22px; color: var(--like-stamp); border-color: var(--like-stamp); transform: rotate(-18deg); }
 .stamp.nope { right: 22px; color: var(--like); border-color: var(--like); transform: rotate(18deg); }
 
-/* 처음 한 번 보여 주는 사용 안내: 단계마다 한 문장, 카드와 버튼이 직접 움직여 보여 줌 */
-.coach { pointer-events: none; position: absolute; inset: 0; z-index: 6; border-radius: 14px; background: rgba(0, 0, 0, 0.32); display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; }
-.coach-bubble { pointer-events: auto; background: #fff; color: #111; border-radius: 18px; padding: 18px 18px 14px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); display: flex; flex-direction: column; gap: 14px; }
-.coach-text { font-size: 19px; font-weight: 600; line-height: 1.45; }
-.coach-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.coach-dots { display: flex; gap: 6px; }
-.coach-dots i { width: 8px; height: 8px; border-radius: 4px; background: #d0d0d6; transition: width 0.2s ease; }
-.coach-dots i.on { width: 22px; background: #111; }
-.coach-bubble .cta { width: auto; height: 52px; padding: 0 28px; font-size: 17px; }
-.coach-tap { position: absolute; right: 18%; top: 34%; width: 60px; height: 60px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); animation: coachTap 1.3s ease-out infinite; }
-@keyframes coachTap { 0% { transform: scale(0.55); opacity: 0.95; } 100% { transform: scale(1.5); opacity: 0; } }
-@keyframes demoRight { 0%, 100% { transform: none; } 40%, 62% { transform: translateX(26%) rotate(8deg); } }
-@keyframes demoLeft { 0%, 100% { transform: none; } 40%, 62% { transform: translateX(-26%) rotate(-8deg); } }
-@keyframes demoStamp { 0%, 25%, 78%, 100% { opacity: 0; } 40%, 62% { opacity: 1; } }
-.card.top.demo-right { animation: demoRight 2s ease-in-out infinite; }
-.card.top.demo-left { animation: demoLeft 2s ease-in-out infinite; }
-.card.demo-right .stamp.like, .card.demo-left .stamp.nope { animation: demoStamp 2s ease-in-out infinite; }
-@keyframes btnPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-.round.pulse { animation: btnPulse 1.1s ease-in-out infinite; outline: 3px solid #fff; outline-offset: 4px; }
-@media (prefers-reduced-motion: reduce) { .card.top.demo-right, .card.top.demo-left, .round.pulse, .coach-tap { animation: none; } }
 
 /* ---------- 레이더(대기·완료) ---------- */
 .radar-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; padding-bottom: 30px; }
@@ -723,15 +728,17 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
         <span class="top-pill">오늘의 7명</span>
         <span class="top-count" id="pick-count"></span>
         <span class="top-timer" id="top-timer" hidden></span>
-        <button type="button" class="text-btn top-stop" id="top-stop" hidden>그만 보기</button>
       </header>
-      <div class="deck-area" id="deck-area">
-        <div class="deck" id="deck"></div>
-        <div class="actions">
-          <div class="act"><span class="act-label" aria-hidden="true">패스</span><button type="button" class="round lg nope" id="btn-nope" aria-label="패스"></button></div>
-          <div class="act"><button type="button" class="round sm undo" id="btn-undo" aria-label="되돌리기" disabled></button></div>
-          <div class="act"><span class="act-label like" aria-hidden="true">대화해보고 싶어요</span><button type="button" class="round lg like" id="btn-like" aria-label="대화해보고 싶어요"></button></div>
+      <div class="themes" id="themes" hidden>
+        <div class="theme-hint" id="theme-hint" hidden>
+          <p>사람을 눌러 프로필을 보고 ‘대화해보고 싶어요’나 ‘패스’를 눌러 주세요.</p>
+          <button type="button" class="cta small" id="theme-hint-ok">알겠어요</button>
         </div>
+        <div class="theme-done" id="theme-done" hidden>
+          <p id="theme-done-text"></p>
+          <button type="button" class="cta small" id="theme-done-go">나를 고른 사람 보기</button>
+        </div>
+        <div id="theme-list"></div>
       </div>
       <div class="radar-area" id="radar" hidden>
         <div class="radar" id="radar-ring">
@@ -765,7 +772,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
     </div>
 
     <nav class="tabbar" aria-label="메뉴">
-      <button type="button" data-tab="swipe" id="tb-swipe"><span class="tb-icon"></span><span>스와이프</span></button>
+      <button type="button" data-tab="swipe" id="tb-swipe"><span class="tb-icon"></span><span>고르기</span></button>
       <button type="button" data-tab="likes" id="tb-likes"><span class="tb-icon"></span><span>LIKE</span><span class="tb-badge" id="tb-badge" hidden></span></button>
       <button type="button" data-tab="me" id="tb-me"><span class="tb-icon"></span><span>프로필</span></button>
     </nav>
@@ -1346,7 +1353,7 @@ window.ND_CONFIG = {
         if (typeof done === 'boolean') emitProfiles(); else emitProgress();
       },
       async isAdmin() { return !!st.admin; },
-      async getLogos() { return window.ND_LOGOS || {}; },
+      async getLogos() { return { logos: window.ND_LOGOS || {}, themes: window.ND_THEMES || {} }; },
       async becomeAdmin(pin) {
         if (pin !== '0000') return false;
         st.admin = true;
@@ -1519,7 +1526,10 @@ window.ND_CONFIG = {
           Object.assign(imgs, x.data().imgs || {});
           pairs = pairs.concat(x.data().pairs || []);
         });
-        return Object.fromEntries(pairs.filter((q) => imgs[q.s]).map((q) => [q.c, imgs[q.s]]));
+        return {
+          logos: Object.fromEntries(pairs.filter((q) => imgs[q.s]).map((q) => [q.c, imgs[q.s]])),
+          themes: Object.fromEntries(pairs.filter((q) => q.t).map((q) => [q.c, q.t])),
+        };
       },
       async becomeAdmin(pin) {
         try { await fs.setDoc(D('admins/' + me()), { pin }); return true; } catch (e) {
@@ -1840,13 +1850,16 @@ window.ND_CONFIG = {
   // 대응표에 있으면 그 로고, 없으면 참가자가 올린 로고
   const logoFor = (p) => mappedLogo(p.company) || p.logo || null;
   // 서버에서 대응표가 오면 채우고, 이미 그려 둔 카드·프로필을 로고로 다시 그립니다. 못 찾은 회사는 글자 로고 그대로.
+  const THEME_MAP = new Map(); // 회사 이름 → 테마 (서버 settings/logos)
   function applyLogos(obj) {
-    const before = LOGO_MAP.size;
-    Object.entries(obj || {}).forEach(([k, v]) => { if (v) LOGO_MAP.set(normCompany(k), v); });
-    if (LOGO_MAP.size === before) return;
+    const { logos = {}, themes = {} } = obj || {};
+    const before = LOGO_MAP.size + THEME_MAP.size;
+    Object.entries(logos).forEach(([k, v]) => { if (v) LOGO_MAP.set(normCompany(k), v); });
+    Object.entries(themes).forEach(([k, v]) => { if (v) THEME_MAP.set(normCompany(k), v); });
+    if (LOGO_MAP.size + THEME_MAP.size === before) return;
     meKey = '';
     likesKey = '';
-    clearDeck();
+    themesKey = '';
     render();
   }
 
@@ -2826,10 +2839,7 @@ window.ND_CONFIG = {
     if (S.phase === 'registration') return 'wait';
     if (S.phase === 'ended') return 'ended';
     if (!S.swipesLoaded) return 'loading';
-    if (!S.deckOrder.length) { S.browsing = false; return S.me && S.me.done ? 'done' : 'empty'; }
-    if (picksFull()) return S.browsing ? 'deck' : 'done';
-    if (S.me && S.me.done && !S.continuing && !S.browsing) return 'done';
-    return 'deck';
+    return 'themes';
   }
 
   function renderSwipeTab() {
@@ -2838,127 +2848,74 @@ window.ND_CONFIG = {
     $('pick-count').hidden = S.phase === 'registration';
     renderTimer();
     const mode = swipeMode();
-    $('deck-area').hidden = mode !== 'deck';
-    $('radar').hidden = mode === 'deck';
-    $('top-stop').hidden = !(mode === 'deck' && S.me && S.me.done);
-    if (mode !== 'deck') { renderRadar(mode); clearDeck(); return; }
-    $('btn-undo').disabled = !lastAction();
-    $('btn-like').classList.toggle('dim', picksFull());
-    renderDeck();
+    $('themes').hidden = mode !== 'themes';
+    $('radar').hidden = mode === 'themes';
+    if (mode !== 'themes') { renderRadar(mode); return; }
+    renderThemes();
   }
 
-  function makeCard(id, cls) {
-    const el = cardEl(S.profiles.get(id), { swipe: true });
-    el.classList.add(cls);
-    if (cls === 'back') el.setAttribute('aria-hidden', 'true');
-    else bindDrag(el);
-    return el;
+  // --- 테마별 사람 카드 (스와이프 대신) ---
+  // 회사로 테마를 정하고(서버 대응표), 대응표에 없는 회사는 고른 직무 분야로, 그것도 없으면 '기타'.
+  const THEME_ORDER = ['로봇·제조', 'AI·데이터', '의료·재활', '연구·대학', '투자·컨설팅', '언론', '공공기관', '기타'];
+  const FIELD_THEME = { '하드웨어·기구': '로봇·제조', 'AI·소프트웨어': 'AI·데이터', '데이터': 'AI·데이터', '연구개발': '연구·대학', '투자': '투자·컨설팅', '기자': '언론', '정책·공공': '공공기관' };
+  const themeOf = (p) => THEME_MAP.get(normCompany(p.company)) || FIELD_THEME[p.field] || '기타';
+  let themesKey = '';
+  function personCard(p, state) {
+    return h('button', { type: 'button', class: 'pc' + (state ? ' ' + state : ''), onclick: () => openSheet(p, { from: 'theme' }), 'aria-label': p.name + ' 프로필 보기' },
+      h('span', { class: 'pc-logo' }, logoEl(p)),
+      h('span', { class: 'pc-text' },
+        h('span', { class: 'pc-org', text: [p.company, p.title].filter(Boolean).join(' ') }),
+        h('b', { class: 'pc-name', text: p.name })),
+      state ? h('span', { class: 'pc-tag ' + state }, state === 'picked' ? '♥ 골랐어요' : '패스') : null);
   }
-  // 바뀐 카드만 다시 그립니다. 맨 위 카드가 그대로면 손대지 않아 읽던 페이지가 유지됩니다.
-  function renderDeck() {
-    const deck = $('deck');
-    const top = S.deckOrder[0];
-    const second = S.deckOrder[1] || null;
-    const stale = (el, id) => !el || el.dataset.id !== id || el.dataset.u !== String((S.profiles.get(id) || {}).updatedAt || '');
-    let front = deck.querySelector('.card.top');
-    let back = deck.querySelector('.card.back');
-    if (stale(front, top)) {
-      if (front) front.remove();
-      if (back && !stale(back, top)) {
-        // 뒤에 있던 카드를 앞으로 (날아가는 카드와 동시에 바로 끌 수 있음)
-        back.classList.replace('back', 'top');
-        back.removeAttribute('aria-hidden');
-        back.style.transform = '';
-        bindDrag(back);
-        front = back;
-        back = null;
-      } else {
-        front = makeCard(top, 'top');
-        deck.append(front);
-      }
-    }
-    if (back && (!second || stale(back, second))) { back.remove(); back = null; }
-    if (!back && second && S.profiles.get(second)) deck.insertBefore(makeCard(second, 'back'), front);
-    if (!store.get(LS_COACH) && !deck.querySelector('.coach')) deck.append(coachEl());
-    if (deck.querySelector('.coach')) syncCoach();
-  }
-  function clearDeck() {
-    [...$('deck').children].forEach((c) => { if (!c.classList.contains('flying')) c.remove(); });
-  }
-
-  // 처음 한 번만 보여 주는 사용 안내 (2)
-  // 나이 드신 분도 따라 하기 쉽게: 한 단계에 한 문장, 해당 동작을 카드·버튼이 직접 보여 줍니다.
-  let coachStep = 0;
-  const COACH_STEPS = [
-    { text: '카드를 오른쪽으로 밀거나 ♥를 누르면 ‘대화해보고 싶어요’예요.', demo: 'demo-right', btn: 'btn-like' },
-    { text: '카드를 왼쪽으로 밀거나 ✕를 누르면 ‘패스’예요.', demo: 'demo-left', btn: 'btn-nope' },
-    { text: '카드를 누르면 그 사람의 다음 정보를 볼 수 있어요.', demo: 'tap', btn: null },
-    { text: '가운데 ↺ 버튼을 누르면 방금 고른 것을 되돌려요.', demo: null, btn: 'btn-undo' },
-  ];
-  function syncCoach() {
-    const coach = $('deck').querySelector('.coach');
-    const st = coach ? COACH_STEPS[coachStep] : null;
-    $('deck').querySelectorAll('.card').forEach((c) => c.classList.remove('demo-right', 'demo-left'));
-    const front = $('deck').querySelector('.card.top');
-    if (front && st && (st.demo === 'demo-right' || st.demo === 'demo-left')) front.classList.add(st.demo);
-    ['btn-like', 'btn-nope', 'btn-undo'].forEach((id) => $(id).classList.toggle('pulse', !!st && st.btn === id));
-    if (!coach) return;
-    coach.querySelector('.coach-tap').hidden = st.demo !== 'tap';
-    coach.querySelector('.coach-text').textContent = st.text;
-    coach.querySelectorAll('.coach-dots i').forEach((d, i) => d.classList.toggle('on', i === coachStep));
-    coach.querySelector('.cta').textContent = coachStep === COACH_STEPS.length - 1 ? '시작하기' : '다음';
-  }
-  function dismissCoach() {
-    const coach = $('deck').querySelector('.coach');
-    if (coach) { store.set(LS_COACH, '1'); coach.remove(); }
-    coachStep = 0;
-    syncCoach();
-  }
-  function coachEl() {
-    coachStep = 0;
-    const el = h('div', { class: 'coach', role: 'dialog', 'aria-label': '사용 방법' },
-      h('span', { class: 'coach-tap', 'aria-hidden': 'true' }),
-      h('div', { class: 'coach-bubble' },
-        h('p', { class: 'coach-text', 'aria-live': 'polite' }),
-        h('div', { class: 'coach-row' },
-          h('div', { class: 'coach-dots', 'aria-hidden': 'true' }, COACH_STEPS.map(() => h('i'))),
-          h('button', { type: 'button', class: 'cta' }, '다음'))));
-    el.querySelector('.cta').addEventListener('click', () => {
-      if (coachStep < COACH_STEPS.length - 1) { coachStep++; syncCoach(); } else dismissCoach();
+  function renderThemes() {
+    const people = visibleProfiles().filter((p) => p.id !== S.pid).sort((a, b) => String(a.name).localeCompare(String(b.name), 'ko'));
+    const liked = new Set(S.swipes.likes);
+    const passed = new Set(S.swipes.passes);
+    const groups = new Map(THEME_ORDER.map((t) => [t, []]));
+    people.forEach((p) => { (groups.get(themeOf(p)) || groups.get('기타')).push(p); });
+    const full = picksFull();
+    $('theme-hint').hidden = !!store.get(LS_COACH);
+    $('theme-done').hidden = !full;
+    if (full) $('theme-done-text').textContent = MAX + '명을 모두 골랐어요. 바꾸려면 고른 분을 눌러 선택 취소하세요.';
+    const key = [full, LOGO_MAP.size, ...[...groups].map(([t, list]) => t + ':' + list.map((p) => p.id + (liked.has(p.id) ? 'L' : passed.has(p.id) ? 'P' : '') + (p.updatedAt || '')).join(','))].join('|');
+    if (key === themesKey) return;
+    themesKey = key;
+    // 다시 그려도 줄마다 보던 위치는 그대로
+    const scroll = {};
+    $('theme-list').querySelectorAll('.theme').forEach((sec) => { scroll[sec.dataset.theme] = sec.querySelector('.theme-row').scrollLeft; });
+    const sections = [...groups].filter(([, list]) => list.length).map(([t, list]) => {
+      const row = h('div', { class: 'theme-row' }, list.map((p) => personCard(p, liked.has(p.id) ? 'picked' : passed.has(p.id) ? 'passed' : '')));
+      const prev = h('button', { type: 'button', class: 'theme-arrow prev', 'aria-label': t + ' 앞으로' }, icon('back'));
+      const next = h('button', { type: 'button', class: 'theme-arrow next', 'aria-label': t + ' 더 보기' }, icon('back'));
+      prev.hidden = true;
+      next.hidden = list.length <= 3;
+      const sync = () => {
+        const max = row.scrollWidth - row.clientWidth;
+        prev.hidden = row.scrollLeft < 8;
+        next.hidden = max <= 8 || row.scrollLeft > max - 8;
+      };
+      prev.addEventListener('click', () => row.scrollBy({ left: -row.clientWidth, behavior: 'smooth' }));
+      next.addEventListener('click', () => row.scrollBy({ left: row.clientWidth, behavior: 'smooth' }));
+      row.addEventListener('scroll', sync, { passive: true });
+      setTimeout(() => { if (scroll[t]) row.scrollLeft = scroll[t]; sync(); }, 0);
+      return h('section', { class: 'theme', 'data-theme': t },
+        h('h2', { class: 'theme-h' }, t, h('span', null, list.length + '명')),
+        h('div', { class: 'theme-wrap' }, row, prev, next));
     });
-    return el;
+    $('theme-list').replaceChildren(...(sections.length ? sections
+      : [h('div', { class: 'empty-box' }, h('b', null, '아직 다른 참가자가 없어요'), h('span', null, '다른 참가자가 등록하면 바로 여기에 나타나요.'))]));
   }
 
   function renderRadar(mode) {
     const n = visibleProfiles().length;
-    const likes = S.swipes.likes.length;
-    const left = S.deckOrder.length;
-    const passed = passedPeople().length;
-    $('radar-ring').classList.toggle('live', mode === 'wait' || mode === 'empty');
+    $('radar-ring').classList.toggle('live', mode === 'wait');
     if (S.me) $('radar-logo').replaceChildren(logoEl(S.me));
     const goLikes = (tab, label, cls) => h('button', { type: 'button', class: cls || 'cta', onclick: () => { S.likesTab = tab; goTab('likes'); } }, label);
-    const swiping = S.phase === 'swipe';
-    const more = () => (likes < MAX && left
-      ? h('button', { type: 'button', class: 'ghost-btn', onclick: () => { S.continuing = true; session.save(); render(); } },
-        (MAX - likes) + '명 더 고르기 · 남은 카드 ' + left + '장')
-      : null);
-    const revisit = () => (likes < MAX && !left && passed
-      ? h('button', { type: 'button', class: 'ghost-btn', onclick: revisitPasses }, '넘긴 ' + passed + '명 다시 보기')
-      : null);
-    const browse = () => (likes >= MAX && left && swiping
-      ? h('button', { type: 'button', class: 'ghost-btn', onclick: () => { S.browsing = true; S.history = []; session.save(); render(); } }, '남은 카드 ' + left + '장 둘러보기')
-      : null);
     const content = {
       loading: ['불러오는 중이에요', '잠시만 기다려 주세요.', []],
       wait: ['곧 카드가 열려요', '지금 ' + n + '명 참여 중이에요. 운영진이 카드 고르기를 시작하면 이 화면이 바로 바뀌어요. 그동안 화면을 꺼 둬도 괜찮아요.',
         [h('button', { type: 'button', class: 'ghost-btn', onclick: () => goTab('me') }, '내 프로필 확인하기')]],
-      empty: ['새 참가자를 기다리는 중', '다른 참가자가 등록하면 바로 카드가 나타나요.', [revisit()]],
-      done: [likes >= MAX ? MAX + '명을 모두 골랐어요' : likes ? likes + '명을 골랐어요' : '아직 아무도 고르지 않았어요',
-        likes >= MAX ? 'LIKE에서 누가 나를 골랐는지 확인해 보세요. 결과가 공개되면 찾아가 인사해요.'
-          : '남은 자리는 더 고를 수 있어요. 누가 나를 골랐는지는 ' + MAX + '명을 채우거나 결과 공개 때 보여요.',
-        likes >= MAX
-          ? [goLikes('in', 'LIKE 확인하기'), swiping ? goLikes('out', '고른 사람 바꾸기', 'ghost-btn') : null, browse()]
-          : [revisit() || more(), goLikes('out', '내가 고른 사람 보기', 'ghost-btn')]],
       ended: ['네트워킹 시간이에요', '명찰의 이름과 회사를 보고 찾아가 인사해 보세요.', [goLikes('in', 'LIKE 확인하기')]],
     }[mode];
     $('radar-title').textContent = content[0];
@@ -2997,14 +2954,6 @@ window.ND_CONFIG = {
     if (show) showFinish();
   }
 
-  // 넘긴 사람을 다시 카드로 (7)
-  function revisitPasses() {
-    S.swipes = { likes: S.swipes.likes.slice(), passes: [] };
-    S.continuing = true;
-    S.history = [];
-    saveSwipes(null, null);
-    render();
-  }
   // 고른 사람 취소 (7). 취소한 사람은 '넘긴 사람'으로 옮겨, 카드 맨 앞에 다시 나오지 않게 합니다.
   function unpick(id) {
     if (S.phase !== 'swipe') return;
@@ -3013,7 +2962,7 @@ window.ND_CONFIG = {
     S.browsing = false;
     likesKey = '';
     saveSwipes({ remove: id }, null);
-    toast('선택을 취소했어요. 아래 ‘넘긴 사람’에서 다시 고를 수 있어요.', 3200);
+    toast(S.tab === 'likes' ? '선택을 취소했어요. 아래 ‘넘긴 사람’에서 다시 고를 수 있어요.' : '선택을 취소했어요.', 3200);
     render();
   }
   // LIKE 목록·프로필에서 바로 고르기
@@ -3032,127 +2981,43 @@ window.ND_CONFIG = {
     render();
   }
 
-  function bindDrag(card) {
-    if (card._drag) return;
-    card._drag = true;
-    let sx = 0, sy = 0, dx = 0, pointer = null, decided = false, dragging = false, moved = false, tapOk = true;
-    let samples = [];
-    const like = card.querySelector('.stamp.like');
-    const nope = card.querySelector('.stamp.nope');
-    const back = () => $('deck').querySelector('.card.back');
-    const reset = () => {
-      card.classList.remove('dragging');
-      card.style.transform = '';
-      like.style.opacity = 0;
-      nope.style.opacity = 0;
-      const b = back();
-      if (b) b.style.transform = '';
-    };
-    card.addEventListener('animationend', () => card.classList.remove('nudge-l', 'nudge-r'));
-    card.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0 || !card.classList.contains('top') || e.target.closest('.card-more')) return;
-      dismissCoach();
-      sx = e.clientX; sy = e.clientY; dx = 0; pointer = e.pointerId; decided = false; dragging = false; moved = false;
-      tapOk = !e.ndShielded;
-      samples = [{ x: 0, t: e.timeStamp }];
-    });
-    card.addEventListener('pointermove', (e) => {
-      if (e.pointerId !== pointer) return;
-      const mx = e.clientX - sx;
-      const my = e.clientY - sy;
-      if (!decided) {
-        if (Math.abs(mx) < 8 && Math.abs(my) < 8) return;
-        decided = true;
-        moved = true;
-        dragging = Math.abs(mx) > Math.abs(my);
-        if (dragging) { card.setPointerCapture(pointer); card.classList.add('dragging'); }
-      }
-      if (!dragging) return;
-      dx = mx;
-      samples.push({ x: mx, t: e.timeStamp });
-      if (samples.length > 6) samples.shift();
-      card.style.transform = 'translate(' + dx + 'px,' + (my * 0.2) + 'px) rotate(' + (dx / 18) + 'deg)';
-      like.style.opacity = Math.max(0, Math.min(1, dx / 80));
-      nope.style.opacity = Math.max(0, Math.min(1, -dx / 80));
-      const b = back();
-      if (b) b.style.transform = 'scale(' + (0.95 + 0.05 * Math.min(1, Math.abs(dx) / 120)) + ')';
-    });
-    card.addEventListener('pointerup', (e) => {
-      if (e.pointerId !== pointer) return;
-      pointer = null;
-      if (!moved) { if (tapOk) tapCard(card, e.clientX, e.target); return; }
-      if (!dragging) return;
-      dragging = false;
-      // 멀리 밀었거나, 짧아도 빠르게 튕겼으면 넘김
-      const s0 = samples[0];
-      const v = s0 && e.timeStamp > s0.t ? (dx - s0.x) / (e.timeStamp - s0.t) : 0; // px/ms
-      const flick = Math.abs(dx) > 40 && Math.abs(v) > 0.45 && Math.sign(v) === Math.sign(dx);
-      const kind = dx > 90 || (flick && dx > 0) ? 'like' : dx < -90 || (flick && dx < 0) ? 'pass' : null;
-      if (!kind || !act(kind)) reset();
-    });
-    card.addEventListener('pointercancel', (e) => { if (e.pointerId === pointer) { pointer = null; dragging = false; reset(); } });
-  }
-
-  // 날아가는 카드는 덱에서 떼어 내 애니메이션만 하고, 다음 카드는 곧바로 조작할 수 있습니다.
-  function flyOut(kind) {
-    const card = $('deck').querySelector('.card.top');
-    if (!card) return;
-    card.classList.remove('top', 'dragging');
-    card.classList.add('flying');
-    card.setAttribute('aria-hidden', 'true');
-    const stamp = card.querySelector(kind === 'like' ? '.stamp.like' : '.stamp.nope');
-    if (stamp) stamp.style.opacity = 1;
-    const dir = kind === 'like' ? 1 : -1;
-    card.style.transform = 'translate(' + dir * 140 + '%, 40px) rotate(' + dir * 22 + 'deg)';
-    card.style.opacity = '0';
-    setTimeout(() => card.remove(), 330);
-  }
-
-  let btnLockUntil = 0;
-  // 반환값: 실제로 넘겼는지
-  function act(kind, viaButton) {
-    if (S.view !== 'app' || S.tab !== 'swipe' || swipeMode() !== 'deck') return false;
-    const now = performance.now();
-    if (viaButton && now < btnLockUntil) return false; // 하트·X가 두 번 눌린 것
-    const id = S.deckOrder[0];
-    if (!id) return false;
-    if (kind === 'like' && picksFull()) {
-      toast('이미 ' + MAX + '명을 골랐어요. 바꾸려면 LIKE › 내가 고른 사람에서 한 명을 취소하세요.', 3500);
-      return false;
+  // 프로필에서 '대화해보고 싶어요'·'패스'를 누르면 기록하고 테마 화면으로 돌아갑니다.
+  function choose(id, kind) {
+    const p = S.profiles.get(id);
+    if (!p || S.phase !== 'swipe' || !S.swipesLoaded) return;
+    const wasLiked = S.swipes.likes.includes(id);
+    if (kind === 'like' && !wasLiked && picksFull()) {
+      toast('이미 ' + MAX + '명을 골랐어요. 바꾸려면 고른 분을 눌러 선택 취소하세요.', 3500);
+      return;
     }
-    btnLockUntil = now + 250;
-    dismissCoach();
     S.swipes = {
-      likes: kind === 'like' ? S.swipes.likes.concat(id) : S.swipes.likes.slice(),
+      likes: kind === 'like' ? (wasLiked ? S.swipes.likes.slice() : S.swipes.likes.concat(id)) : S.swipes.likes.filter((x) => x !== id),
       passes: S.swipes.passes.filter((x) => x !== id).concat(kind === 'pass' ? [id] : []),
     };
-    S.deckOrder.shift();
-    const wasDone = !!(S.me && S.me.done);
+    syncDeck();
     const full = picksFull();
-    const finished = (kind === 'like' && full) || (!S.browsing && !full && S.deckOrder.length === 0);
-    const setDone = finished && !wasDone;
+    const finished = (kind === 'like' && full) || !S.deckOrder.length;
+    const setDone = finished && !(S.me && S.me.done);
     pushHistory({ id, kind, setDone });
-    saveSwipes(kind === 'like' ? { add: id } : null, setDone ? true : null);
-    flyOut(kind);
-    if (finished) finishPicking(setDone || (kind === 'like' && full));
+    const change = kind === 'like' && !wasLiked ? { add: id } : kind === 'pass' && wasLiked ? { remove: id } : null;
+    saveSwipes(change, setDone ? true : null);
+    likesKey = '';
+    closeSheet();
+    if (finished && (setDone || (kind === 'like' && full))) finishPicking(true);
+    else toast(kind === 'like' ? p.name + '님을 골랐어요 · ' + S.swipes.likes.length + '/' + MAX : p.name + '님은 패스했어요');
     render();
-    return true;
   }
 
-  // 여러 번 되돌릴 수 있습니다. 마지막 고르기로 완료됐던 경우에는 완료도 되돌립니다.
+  // 완료 화면의 '방금 선택 되돌리기'
   function undo() {
     if (S.phase !== 'swipe') return;
-    const now = performance.now();
-    if (now < btnLockUntil) return; // 두 번 눌린 것
-    btnLockUntil = now + 400;
     const last = lastAction();
     if (!last) return;
     S.history.pop();
     const { id, kind, setDone } = last;
     S.swipes = { likes: S.swipes.likes.filter((x) => x !== id), passes: S.swipes.passes.filter((x) => x !== id) };
-    S.deckOrder = [id].concat(S.deckOrder.filter((x) => x !== id));
     if (setDone && S.me) S.me = Object.assign({}, S.me, { done: false });
-    else if (S.me && S.me.done) { if (picksFull()) S.browsing = true; else S.continuing = true; }
+    syncDeck();
     saveSwipes(kind === 'like' ? { remove: id } : null, setDone ? false : null);
     const who = S.profiles.get(id);
     if (kind === 'like' && who) toast(who.name + '님 선택을 되돌렸어요.');
@@ -3171,12 +3036,12 @@ window.ND_CONFIG = {
     const mineIds = new Set(picks.map((p) => p.id));
     const full = picks.length >= MAX;
     const mutual = unlocked() ? inboxPeople().filter((x) => mineIds.has(x.p.id)) : [];
-    $('finish-title').textContent = full ? MAX + '명 선택 완료!' : '카드를 다 넘겼어요';
+    $('finish-title').textContent = full ? MAX + '명 선택 완료!' : '모든 분을 다 봤어요';
     $('finish-logos').replaceChildren(...picks.map((p) => h('span', { class: 'fl' }, logoEl(p))));
     const text = mutual.length === 1 ? mutual[0].p.name + '님도 나를 골랐어요. 서로 선택!'
       : mutual.length ? '나를 고른 사람 중 ' + mutual.length + '명을 나도 골랐어요. 서로 선택!'
         : full ? '이제 누가 나를 골랐는지 확인해 보세요.'
-          : (picks.length ? picks.length + '명을 골랐어요. ' : '') + '넘긴 사람에서 더 고를 수 있어요. 누가 나를 골랐는지는 ' + MAX + '명을 채우거나 결과 공개 때 보여요.';
+          : (picks.length ? picks.length + '명을 골랐어요. ' : '') + '패스한 분도 다시 눌러 고를 수 있어요. 누가 나를 골랐는지는 ' + MAX + '명을 채우거나 결과 공개 때 보여요.';
     const el = $('finish-text');
     if (el.textContent !== text) {
       el.textContent = text;
@@ -3387,7 +3252,7 @@ window.ND_CONFIG = {
   }
 
   // ---------- 프로필 전체 보기 (14) ----------
-  // from: 'deck'(맨 위 카드) | 'list'(LIKE 목록) | 'view'(내 카드)
+  // from: 'theme'(테마 화면의 사람 카드) | 'list'(LIKE 목록) | 'view'(내 카드)
   function openSheet(p, opts) {
     const o = opts || {};
     const from = o.from || 'view';
@@ -3397,12 +3262,16 @@ window.ND_CONFIG = {
     const sec = (title, ...body) => h('section', { class: 'sh-sec' }, h('h3', { text: title }), ...body);
     // 아래쪽 고정 버튼: 스크롤해도 늘 보이는 닫기, 고를 수 있으면 고르기
     let bar;
-    if (from === 'deck' && S.deckOrder[0] === p.id && swipeMode() === 'deck') {
-      bar = [
-        h('button', { type: 'button', class: 'round md nope', 'aria-label': '넘기기', onclick: () => { closeSheet(); act('pass'); } }, icon('x')),
-        h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'),
-        h('button', { type: 'button', class: 'round md like', 'aria-label': '대화하고 싶어요', onclick: () => { closeSheet(); act('like'); } }, icon('heart')),
-      ];
+    const actBtn = (label, kind, name, fn) => h('div', { class: 'act' },
+      h('span', { class: 'act-label' + (kind === 'like' ? ' like' : ''), 'aria-hidden': 'true' }, label),
+      h('button', { type: 'button', class: 'round md ' + kind, 'aria-label': label, onclick: fn }, icon(name)));
+    if (from === 'theme' && S.phase === 'swipe' && S.swipesLoaded) {
+      bar = S.swipes.likes.includes(p.id)
+        ? [h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'),
+          h('button', { type: 'button', class: 'cta small', onclick: () => { closeSheet(); unpick(p.id); } }, '선택 취소')]
+        : [actBtn('패스', 'nope', 'x', () => choose(p.id, 'pass')),
+          h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'),
+          actBtn('대화해보고 싶어요', 'like', 'heart', () => choose(p.id, 'like'))];
     } else if (from === 'list' && canPick(p)) {
       bar = [
         h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'),
@@ -3795,9 +3664,6 @@ window.ND_CONFIG = {
   // ---------- 연결 ----------
   function wire() {
     $('ob-back').append(icon('back'));
-    $('btn-undo').append(icon('undo'));
-    $('btn-nope').append(icon('x'));
-    $('btn-like').append(icon('heart'));
     $('tb-swipe').querySelector('.tb-icon').append(icon('cards'));
     $('tb-likes').querySelector('.tb-icon').append(icon('heartLine'));
     $('tb-me').querySelector('.tb-icon').append(icon('person'));
@@ -3858,10 +3724,8 @@ window.ND_CONFIG = {
     });
     $('me-out-no').addEventListener('click', () => { $('me-out-note').hidden = true; });
     $('me-out-yes').addEventListener('click', leaveDevice);
-    $('btn-like').addEventListener('click', () => act('like', true));
-    $('btn-nope').addEventListener('click', () => act('pass', true));
-    $('btn-undo').addEventListener('click', undo);
-    $('top-stop').addEventListener('click', () => { S.browsing = false; S.continuing = false; session.save(); render(); });
+    $('theme-hint-ok').addEventListener('click', () => { store.set(LS_COACH, '1'); $('theme-hint').hidden = true; });
+    $('theme-done-go').addEventListener('click', () => { S.likesTab = 'in'; goTab('likes'); });
     $('finish-go').addEventListener('click', () => { const open = unlocked(); closeFinish(); S.likesTab = open ? 'in' : 'out'; if (!open) S.showPasses = true; goTab('likes'); });
     $('finish-undo').addEventListener('click', () => { closeFinish(); undo(); });
     $('finish-close').addEventListener('click', closeFinish);
@@ -3873,10 +3737,6 @@ window.ND_CONFIG = {
       // Esc는 열린 화면 닫기·이전 질문으로만 씁니다 (앱 화면에서 '나가기' 안내는 휴대폰 뒤로가기 전용)
       if (e.key === 'Escape' && (S.view === 'onboard' || canGoBackInApp() && !(S.view === 'app' && $('sheet').hidden && $('match').hidden
         && $('finish').hidden && $('demo-menu').hidden && $('qr-full').hidden))) onBack();
-      if (S.view !== 'app' || S.tab !== 'swipe' || !$('sheet').hidden || !$('finish').hidden || !$('match').hidden) return;
-      if (/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '')) return;
-      if (e.key === 'ArrowRight') act('like', true);
-      if (e.key === 'ArrowLeft') act('pass', true);
     });
 
     // 운영자
