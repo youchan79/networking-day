@@ -4092,7 +4092,8 @@ window.ND_CONFIG = {
     $('demo-chip').hidden = !(S.store.mode === 'demo' && S.view === 'onboard');
     S.store.watchSettings((s) => {
       const prev = S.phase;
-      const wasSwiping = S.settingsLoaded && prev === 'swipe';
+      const wasLoaded = S.settingsLoaded;
+      const wasSwiping = wasLoaded && prev === 'swipe';
       S.settingsLoaded = true;
       S.phase = ['registration', 'swipe', 'ended'].includes(s.phase) ? s.phase : 'registration';
       S.noticeText = s.notice || '';
@@ -4101,6 +4102,13 @@ window.ND_CONFIG = {
       S.phaseAt = s.phaseAt || 0;
       if (prev !== 'swipe' && S.phase === 'swipe') { S.tab = 'swipe'; S.deckInitAt = 0; }
       // 카드를 고르는 중에 운영진이 단계를 바꾸면: 카드에서 연 프로필을 닫고 고른 기록이 저장됐다고 알려 줍니다.
+      // 결과가 공개되면 완료 화면·프로필 보기를 닫고 바로 '나를 고른 사람'으로 넘어갑니다 (버튼을 누르지 않아도).
+      if (wasLoaded && prev !== 'ended' && S.phase === 'ended' && S.pid && S.view === 'app') {
+        closeFinish();
+        closeSheet();
+        S.likesTab = 'in';
+        goTab('likes');
+      }
       if (wasSwiping && S.phase !== 'swipe' && S.pid && S.view === 'app') {
         if (!$('sheet').hidden && $('sheet-body').querySelector('.sheet-bar.trio')) closeSheet();
         toast('카드 고르기가 끝났어요. 고른 ' + S.swipes.likes.length + '명은 저장됐어요.', 3500);
