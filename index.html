@@ -207,8 +207,15 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .tut { position: fixed; inset: 0; z-index: 70; }
 .tut-hole { position: fixed; border-radius: 16px; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.68); outline: 3px solid #fff; outline-offset: 3px; pointer-events: none; transition: left 0.25s ease, top 0.25s ease, width 0.25s ease, height 0.25s ease; }
 /* 눌러 볼 수 있는 곳: 테두리가 분홍으로 커졌다 작아지며 눈길을 끕니다 */
-@keyframes tutPulse { 0%, 100% { outline-color: #fff; outline-offset: 3px; } 50% { outline-color: #ff4f9a; outline-offset: 7px; } }
-.tut-hole.pulse { outline-width: 4px; animation: tutPulse 1.1s ease-in-out infinite; }
+@keyframes tutPulse { 0%, 100% { outline-color: #fff; outline-offset: 2px; } 50% { outline-color: #ff4f9a; outline-offset: 5px; } }
+.tut-hole.pulse { outline-width: 3px; animation: tutPulse 1.1s ease-in-out infinite; }
+/* 비춘 곳 밖을 누르면: 여기를 누르라고 한 번 크게 깜빡임 */
+@keyframes tutFlash { 0%, 100% { outline-color: #fff; } 50% { outline-color: #ff4f9a; outline-width: 6px; } }
+.tut-hole.flash { animation: tutFlash 0.35s ease-in-out 3; }
+/* 프로필 단계: 화면을 덜 어둡게, 프로필을 내려 읽고 버튼을 직접 누를 수 있게 */
+.tut.pass { pointer-events: none; }
+.tut.pass .tut-bubble { pointer-events: auto; }
+.tut.pass .tut-hole { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35); }
 @media (prefers-reduced-motion: reduce) { .tut-hole.pulse { animation: none; } }
 .tut-hole.none { left: 50% !important; top: 50% !important; width: 0 !important; height: 0 !important; outline: none; }
 .tut-bubble { position: fixed; left: 50%; transform: translateX(-50%); width: min(448px, calc(100% - 32px)); bottom: calc(92px + env(safe-area-inset-bottom, 0px));
@@ -238,22 +245,23 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .pc-logo .logo img { position: absolute; inset: 0; width: 100%; height: 100%; box-sizing: border-box; } /* 그림이 칸 밖으로 커져 잘리지 않게 */
 .pc-logo .logo.wide img { padding: 6% 7%; } /* 가로로 긴 로고는 여백을 줄여 크게 */
 .pc-logo .logo.mono-logo { font-size: 38px; }
-.pc-text { display: flex; flex-direction: column; gap: 4px; padding: 10px 10px 12px; }
+.pc-text { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 10px 10px 12px; }
 .pc-org { font-size: 15px; line-height: 1.35; font-weight: 700; color: #d6d6db; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.pc-name { margin-top: auto; }
 .pc-title { font-size: 15px; line-height: 1.35; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pc-name { font-size: 19px; font-weight: 800; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .pc.picked { border-color: var(--like); }
-.pc.passed { opacity: 0.5; }
+.pc.passed { opacity: 0.62; }
 .pc-tag { position: absolute; top: 7px; left: 7px; padding: 4px 9px; border-radius: 999px; font-size: 14px; font-weight: 800; background: rgba(0, 0, 0, 0.72); color: #fff; }
-.pc-tag.picked { background: var(--like); }
+.pc-tag.picked { background: #d81e3a; }
 .theme-arrow { position: absolute; top: 28%; z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: 0; display: grid; place-items: center;
   background: rgba(255, 255, 255, 0.95); color: #111; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
 .theme-arrow svg { width: 22px; height: 22px; }
 .theme-arrow.next { top: 2px; bottom: 4px; right: 0; width: calc((100% - 20px) / 5); height: auto; border-radius: 14px 0 0 14px; box-shadow: none;
   background: rgba(8, 8, 10, 0.55); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
 .theme-arrow .arrow-dot { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: #111; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
-.theme-arrow.next svg { transform: rotate(180deg); }
-.theme-arrow.prev { left: 2px; top: calc(50% - 22px); }
+.theme-arrow.prev svg { transform: rotate(180deg); }
+.theme-arrow.prev { left: 2px; top: 32px; }
 /* 프로필 아래 두 칸: 넘어갈게요 | 대화해보고 싶어요 */
 .sheet-bar.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .duo-btn { height: 62px; border: 0; border-radius: 16px; padding: 0 6px; font-size: 19px; font-weight: 800; color: #fff; white-space: nowrap; }
@@ -378,6 +386,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 
 /* ---------- LIKE ---------- */
 .page-head { display: flex; align-items: center; gap: 12px; height: 76px; flex: none; }
+#tab-likes .page-head { position: sticky; top: 0; z-index: 3; background: var(--bg); } /* 내려도 남은 시간이 보이게 */
 .page-head h1 { font-size: 42px; font-weight: 900; letter-spacing: -0.03em; }
 .page-head .text-link { margin-left: auto; }
 .count-pill { min-width: 44px; height: 38px; padding: 0 12px; border-radius: 999px; background: #1e1e21; display: grid; place-items: center; font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; }
@@ -402,7 +411,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .li-tag { font-size: 14px; font-weight: 700; color: var(--gold); }
 .li-mutual { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--ok); }
 .li-mutual::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ok); }
-.li-sub { font-size: 15px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.li-sub { font-size: 15px; line-height: 1.35; color: var(--text-2); overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .li-q { font-size: 15px; font-weight: 600; line-height: 1.45; color: #ececef; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .li.slim { padding: 10px 12px; }
 .li.slim .li-logo { width: 44px; height: 44px; border-radius: 11px; }
@@ -463,7 +472,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   padding: 12px var(--gutter-r) calc(12px + env(safe-area-inset-bottom, 0px)) var(--gutter-l);
   background: linear-gradient(180deg, rgba(11, 11, 12, 0) 0%, rgba(11, 11, 12, 0.92) 30%, var(--bg) 100%);
 }
-.sheet-bar .ghost-btn { flex: 1; max-width: 220px; }
+.sheet-bar .ghost-btn { flex: 1; max-width: 220px; background: var(--bg); }
 .sheet-bar .ghost-btn.wide { max-width: none; }
 .sheet-bar .cta.small { flex: 1.4; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; }
 .sheet-bar .cta svg { width: 20px; height: 20px; }
@@ -476,6 +485,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .sh-back { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); left: 12px; z-index: 3; width: 48px; height: 48px; border-radius: 50%; border: 0;
   display: grid; place-items: center; background: rgba(0, 0, 0, 0.55); color: #fff; }
 .sh-back svg { width: 26px; height: 26px; }
+.sh-top { position: sticky; top: 0; height: 0; z-index: 5; }
 .sh-timer { position: absolute; top: calc(13px + env(safe-area-inset-top, 0px)); right: 12px; z-index: 3; }
 .sh-content { padding: 8px var(--gutter-r) 0 var(--gutter-l); display: flex; flex-direction: column; gap: 14px; }
 .sh-name { font-size: 34px; font-weight: 900; letter-spacing: -0.02em; }
@@ -496,7 +506,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .finish { background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px; }
 .finish-inner { width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
 .finish-title {
-  font-size: 46px; font-weight: 900; font-style: italic; letter-spacing: -0.03em; line-height: 1.1;
+  font-size: 46px; font-weight: 900; font-style: italic; letter-spacing: -0.03em; line-height: 1.1; padding: 0 0.12em;
   background: linear-gradient(90deg, #ff8fb1, var(--brand), var(--brand-b)); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .finish-logos { display: flex; justify-content: center; margin: 14px 0 6px; }
@@ -524,7 +534,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .qr-full .ghost-btn { color: #111; border-color: #ccc; }
 
 .toast {
-  position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px) + var(--net-h, 0px)); transform: translateX(-50%); z-index: 60; pointer-events: none;
+  position: fixed; left: 50%; top: calc(70px + env(safe-area-inset-top, 0px) + var(--net-h, 0px)); transform: translateX(-50%); z-index: 60; pointer-events: none;
   width: max-content; max-width: min(420px, calc(100vw - 32px)); padding: 12px 18px; border-radius: 999px; background: rgba(44, 44, 48, 0.97);
   color: #fff; font-size: 15px; font-weight: 600; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
@@ -591,6 +601,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .admin .page-head .mode-chip { order: 3; }
 .mode-chip { height: 30px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 999px; background: #10301f; color: #7ee0a8; font-size: 13px; font-weight: 800; white-space: nowrap; }
 .mode-chip.demo { background: #3a1416; color: #ff8a8a; }
+.mode-chip:empty { display: none; }
 #admin-search { margin-bottom: 8px; }
 .roster-found, .roster-preview { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--text-2); }
 .roster-found { padding: 10px 12px; border-radius: 12px; background: var(--surface-2); }
@@ -1427,7 +1438,7 @@ window.ND_CONFIG = {
         let pid = st.keys[hash];
         if (!pid) {
           pid = 'u' + Date.now().toString(36);
-          st.users[pid] = Object.assign({}, data, { id: pid, done: false, createdAt: Date.now() });
+          st.users[pid] = Object.assign({}, data, { id: pid, done: false, auto: true, createdAt: Date.now() });
           st.keys[hash] = pid;
         }
         const empty = ids.filter((id) => id !== pid && !(st.inbox[id] || []).length);
@@ -1661,7 +1672,7 @@ window.ND_CONFIG = {
           const b = fs.writeBatch(db);
           b.set(D('keys/' + hash), { pid });
           b.set(ownerDoc(pid), { hash });
-          b.set(D('profiles/' + pid), Object.assign({}, data, { done: false, createdAt: fs.serverTimestamp(), updatedAt: fs.serverTimestamp() }));
+          b.set(D('profiles/' + pid), Object.assign({}, data, { done: false, auto: true, createdAt: fs.serverTimestamp(), updatedAt: fs.serverTimestamp() }));
           await b.commit();
         } else if (!(await isOwner(pid))) {
           await fs.setDoc(ownerDoc(pid), { hash });
@@ -1791,6 +1802,7 @@ window.ND_CONFIG = {
     undo: '<path d="M4 5v5h5" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.6 14.5A7.7 7.7 0 1 0 6.4 7L4 10" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round"/>',
     up: '<path d="M12 19V6M6 11.5L12 5.5l6 6" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
     down: '<path d="M12 5v13M6 12.5l6 6 6-6" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+    arrow: '<path d="M5 12h13.5M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
     back: '<path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
     briefcase: '<rect x="3" y="7" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="2" fill="none"/><path d="M8.5 7V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5V7M3 12.5h18" stroke="currentColor" stroke-width="2" fill="none"/>',
     building: '<path d="M5 21V4.5A1.5 1.5 0 0 1 6.5 3h7A1.5 1.5 0 0 1 15 4.5V21M15 9h3.5A1.5 1.5 0 0 1 20 10.5V21M3 21h18M8.5 7.5h3M8.5 11.5h3M8.5 15.5h3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>',
@@ -2213,7 +2225,7 @@ window.ND_CONFIG = {
   // ---------- 화면 결정 ----------
   function visibleProfiles() {
     // 설명용 계정은 본인 화면에만 (다른 참가자 카드·목록·운영자 대신 고르기에서 빠짐)
-    return [...S.profiles.values()].filter((p) => !p.hidden && (!p.presenter || p.id === S.pid));
+    return [...S.profiles.values()].filter((p) => !p.hidden && ((!p.presenter && !p.auto) || p.id === S.pid));
   }
   // 카드 고르기 시간이 끝나 결과가 공개되면 '나를 고른 사람'이 열립니다.
   const unlocked = () => S.phase === 'ended';
@@ -2231,6 +2243,7 @@ window.ND_CONFIG = {
     const next = decide();
     if (next !== S.view) {
       if (S.view) shield();
+      if (next !== 'app') hideTutorial();
       S.view = next;
       VIEWS.forEach((v) => { $('view-' + v).hidden = v !== next; });
       $('app').classList.toggle('wide', next === 'admin');
@@ -2797,6 +2810,7 @@ window.ND_CONFIG = {
     const data = collectProfile();
     if (isEdit()) {
       // 고친 내용은 바로 화면에 반영하고 저장은 뒤에서 합니다 (연결이 느려도 기다리지 않게).
+      if (S.me && S.me.auto) data.auto = false; // 대신 고르기로 만든 프로필을 본인이 채우면 다른 참가자에게도 보이게
       enqueue(() => S.store.updateProfile(S.pid, data));
       S.me = Object.assign({}, S.me, data);
       meKey = '';
@@ -2875,6 +2889,7 @@ window.ND_CONFIG = {
       const b = $('tb-' + t);
       if (S.tab === t) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
     });
+    if (S.tab !== 'swipe' || S.phase !== 'swipe') hideTutorial(); // 카드 화면을 떠나면 사용법은 닫음
     if (S.tab === 'swipe') renderSwipeTab();
     else if (S.tab === 'likes') renderLikesTab();
     else renderMeTab();
@@ -3027,8 +3042,8 @@ window.ND_CONFIG = {
     $('theme-list').querySelectorAll('.theme').forEach((sec) => { scroll[sec.dataset.theme] = sec.querySelector('.theme-row').scrollLeft; });
     const sections = [...groups].filter(([, list]) => list.length).map(([t, list]) => {
       const row = h('div', { class: 'theme-row' }, list.map((p) => personCard(p, liked.has(p.id) ? 'picked' : passed.has(p.id) ? 'passed' : '')));
-      const prev = h('button', { type: 'button', class: 'theme-arrow prev', 'aria-label': t + ' 앞으로' }, icon('back'));
-      const next = h('button', { type: 'button', class: 'theme-arrow next', 'aria-label': t + ' 더 보기' }, h('span', { class: 'arrow-dot' }, icon('back')));
+      const prev = h('button', { type: 'button', class: 'theme-arrow prev', 'aria-label': t + ' 앞으로' }, icon('arrow'));
+      const next = h('button', { type: 'button', class: 'theme-arrow next', 'aria-label': t + ' 더 보기' }, h('span', { class: 'arrow-dot' }, icon('arrow')));
       prev.hidden = true;
       next.hidden = list.length <= 2;
       const sync = () => {
@@ -3053,18 +3068,21 @@ window.ND_CONFIG = {
   // tap: 비춘 곳을 실제로 누를 수 있음(카드 → 프로필이 열림, 프로필의 두 버튼 → 고르고 돌아옴, → → 다음 분들)
   // 프로필 단계는 프로필이 열려 있으면 실제 버튼을, 아니면 버튼 그림(mock)을 보여 줍니다.
   const TUT_STEPS = [
-    { text: '관심 가는 분의 카드를 누르면 프로필을 볼 수 있어요.', target: () => document.querySelector('#theme-list .pc'), tap: true },
+    { text: '관심 가는 분의 카드를 누르면 프로필을 볼 수 있어요.', target: () => tutCard(), tap: true },
     { text: '프로필 아래에서 ‘대화해보고 싶어요’나 ‘넘어갈게요’를 누르면 이 화면으로 돌아와요.', target: () => ($('sheet').hidden ? null : $('sheet-body').querySelector('.sheet-bar')), mock: true, tap: true },
     { text: '→ 버튼을 누르면 같은 테마의 다른 분들이 나와요.', target: () => [...document.querySelectorAll('#theme-list .theme-arrow.next')].find((b) => !b.hidden), tap: true },
-    { text: '시간 안에는 몇 명이든 고를 수 있고, 위의 시간이 끝나면 결과가 공개돼요.', target: () => ($('top-timer').hidden ? null : $('top-timer')) },
+    { text: '시간 안에는 몇 명이든 고를 수 있고, 위의 시간이 끝나면 결과가 공개돼요.', target: () => ($('top-timer').hidden ? null : $('top-timer')), tap: true },
   ];
   let tutStep = -1;
   let tutClosing = false; // 튜토리얼이 직접 프로필을 닫는 중 (닫힘을 '골라서 돌아옴'으로 보지 않게)
   const tutAvail = (i) => { const st = TUT_STEPS[i]; return !!(st.mock || st.target()); };
   // n번 단계로 (비출 곳이 없는 단계는 dir 방향으로 건너뜀). 프로필 단계가 아니면 열린 프로필을 닫음.
+  // 사용법이 비출 첫 카드: 아직 고르지 않은 카드 (고른 카드면 프로필 버튼이 '닫기 | 선택 취소'라 안내와 다름)
+  const tutCard = () => document.querySelector('#theme-list .pc:not(.picked)') || document.querySelector('#theme-list .pc');
   function tutGo(n, dir) {
     const d = dir || 1;
     if (n !== 1 && !$('sheet').hidden) { tutClosing = true; closeSheet(); tutClosing = false; }
+    if (n === 1 && $('sheet').hidden && tutCard()) tutCard().click(); // 뒤로 와도 실제 프로필을 열어 진짜 버튼으로
     while (n >= 0 && n < TUT_STEPS.length && !tutAvail(n)) n += d;
     if (n >= TUT_STEPS.length) { endTutorial(); return; }
     tutStep = Math.max(0, n);
@@ -3077,7 +3095,14 @@ window.ND_CONFIG = {
     const el = st.tap ? st.target() : null;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) {
+      const hole = $('tut-hole');
+      hole.classList.remove('flash');
+      void hole.offsetWidth;
+      hole.classList.add('flash');
+      return;
+    }
+    if (tutStep === TUT_STEPS.length - 1) { endTutorial(); return; }
     const under = document.elementsFromPoint(e.clientX, e.clientY).find((x) => !$('tut').contains(x));
     const hit = (under && under.closest('button')) || el;
     if (hit !== el && !el.contains(hit)) return;
@@ -3103,22 +3128,31 @@ window.ND_CONFIG = {
     hole.classList.toggle('none', !r);
     hole.classList.toggle('pulse', !!(r && st.tap));
     // 화면 끝에 붙은 곳(위쪽 타이머, 오른쪽 화살표 칸)도 흰 테두리가 다 보이게 화면 안쪽으로
-    const holeL = r ? Math.max(6, r.left - 6) : 0;
-    const holeR = r ? Math.min(innerWidth - 6, r.right + 6) : 0;
-    const holeT = r ? Math.max(6, r.top - 6) : 0;
-    const holeB = r ? Math.min(innerHeight - 6, r.bottom + 6) : 0;
+    const holeL = r ? Math.max(8, r.left - 6) : 0;
+    const holeR = r ? Math.min(innerWidth - 8, r.right + 6) : 0;
+    const holeT = r ? Math.max(8, r.top - 6) : 0;
+    const holeB = r ? Math.min(innerHeight - 8, r.bottom + 6) : 0;
     if (r) Object.assign(hole.style, { left: holeL + 'px', top: holeT + 'px', width: (holeR - holeL) + 'px', height: (holeB - holeT) + 'px' });
     const bubble = $('tut-bubble');
     bubble.classList.toggle('mid', !r);
-    const below = !!r && r.top > innerHeight * 0.5;
-    bubble.style.bottom = below ? (innerHeight - holeT + 14) + 'px' : '';
     $('tut-text').textContent = st.text;
     $('tut-mock').hidden = !mock;
     $('tut-back').hidden = tutStep === 0;
     $('tut-dots').replaceChildren(...TUT_STEPS.map((x, i) => h('i', { class: i === tutStep ? 'on' : '' })));
     $('tut-next').hidden = tutStep !== TUT_STEPS.length - 1; // 마지막(시간) 단계에서만 '시작하기'
     $('tut-next').parentElement.hidden = $('tut-back').hidden && $('tut-next').hidden;
+    // 프로필 단계(실제 프로필이 열려 있음)는 화면을 직접 만질 수 있게
+    $('tut').classList.toggle('pass', tutStep === 1 && !!el);
     $('tut').hidden = false;
+    // 안내 상자: 비춘 곳이 화면 위쪽이면 바로 아래, 아래쪽이면 바로 위에 (들어갈 자리가 없으면 화면 아래)
+    bubble.style.top = '';
+    bubble.style.bottom = '';
+    if (r) {
+      const bh = bubble.offsetHeight;
+      const lowest = innerHeight - 84; // 아래 탭 위까지
+      if (r.top > innerHeight * 0.5) bubble.style.bottom = (innerHeight - holeT + 14) + 'px';
+      else if (holeB + 14 + bh <= lowest) { bubble.style.top = (holeB + 14) + 'px'; bubble.style.bottom = 'auto'; }
+    }
   }
   function endTutorial() {
     store.set(LS_COACH, '1');
@@ -3521,9 +3555,10 @@ window.ND_CONFIG = {
       bar = [h('button', { type: 'button', class: 'ghost-btn wide', 'data-close': '' }, '닫기')];
     }
     $('sheet-body').replaceChildren(
-      h('div', { class: 'sh-visual' }, ...visualEls(p),
+      h('div', { class: 'sh-top' },
         h('button', { type: 'button', class: 'sh-back', 'aria-label': '뒤로가기', 'data-close': '' }, icon('back')),
         h('span', { class: 'top-timer sh-timer js-timer', hidden: true })),
+      h('div', { class: 'sh-visual' }, ...visualEls(p)),
       h('div', { class: 'sh-content' },
         h('h2', { class: 'sh-name', text: p.name }),
         mutual ? h('span', { class: 'li-mutual' }, '서로 선택') : null,
@@ -3842,6 +3877,7 @@ window.ND_CONFIG = {
   function statusOf(p) {
     if (p.test) return { key: 'test', label: '테스트' };
     if (p.presenter) return { key: 'test', label: '설명용' };
+    if (p.auto) return { key: 'test', label: '대신 고름' };
     const pr = S.progress.get(p.id);
     const likes = pr ? pr.likes || 0 : 0;
     if (p.done && pr && pr.left === 0) return { key: 'empty', label: '카드 소진 · ' + likes + '명' };
@@ -3862,7 +3898,7 @@ window.ND_CONFIG = {
     if (!S.admin) return;
     if (!rosterShown) { rosterShown = true; showRosterCount(); }
     const all = [...S.profiles.values()].sort((a, b) => (!!a.test - !!b.test) || ((a.createdAt || 0) - (b.createdAt || 0)));
-    const real = all.filter((p) => !p.test && !p.presenter);
+    const real = all.filter((p) => !p.test && !p.presenter && !p.auto);
     const tests = all.filter((p) => p.test);
     const realVisible = real.filter((p) => !p.hidden);
 
@@ -4068,6 +4104,7 @@ window.ND_CONFIG = {
     $('tut-next').addEventListener('click', endTutorial);
     $('tut-back').addEventListener('click', () => { if (tutStep > 0) tutGo(tutStep - 1, -1); });
     $('tut').addEventListener('click', tutTap);
+    $('tut-mock').addEventListener('click', () => { if (tutStep === 1) tutGo(2); });
     // 화면이 꺼졌다 켜지거나 다른 앱에서 돌아오면, 그동안 멈춰 있던 타이머 일(결과 공개·대신 고르기)을 바로 처리
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.settingsLoaded) render(); });
     window.addEventListener('resize', () => { if (tutStep >= 0) showTutStep(); });
@@ -4088,7 +4125,7 @@ window.ND_CONFIG = {
     const adminError = (text) => { $('admin-error').textContent = text; $('admin-error').hidden = !text; };
     $('admin-pin').addEventListener('input', () => adminError(''));
     $('admin-leave').addEventListener('click', (e) => {
-      if (S.admin && S.serverPhase === 'swipe' && !confirm('이 화면을 나가면 시간이 끝나도 자동 채우기와 결과 공개가 되지 않아요. 나갈까요?')) e.preventDefault();
+      if (S.admin && S.serverPhase === 'swipe' && !confirm('이 화면을 나가 있으면, 다시 열 때까지 아무도 고르지 않은 분에게 대신 고르기가 들어가지 않아요. 나갈까요?')) e.preventDefault();
     });
     $('admin-login').addEventListener('submit', async (e) => {
       e.preventDefault();
