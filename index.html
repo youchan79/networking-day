@@ -667,6 +667,14 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .match .finish-title { background: linear-gradient(90deg, #7cf0b8, #3ecf8e, #2bb3a3); -webkit-background-clip: text; background-clip: text; }
 .match-logos .fl { width: 92px; height: 92px; margin-left: -18px; }
 
+/* 오래된 브라우저 대비 (inset·aspect-ratio 미지원) */
+@supports not (inset: 0) {
+  .welcome-art i, .tut, .pc-logo .logo, .pc-logo .logo img, .card, .v-bg, .v-shade, .ring, .overlay, .qr-full { top: 0; right: 0; bottom: 0; left: 0; }
+}
+@supports not (aspect-ratio: 1) {
+  .pc-logo { height: 0; padding-top: 80%; }
+  .locked-tile { height: 0; padding-top: 133.33%; }
+}
 </style>
 
 <div class="app" id="app">
@@ -677,7 +685,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
   </section>
 
   <section class="view" id="view-error" hidden>
-    <div class="center"><b id="error-title"></b><p id="error-text"></p><pre id="error-detail"></pre></div>
+    <div class="center"><b id="error-title"></b><p id="error-text"></p><pre id="error-detail"></pre><button type="button" class="cta" id="error-reload">새로고침</button></div>
   </section>
 
   <!-- 가입·프로필 입력 (한 화면에 질문 하나) -->
@@ -1535,10 +1543,15 @@ window.ND_CONFIG = {
       } finally { clearTimeout(timer); }
     }
     // 일반 요청과 Firestore 중 먼저 성공한 답 (둘 다 실패하면 오류)
-    const fastGet = (path) => Promise.any([
+    const firstOk = (ps) => new Promise((resolve, reject) => {
+      let left = ps.length;
+      let first = null;
+      ps.forEach((q) => q.then(resolve, (e) => { first = first || e; if (--left === 0) reject(first); }));
+    });
+    const fastGet = (path) => firstOk([
       restGet(path),
       fs.getDoc(D(path)).then((x) => (x.exists() ? x.data() : null)),
-    ]).catch((e) => { throw (e && e.errors && e.errors[0]) || e; });
+    ]);
 
     return {
       mode: 'live',
@@ -1620,7 +1633,7 @@ window.ND_CONFIG = {
         await fs.setDoc(D('privates/' + pid), fields, { merge: true });
       },
       async sendNotice(text, phase, endsAt) {
-        await fs.setDoc(D('settings/main'), Object.assign({ notice: text, noticeAt: fs.serverTimestamp() }, phase ? { phase, phaseAt: Date.now() } : {},
+        await fs.setDoc(D('settings/main'), Object.assign({ notice: text, noticeAt: fs.serverTimestamp() }, phase ? { phase, phaseAt: ND.now ? ND.now() : Date.now() } : {},
           endsAt !== undefined ? { endsAt } : {}), { merge: true });
       },
       // 고른 기록 저장 + 상대의 '나를 고른 사람'에 넣고 빼기 + 운영자용 진행 현황
@@ -1658,7 +1671,7 @@ window.ND_CONFIG = {
           try { return (await fs.getDoc(D('admins/' + me()))).exists(); } catch (e2) { return false; }
         }
       },
-      async setPhase(phase, endsAt) { await fs.setDoc(D('settings/main'), Object.assign({ phase, phaseAt: Date.now(), endsAt: endsAt || 0 }, phase === 'swipe' ? { filled: false } : {}), { merge: true }); },
+      async setPhase(phase, endsAt) { await fs.setDoc(D('settings/main'), Object.assign({ phase, phaseAt: ND.now ? ND.now() : Date.now(), endsAt: endsAt || 0 }, phase === 'swipe' ? { filled: false } : {}), { merge: true }); },
       // 대신 고르기를 했는지(filled)와 마지막 결과(fillLog)를 남깁니다. 다른 운영자 기기가 다시 하지 않게, 실패 이유를 나중에 볼 수 있게.
       async markFilled(log) { await fs.setDoc(D('settings/main'), Object.assign({ fillLog: log }, log.ok ? { filled: true } : {}), { merge: true }); },
       async setEndsAt(endsAt) { await fs.setDoc(D('settings/main'), { endsAt, filled: false }, { merge: true }); }, // 늘린 시간이 끝날 때 대신 고르기를 다시
@@ -1678,7 +1691,7 @@ window.ND_CONFIG = {
           await fs.setDoc(ownerDoc(pid), { hash });
         }
         const targets = ids.filter((id) => id !== pid);
-        const sizes = await Promise.all(targets.map((id) => fs.getDocs(fs.query(COL('inbox/' + id + '/from'), fs.limit(1))).then((x) => x.size)));
+        const sizes = await Promise.all(targets.map((id) => fs.getDocsFromServer(fs.query(COL('inbox/' + id + '/from'), fs.limit(1))).then((x) => x.size)));
         const empty = targets.filter((id, i) => sizes[i] === 0);
         if (!empty.length) return 0;
         const sw = await fs.getDoc(D('swipes/' + pid));
@@ -1896,8 +1909,15 @@ window.ND_CONFIG = {
   ND.onStoreError = (err) => {
     const code = err && err.code ? String(err.code) : '';
     if (code.includes('permission')) toast('권한이 없어 불러오지 못했어요. 운영진에게 알려 주세요.', 3200);
-    else toast('연결이 불안정해요. 잠시 뒤 다시 시도해요.');
+    else { toast('연결이 불안정해요. 잠시 뒤 다시 시도해요.'); reloadSoon(); }
   };
+  function reloadSoon() {
+    let last = 0;
+    try { last = Number(sessionStorage.getItem('nd-reload') || 0); } catch (e) { /* 저장 불가 */ }
+    if (Date.now() - last < 60000) return; // 같은 오류로 계속 새로고침하지 않게
+    try { sessionStorage.setItem('nd-reload', String(Date.now())); } catch (e) { /* 저장 불가 */ }
+    setTimeout(() => location.reload(), 3000);
+  }
 
   // ---------- 연타 막기 ----------
   // 화면이 닫히거나 바뀐 직후 잠깐은 탭을 무시합니다. 두 번째 탭이 아래에 있던 버튼·카드를 누르지 않게.
@@ -2269,6 +2289,7 @@ window.ND_CONFIG = {
     $('error-title').textContent = title;
     $('error-text').textContent = text;
     $('error-detail').textContent = detail || '';
+    hideTutorial();
     VIEWS.forEach((v) => { $('view-' + v).hidden = v !== 'error'; });
     S.view = 'error';
   }
@@ -2860,6 +2881,7 @@ window.ND_CONFIG = {
     try {
       const old = await S.store.findKey(hash);
       if (old && await S.store.isOwner(old)) { enterAs(old); route(); return; }
+      if (old) { await S.store.claim(hash, old); clearDraft(); enterAs(old); route(); return; }
     } catch (e) { /* 아래로 */ }
     signOut(); // 입력하던 내용(임시 저장)은 남아 있어 마지막 단계로 돌아갑니다
     toast('저장하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.', 3200);
@@ -3621,7 +3643,7 @@ window.ND_CONFIG = {
     if (s.noticeAt <= last) return;
     store.set(LS_NOTICE, String(s.noticeAt));
     if (!s.notice) { hideBanner(); return; } // 운영자가 알림을 내림
-    if (Date.now() - s.noticeAt > 10 * 60 * 1000 || location.hash === '#admin') return;
+    if (nowT() - s.noticeAt > 10 * 60 * 1000 || location.hash === '#admin') return;
     showBanner(s.notice);
   }
 
@@ -3697,11 +3719,15 @@ window.ND_CONFIG = {
     adminBusy = true;
     ADMIN_BTNS.forEach((id) => { $(id).disabled = true; });
     let ok = false;
-    try { await fn(); ok = true; if (done) toast(typeof done === 'function' ? done() : done, 3500); }
-    catch (ex) {
+    try {
+      await Promise.race([fn(), new Promise((res, rej) => setTimeout(() => rej({ code: 'slow' }), 10000))]);
+      ok = true;
+      if (done) toast(typeof done === 'function' ? done() : done, 3500);
+    } catch (ex) {
       console.error(ex);
       const code = String((ex && ex.code) || '');
-      toast(code.includes('permission') ? '권한이 없어요. 운영자 PIN으로 다시 들어와 주세요.' : '처리하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.', 3500);
+      if (code === 'slow') toast('저장하는 중이에요. 연결이 느려요.', 3500);
+      else toast(code.includes('permission') ? '권한이 없어요. 운영자 PIN으로 다시 들어와 주세요.' : '처리하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.', 3500);
     } finally {
       adminBusy = false;
       ADMIN_BTNS.forEach((id) => { $(id).disabled = false; });
@@ -3775,7 +3801,24 @@ window.ND_CONFIG = {
   const NEXT_PHASE = { registration: 'swipe', swipe: 'ended' };
 
   // 카드 고르기 시간이 지나면 서버 단계가 아직 '카드 고르기'여도 결과 공개로 봅니다 (운영자 화면이 꺼져 있어도 끝나게).
-  const effectivePhase = () => (S.serverPhase === 'swipe' && S.endsAt > 0 && Date.now() >= S.endsAt ? 'ended' : S.serverPhase || 'registration');
+  let clockSkew = 0;
+  const nowT = () => Date.now() - clockSkew;
+  ND.now = nowT;
+  async function measureClock() {
+    try {
+      const t0 = Date.now();
+      const r = await fetch(location.pathname + '?clock=' + t0, { method: 'HEAD', cache: 'no-store' });
+      const t1 = Date.now();
+      const d = Date.parse(r.headers.get('date') || '');
+      if (!d || t1 - t0 > 3000) return; // 응답이 너무 늦으면 믿지 않음
+      const server = d + (Number(r.headers.get('age')) || 0) * 1000 + 500; // Date는 초 단위
+      const skew = Math.round((t0 + t1) / 2 - server);
+      clockSkew = Math.abs(skew) >= 5000 ? skew : 0;
+      if (clockSkew && S.settingsLoaded) renderTimer();
+    } catch (e) { /* 못 재면 기기 시계 그대로 */ }
+  }
+  ND.measureClock = measureClock;
+  const effectivePhase = () => (S.serverPhase === 'swipe' && S.endsAt > 0 && nowT() >= S.endsAt ? 'ended' : S.serverPhase || 'registration');
   function onPhaseChange(prev, next, wasLoaded) {
     if (prev !== 'swipe' && next === 'swipe') { S.tab = 'swipe'; S.deckInitAt = 0; }
     if (!wasLoaded || prev === next) return;
@@ -3863,7 +3906,7 @@ window.ND_CONFIG = {
     }
     const swiping = S.phase === 'swipe';
     const on = swiping && S.endsAt > 0;
-    const left = on ? S.endsAt - Date.now() : 0;
+    const left = on ? S.endsAt - nowT() : 0;
     document.querySelectorAll('.js-timer').forEach((el) => {
       el.hidden = !on;
       el.textContent = on ? fmtLeft(left) : '';
@@ -3884,9 +3927,9 @@ window.ND_CONFIG = {
     // 운영자 화면이 늦게 깨어났거나 결과 공개 뒤에 열렸어도, 이번 판에 아직 안 했으면 지금 합니다.
     // 참가자 목록을 서버에서 받은 뒤에만 (받기 전에 하면 아무도 없는 것으로 보고 끝내 버림)
     const adminOn = S.admin && S.view === 'admin' && S.settingsLoaded && S.profilesServer;
-    const fillDue = S.serverPhase === 'swipe' ? S.endsAt > 0 && Date.now() >= S.endsAt - 1000 : S.serverPhase === 'ended';
+    const fillDue = S.serverPhase === 'swipe' ? S.endsAt > 0 && nowT() >= S.endsAt - 1000 : S.serverPhase === 'ended';
     if (adminOn && fillDue && !S.filled && Date.now() >= fillRetryAt) runFill();
-    if (adminOn && S.serverPhase === 'swipe' && S.endsAt > 0 && Date.now() >= S.endsAt && !autoClosing) {
+    if (adminOn && S.serverPhase === 'swipe' && S.endsAt > 0 && nowT() >= S.endsAt && !autoClosing) {
       autoClosing = true;
       const endsAt = S.endsAt;
       Promise.resolve(fillTask)
@@ -3914,7 +3957,7 @@ window.ND_CONFIG = {
     $('notice-last').hidden = !has;
     if (!has) return;
     $('notice-last-text').textContent = S.noticeText ? '마지막 알림: “' + S.noticeText + '” · ' + ago(S.noticeAt) : '알림을 내렸어요 · ' + ago(S.noticeAt);
-    $('notice-clear').hidden = !(S.noticeText && Date.now() - S.noticeAt < 20000);
+    $('notice-clear').hidden = !(S.noticeText && nowT() - S.noticeAt < 20000);
   }
 
   function renderAdmin() {
@@ -4065,6 +4108,7 @@ window.ND_CONFIG = {
 
   // ---------- 연결 ----------
   function wire() {
+    $('error-reload').addEventListener('click', () => location.reload());
     $('ob-back').append(icon('back'));
     $('tb-swipe').querySelector('.tb-icon').append(icon('cards'));
     $('tb-likes').querySelector('.tb-icon').append(icon('heartLine'));
@@ -4181,7 +4225,7 @@ window.ND_CONFIG = {
       proxyMsg = '';
       adminTask(async () => {
         if (next === 'ended' && S.serverPhase === 'swipe' && !S.filled) await runFill();
-        return withNotice ? S.store.sendNotice(NETWORKING_NOTICE, next, 0) : S.store.setPhase(next, next === 'swipe' ? Date.now() + PICK_MS : 0);
+        return withNotice ? S.store.sendNotice(NETWORKING_NOTICE, next, 0) : S.store.setPhase(next, next === 'swipe' ? nowT() + PICK_MS : 0);
       },
         () => proxyMsg + (withNotice ? '결과를 공개하고 네트워킹 시작 알림을 보냈어요.' : PHASES[next].done));
     });
@@ -4200,8 +4244,8 @@ window.ND_CONFIG = {
     $('time-add').addEventListener('click', (e) => {
       const b = e.target.closest('button[data-add]');
       if (!b || b.disabled || S.phase !== 'swipe') return;
-      const endsAt = Math.max(Date.now(), S.endsAt || 0) + Number(b.dataset.add) * 1000;
-      adminTask(() => S.store.setEndsAt(endsAt), '시간을 ' + b.textContent.replace('+', '') + ' 늘렸어요. 남은 시간 ' + fmtLeft(endsAt - Date.now()));
+      const endsAt = Math.max(nowT(), S.endsAt || 0) + Number(b.dataset.add) * 1000;
+      adminTask(() => S.store.setEndsAt(endsAt), '시간을 ' + b.textContent.replace('+', '') + ' 늘렸어요. 남은 시간 ' + fmtLeft(endsAt - nowT()));
     });
     $('notice-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -4311,7 +4355,7 @@ window.ND_CONFIG = {
     $('demo-admin').addEventListener('click', () => { $('demo-menu').hidden = true; });
     $('demo-phase').addEventListener('click', (e) => {
       const b = e.target.closest('button[data-phase]');
-      if (b) S.store.setPhase(b.dataset.phase, b.dataset.phase === 'swipe' ? Date.now() + PICK_MS : 0);
+      if (b) S.store.setPhase(b.dataset.phase, b.dataset.phase === 'swipe' ? nowT() + PICK_MS : 0);
     });
     $('demo-reset').addEventListener('click', () => {
       S.store.reset();
@@ -4346,8 +4390,9 @@ window.ND_CONFIG = {
       S.view = 'onboard';
       startOnboarding('login');
     }
+    measureClock();
     try {
-      S.store = await storeReady;
+      S.store = await Promise.race([storeReady, new Promise((res, rej) => setTimeout(() => rej({ code: 'timeout' }), 25000))]);
     } catch (ex) {
       console.error(ex);
       const code = ex && ex.code ? String(ex.code) : '';
