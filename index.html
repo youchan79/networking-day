@@ -1610,7 +1610,8 @@ window.ND_CONFIG = {
         }, fail);
       },
       watchProfiles(cb) {
-        return fs.onSnapshot(COL('profiles'), (snap) => {
+        // includeMetadataChanges: 기기 보관본이 서버와 같으면 '서버에서 확인함' 신호가 따로 와야 운영자 대신 고르기가 돕니다
+        return fs.onSnapshot(COL('profiles'), { includeMetadataChanges: true }, (snap) => {
           cb(snap.docs.map((d) => {
             const x = read(d);
             return Object.assign({}, x, { id: d.id, hidden: !!x.hidden, createdAt: ms(x.createdAt), updatedAt: ms(x.updatedAt) });
