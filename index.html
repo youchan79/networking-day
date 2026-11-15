@@ -152,7 +152,7 @@ body:has(#top-timer:not([hidden])) #demo-chip { display: none; }
 .add-row .box-input { min-height: 46px; padding: 10px 14px; }
 .pills { display: flex; flex-wrap: wrap; gap: 9px; }
 .pill {
-  min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #4a4a4f;
+  min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #4a4a4f;
   background: transparent; color: #e6e6ea; font-size: 15px; font-weight: 600; white-space: nowrap;
 }
 .pill[aria-pressed="true"], .pill[aria-checked="true"] { border-color: var(--brand); color: var(--brand); }
@@ -358,7 +358,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .ci-chip { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.2); font-size: 14px; font-weight: 600; white-space: nowrap; }
 .ci-chip.shared { background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); }
 .card-more {
-  position: absolute; right: 14px; bottom: 20px; z-index: 3; width: 40px; height: 40px; border-radius: 50%; border: 0;
+  position: absolute; right: 14px; bottom: 20px; z-index: 3; width: 44px; height: 44px; border-radius: 50%; border: 0;
   background: rgba(0, 0, 0, 0.7); color: #fff; display: grid; place-items: center;
 }
 .card-more svg { width: 22px; height: 22px; }
@@ -409,7 +409,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
 .li-new { height: 20px; padding: 0 7px; border-radius: 6px; background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); color: #fff; font-size: 13px; font-weight: 900; letter-spacing: 0.04em; display: inline-flex; align-items: center; }
 .like-next { margin: 0 0 12px; padding: 12px 14px; border-radius: 14px; background: #1f2a1f; color: #c9f2c9; font-size: 15px; font-weight: 700; line-height: 1.45; }
 .li-tag { font-size: 14px; font-weight: 700; color: var(--gold); }
-.li-mutual { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--ok); }
+.li-mutual { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 700; color: var(--ok); }
 .li-mutual::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ok); }
 .li-sub { font-size: 15px; line-height: 1.35; color: var(--text-2); overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .li-q { font-size: 15px; font-weight: 600; line-height: 1.45; color: #ececef; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -468,7 +468,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .sheet-scroll { height: 100%; overflow-y: auto; max-width: 480px; margin: 0 auto; }
 /* 아래쪽 고정 버튼: 스크롤해도 늘 보이는 닫기 (+ 고르기) */
 .sheet-bar {
-  position: sticky; bottom: 0; z-index: 4; margin-top: 18px; display: flex; gap: 10px; align-items: center; justify-content: center;
+  position: sticky; bottom: 0; z-index: 4; margin-top: calc(18px + var(--tut-pad, 0px)); display: flex; gap: 10px; align-items: center; justify-content: center;
   padding: 12px var(--gutter-r) calc(12px + env(safe-area-inset-bottom, 0px)) var(--gutter-l);
   background: linear-gradient(180deg, rgba(11, 11, 12, 0) 0%, rgba(11, 11, 12, 0.92) 30%, var(--bg) 100%);
 }
@@ -591,7 +591,7 @@ html.standalone .tabbar { padding-bottom: calc(6px + env(safe-area-inset-bottom,
 .prows { display: flex; flex-direction: column; }
 .prow { display: grid; grid-template-columns: 1fr auto auto; gap: 6px 12px; align-items: center; padding: 10px 2px; border-bottom: 1px solid var(--line); }
 .p-main { min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; }
-.p-main b { font-size: 15px; }
+.p-main b { font-size: 15px; min-width: 0; overflow-wrap: anywhere; }
 .p-sub { flex-basis: 100%; font-size: 13px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prow .ghost-btn { min-height: 44px; padding: 0 12px; font-size: 13px; }
 .prow .ghost-btn.armed { border-color: var(--like); color: var(--like); }
@@ -1432,7 +1432,7 @@ window.ND_CONFIG = {
       },
       async setPhase(phase, endsAt) { st.phase = phase; st.phaseAt = Date.now(); st.endsAt = endsAt || 0; if (phase === 'swipe') st.filled = false; save(); emitSettings(); },
       async markFilled(log) { if (log.ok) st.filled = true; st.fillLog = log; save(); emitSettings(); },
-      async setEndsAt(endsAt) { st.endsAt = endsAt; save(); emitSettings(); },
+      async setEndsAt(endsAt) { st.endsAt = endsAt; st.filled = false; save(); emitSettings(); }, // 늘린 시간이 끝날 때 대신 고르기를 다시
       // 아무도 고르지 않은 참가자를 운영진(대신 고르는 사람)이 고른 것으로
       async pickForEmpty(hash, data, ids) {
         let pid = st.keys[hash];
@@ -1661,7 +1661,7 @@ window.ND_CONFIG = {
       async setPhase(phase, endsAt) { await fs.setDoc(D('settings/main'), Object.assign({ phase, phaseAt: Date.now(), endsAt: endsAt || 0 }, phase === 'swipe' ? { filled: false } : {}), { merge: true }); },
       // 대신 고르기를 했는지(filled)와 마지막 결과(fillLog)를 남깁니다. 다른 운영자 기기가 다시 하지 않게, 실패 이유를 나중에 볼 수 있게.
       async markFilled(log) { await fs.setDoc(D('settings/main'), Object.assign({ fillLog: log }, log.ok ? { filled: true } : {}), { merge: true }); },
-      async setEndsAt(endsAt) { await fs.setDoc(D('settings/main'), { endsAt }, { merge: true }); },
+      async setEndsAt(endsAt) { await fs.setDoc(D('settings/main'), { endsAt, filled: false }, { merge: true }); }, // 늘린 시간이 끝날 때 대신 고르기를 다시
       // 운영자: 아무도 고르지 않은 참가자를 운영진(대신 고르는 사람)이 고른 것으로.
       // 보안 규칙상 '고르기'는 본인 기기만 쓸 수 있어서, 그 사람의 열쇠로 이 기기를 연결해서 씁니다. 프로필이 없으면 명단 정보로 만듭니다.
       async pickForEmpty(hash, data, ids) {
@@ -2295,6 +2295,7 @@ window.ND_CONFIG = {
     S.deckOrder = [];
     S.met = [];
     S.tab = 'swipe';
+    ['tab-likes', 'tab-me'].forEach((id) => { $(id).scrollTop = 0; });
     S.deckInitAt = 0;
     seen = null;
     matchQueue = [];
@@ -3112,8 +3113,9 @@ window.ND_CONFIG = {
     else if (was === 2) tutGo(3);
     // 프로필 단계(1)에서 고르면 프로필이 닫히고, closeSheet에서 다음 단계로 넘어갑니다.
   }
+  const coachKey = () => 'r' + (S.phaseAt || 0); // 이번 카드 고르기 판(시작 시각)
   function maybeStartTutorial() {
-    if (tutStep >= 0 || store.get(LS_COACH) || S.view !== 'app' || S.tab !== 'swipe' || $('themes').hidden
+    if (tutStep >= 0 || store.get(LS_COACH) === coachKey() || S.view !== 'app' || S.tab !== 'swipe' || $('themes').hidden
       || !$('sheet').hidden || !$('match').hidden || !document.querySelector('#theme-list .pc')) return;
     tutGo(0);
   }
@@ -3153,14 +3155,16 @@ window.ND_CONFIG = {
       if (r.top > innerHeight * 0.5) bubble.style.bottom = (innerHeight - holeT + 14) + 'px';
       else if (holeB + 14 + bh <= lowest) { bubble.style.top = (holeB + 14) + 'px'; bubble.style.bottom = 'auto'; }
     }
+    document.documentElement.style.setProperty('--tut-pad', tutStep === 1 && el ? (bubble.offsetHeight + 14) + 'px' : '0px');
   }
   function endTutorial() {
-    store.set(LS_COACH, '1');
+    store.set(LS_COACH, coachKey());
     hideTutorial();
   }
   function hideTutorial() {
     tutStep = -1;
     $('tut').hidden = true;
+    document.documentElement.style.setProperty('--tut-pad', '0px');
   }
 
   function renderRadar(mode) {
@@ -3410,6 +3414,13 @@ window.ND_CONFIG = {
           S.phase === 'ended' ? h('span', null, '명찰을 보고 이야기 나누고 싶은 분께 인사해 보세요.') : null,
           S.phase === 'swipe' ? h('button', { type: 'button', class: 'ghost-btn', onclick: () => goTab('swipe') }, '카드 넘기러 가기') : null));
       }
+    } else if (open) {
+      const metP = (p) => S.met.includes(p.id);
+      const sortedMine = mine.slice().sort((a, b) => metP(a) - metP(b));
+      const shownMine = S.hideMet ? sortedMine.filter((p) => !metP(p)) : sortedMine;
+      parts.push(h('p', { class: 'like-next', text: '명찰의 이름과 회사를 보고 찾아가 인사해 보세요.' }));
+      if (metOut) parts.push(listTools(metOut, mine.length));
+      parts.push(h('ul', { class: 'lis' }, shownMine.map((p) => likeItem(p, { mutual: inIds.has(p.id), kind: 'out' }))));
     } else {
       if (metOut) parts.push(h('p', { class: 'met-count', text: '대화 완료 ' + metOut + ' / ' + mine.length + '명' }));
       parts.push(h('ul', { class: 'lis' }, mine.map((p) => likeItem(p, { mutual: open && inIds.has(p.id), kind: 'out' }))));
@@ -3590,16 +3601,22 @@ window.ND_CONFIG = {
   // ---------- 전체 알림 (21) ----------
   // 모든 화면(완료·프로필 보기 포함) 맨 위에 띄웁니다. 눌러서 닫을 수 있습니다.
   let noticeTimer = null;
+  let lastTouch = 0;
+  ['pointerdown', 'scroll'].forEach((t) => addEventListener(t, () => { lastTouch = Date.now(); }, { capture: true, passive: true }));
+  function autoHideBanner() {
+    if (Date.now() - lastTouch < 4000) { noticeTimer = setTimeout(autoHideBanner, 1500); return; }
+    hideBanner();
+  }
   function showBanner(text, ms) {
     $('notice-msg').textContent = text;
     $('notice-banner').hidden = false;
     syncBannerSpace();
     clearTimeout(noticeTimer);
-    noticeTimer = setTimeout(hideBanner, ms || 20000);
+    noticeTimer = setTimeout(autoHideBanner, ms || 20000);
   }
   function hideBanner() { clearTimeout(noticeTimer); $('notice-banner').hidden = true; syncBannerSpace(); }
   function showNotice(s) {
-    if (!s || !s.noticeAt || location.hash === '#admin') return;
+    if (!s || !s.noticeAt || location.hash === '#admin' || !S.pid) return;
     const last = Number(store.get(LS_NOTICE) || 0);
     if (s.noticeAt <= last) return;
     store.set(LS_NOTICE, String(s.noticeAt));
@@ -3805,6 +3822,7 @@ window.ND_CONFIG = {
     wakeBusy = false;
   }
   async function pickForEmpty() {
+    const forEnds = S.endsAt;
     try {
       const px = (await S.store.rosterList()).find((r) => r.proxy);
       if (!px) { S.filled = true; return 0; } // 명단에 대신 고르는 사람이 없으면 하지 않음
@@ -3813,6 +3831,12 @@ window.ND_CONFIG = {
       const ids = [...S.profiles.values()].filter((p) => !p.hidden && !p.test && !p.auto).map((p) => p.id);
       const n = await S.store.pickForEmpty(hash, { name: px.name, company: px.company || '', title: px.title || '' }, ids);
       proxyMsg = n ? px.name + ' 님이 아무도 고르지 않은 ' + n + '명을 골랐어요. ' : '';
+      // 대신 고르는 사이에 시간을 늘렸으면 '했음'으로 남기지 않음 → 늘어난 시간이 끝날 때 한 번 더
+      if (S.serverPhase === 'swipe' && S.endsAt !== forEnds) {
+        S.filled = false;
+        S.store.markFilled({ ok: false, n, err: 'extended', at: Date.now() }).catch(() => {});
+        return n;
+      }
       S.filled = true;
       S.store.markFilled({ ok: true, n, at: Date.now() }).catch((e) => console.error(e));
       if (n && S.serverPhase === 'ended') toast(proxyMsg.trim(), 4000); // 결과 공개 뒤에 늦게 채운 경우
@@ -3918,7 +3942,7 @@ window.ND_CONFIG = {
       h('div', { class: 'stat wide' },
         h('b', { id: 'st-reg' }, String(realVisible.length)),
         h('span', { text: '등록 (실제 참가자)' }),
-        h('small', { class: 'stat-sub', text: (S.roster ? '신청 명단 ' + S.roster.length + '명 중 · ' : '') + '테스트 ' + tests.length + '명 · 숨김 ' + all.filter((p) => p.hidden).length + '명' })),
+        h('small', { class: 'stat-sub', text: (S.roster ? '신청 명단 ' + S.roster.filter((r) => !r.proxy && !r.presenter).length + '명 중 · ' : '') + '테스트 ' + tests.length + '명 · 숨김 ' + all.filter((p) => p.hidden).length + '명' })),
       stat('st-start', c.start, '시작 전'), stat('st-doing', c.doing, S.phase === 'ended' ? '덜 고르고 마침' : '고르는 중'),
       stat('st-empty', c.empty, '카드 소진'));
 
@@ -4027,7 +4051,7 @@ window.ND_CONFIG = {
     wasHidden = null;
     meKey = '';
     likesKey = '';
-    showBanner('운영진이 내 프로필과 기록을 지웠어요. 처음부터 다시 등록해 주세요.', 30000);
+    if (location.hash !== '#admin') showBanner('운영진이 내 프로필과 기록을 지웠어요. 처음부터 다시 등록해 주세요.', 30000);
   }
   // 운영진이 테스트 참가자를 지웠는데 내가 그 사람을 골라 두었다면, 목록에서 빼고 자리를 돌려받습니다.
   function pruneGone() {
