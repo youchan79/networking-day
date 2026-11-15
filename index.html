@@ -3809,7 +3809,8 @@ window.ND_CONFIG = {
       const px = (await S.store.rosterList()).find((r) => r.proxy);
       if (!px) { S.filled = true; return 0; } // 명단에 대신 고르는 사람이 없으면 하지 않음
       const hash = await keyHash(px.name, px.phone4);
-      const ids = visibleProfiles().filter((p) => !p.test && !p.presenter).map((p) => p.id);
+      // 대상: 실제 참가자 + 설명용 계정(화면에서 결과를 보여 줄 때도 대신 고른 사람이 보이게). 시험 참가자·숨긴 사람·자동으로 만든 프로필은 뺌
+      const ids = [...S.profiles.values()].filter((p) => !p.hidden && !p.test && !p.auto).map((p) => p.id);
       const n = await S.store.pickForEmpty(hash, { name: px.name, company: px.company || '', title: px.title || '' }, ids);
       proxyMsg = n ? px.name + ' 님이 아무도 고르지 않은 ' + n + '명을 골랐어요. ' : '';
       S.filled = true;
