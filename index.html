@@ -3342,14 +3342,22 @@ window.ND_CONFIG = {
   let armed = { id: null, at: 0 };
   let armTimer = null;
   function renderLikesTab() {
-    // 카드 고르기가 시작되기 전에는 LIKE 탭을 가립니다.
-    const waiting = S.phase === 'registration';
+    // 운영자가 결과를 공개하기 전(프로필 등록·카드 고르기 중)에는 LIKE 탭을 가립니다. 누가 골랐는지·내가 고른 목록 모두 공개 뒤에.
+    const waiting = S.phase !== 'ended';
     $('likes-seg').hidden = waiting;
     $('likes-count').hidden = waiting;
     if (waiting) {
-      if (likesKey !== 'wait') {
-        likesKey = 'wait';
-        $('likes-body').replaceChildren(h('div', { class: 'lock-box' }, icon('lock'), h('b', null, '카드 고르기가 시작되면 열려요')));
+      const n = S.phase === 'swipe' ? inboxPeople().length : 0;
+      const key = 'wait:' + S.phase + ':' + n;
+      if (likesKey !== key) {
+        likesKey = key;
+        const later = '카드 고르기 시간이 끝나면 누군지 볼 수 있어요.';
+        $('likes-body').replaceChildren(S.phase === 'swipe'
+          ? h('div', { class: 'lock-box' }, icon('lock'),
+            h('b', null, n ? n + '명이 나와 대화하고 싶어해요' : later),
+            n ? h('p', null, later) : null,
+            h('button', { type: 'button', class: 'cta', onclick: () => goTab('swipe') }, '계속 고르기'))
+          : h('div', { class: 'lock-box' }, icon('lock'), h('b', null, '카드 고르기가 시작되면 열려요')));
       }
       return;
     }
@@ -3819,7 +3827,8 @@ window.ND_CONFIG = {
     } catch (e) { /* 못 재면 기기 시계 그대로 */ }
   }
   ND.measureClock = measureClock;
-  const effectivePhase = () => (S.serverPhase === 'swipe' && S.endsAt > 0 && nowT() >= S.endsAt ? 'ended' : S.serverPhase || 'registration');
+  // 결과는 운영자가 공개해야 열립니다(시간이 끝나도 폰이 스스로 열지 않음). 운영자 화면은 시간이 끝나면 대신 고르기 뒤 바로 공개합니다.
+  const effectivePhase = () => S.serverPhase || 'registration';
   function onPhaseChange(prev, next, wasLoaded) {
     if (prev !== 'swipe' && next === 'swipe') { S.tab = 'swipe'; S.deckInitAt = 0; }
     if (!wasLoaded || prev === next) return;
