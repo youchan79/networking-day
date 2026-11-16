@@ -3576,10 +3576,10 @@ window.ND_CONFIG = {
         const cancel = h('button', { type: 'button', class: 'ghost-btn danger', onclick: () => {
           const now = Date.now();
           const at = Number(cancel.dataset.armed || 0);
-          if (at && now - at < 3000) { if (now - at < 400) return; closeSheet(); unpick(p.id); return; }
+          if (at && now - at < 5000) { if (now - at < 400) return; closeSheet(); unpick(p.id); return; }
           cancel.dataset.armed = String(now);
           cancel.textContent = '한 번 더 누르면 취소돼요';
-          setTimeout(() => { if (cancel.isConnected) { cancel.dataset.armed = ''; cancel.textContent = '선택 취소'; } }, 3000);
+          setTimeout(() => { if (cancel.isConnected) { cancel.dataset.armed = ''; cancel.textContent = '선택 취소'; } }, 5000); // 어르신도 두 번째를 누를 수 있게 5초
         } }, '선택 취소');
         bar = [h('button', { type: 'button', class: 'ghost-btn', 'data-close': '' }, '닫기'), cancel];
       } else {
@@ -3830,7 +3830,7 @@ window.ND_CONFIG = {
   // 결과는 운영자가 공개해야 열립니다(시간이 끝나도 폰이 스스로 열지 않음). 운영자 화면은 시간이 끝나면 대신 고르기 뒤 바로 공개합니다.
   const effectivePhase = () => S.serverPhase || 'registration';
   function onPhaseChange(prev, next, wasLoaded) {
-    if (prev !== 'swipe' && next === 'swipe') { S.tab = 'swipe'; S.deckInitAt = 0; }
+    if (prev !== 'swipe' && next === 'swipe') { S.tab = 'swipe'; S.deckInitAt = 0; extendedTo = 0; }
     if (!wasLoaded || prev === next) return;
     // 결과가 공개되면 열린 화면을 닫고 바로 '나를 고른 사람'으로 넘어갑니다 (버튼을 누르지 않아도).
     if (prev !== 'ended' && next === 'ended' && S.pid && S.view === 'app') {
@@ -3850,6 +3850,7 @@ window.ND_CONFIG = {
   const fmtLeft = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
   const hhmm = (t) => new Date(t).toTimeString().slice(0, 5);
   let autoClosing = false;
+  let extendedTo = 0; // 이 기기에서 방금 늘린 끝나는 시각 (서버 값이 들어오기 전 틈에도 공개·대신 고르기가 옛 시각으로 진행되지 않게)
   let fillTask = null; // 진행 중인 대신 고르기 (한 번에 하나만)
   let fillRetryAt = 0;
   let proxyMsg = '';
@@ -3886,7 +3887,7 @@ window.ND_CONFIG = {
       const n = await S.store.pickForEmpty(hash, { name: px.name, company: px.company || '', title: px.title || '' }, ids);
       proxyMsg = n ? px.name + ' 님이 아무도 고르지 않은 ' + n + '명을 골랐어요. ' : '';
       // 대신 고르는 사이에 시간을 늘렸으면 '했음'으로 남기지 않음 → 늘어난 시간이 끝날 때 한 번 더
-      if (S.serverPhase === 'swipe' && S.endsAt !== forEnds) {
+      if (S.serverPhase === 'swipe' && Math.max(S.endsAt || 0, extendedTo) !== forEnds) {
         S.filled = false;
         S.store.markFilled({ ok: false, n, err: 'extended', at: Date.now() }).catch(() => {});
         return n;
@@ -3953,7 +3954,11 @@ window.ND_CONFIG = {
       autoClosing = true;
       const endsAt = S.endsAt;
       Promise.resolve(fillTask)
-        .then(() => adminTask(() => S.store.sendNotice(NETWORKING_NOTICE, 'ended', endsAt), () => proxyMsg + '시간이 끝나 결과를 공개했어요.'))
+        .then(() => {
+          // 그 사이 운영자가 시간을 늘렸으면 공개하지 않음
+          if (S.serverPhase !== 'swipe' || Math.max(S.endsAt || 0, extendedTo) > endsAt) return false;
+          return adminTask(() => S.store.sendNotice(NETWORKING_NOTICE, 'ended', endsAt), () => proxyMsg + '시간이 끝나 결과를 공개했어요.');
+        })
         .finally(() => { autoClosing = false; });
     }
   }
@@ -4214,7 +4219,7 @@ window.ND_CONFIG = {
     const adminError = (text) => { $('admin-error').textContent = text; $('admin-error').hidden = !text; };
     $('admin-pin').addEventListener('input', () => adminError(''));
     $('admin-leave').addEventListener('click', (e) => {
-      if (S.admin && S.serverPhase === 'swipe' && !confirm('이 화면을 나가 있으면, 다시 열 때까지 아무도 고르지 않은 분에게 대신 고르기가 들어가지 않아요. 나갈까요?')) e.preventDefault();
+      if (S.admin && S.serverPhase === 'swipe' && !confirm('이 화면을 나가 있으면, 다시 열 때까지 대신 고르기와 결과 공개가 되지 않아요. 나갈까요?')) e.preventDefault();
     });
     $('admin-login').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -4264,7 +4269,8 @@ window.ND_CONFIG = {
     $('time-add').addEventListener('click', (e) => {
       const b = e.target.closest('button[data-add]');
       if (!b || b.disabled || S.phase !== 'swipe') return;
-      const endsAt = Math.max(nowT(), S.endsAt || 0) + Number(b.dataset.add) * 1000;
+      const endsAt = Math.max(nowT(), S.endsAt || 0, extendedTo) + Number(b.dataset.add) * 1000;
+      extendedTo = endsAt;
       adminTask(() => S.store.setEndsAt(endsAt), '시간을 ' + b.textContent.replace('+', '') + ' 늘렸어요. 남은 시간 ' + fmtLeft(endsAt - nowT()));
     });
     $('notice-form').addEventListener('submit', async (e) => {
