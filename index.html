@@ -440,7 +440,7 @@ html.kb-open .ob-foot { padding-bottom: 10px; }
   display: flex; flex-direction: column; align-items: center; gap: 8px;
 }
 .lock-box svg { width: 30px; height: 30px; color: var(--gold); }
-.lock-box b { font-size: 18px; }
+.lock-box b { font-size: 18px; text-wrap: balance; }
 .lock-box p { color: var(--text-2); font-size: 15px; margin-bottom: 8px; }
 .empty-box { padding: 40px 16px; text-align: center; color: var(--text-2); display: flex; flex-direction: column; gap: 8px; align-items: center; }
 .empty-box b { color: #fff; font-size: 18px; }
@@ -2904,7 +2904,9 @@ window.ND_CONFIG = {
   function passedPeople() {
     return S.swipes.passes.slice().reverse().map((id) => S.profiles.get(id)).filter((p) => p && !p.hidden && p.id !== S.pid);
   }
-  const canPick = (p) => S.swipesLoaded && !!p && S.phase === 'swipe' && p.id !== S.pid && !S.swipes.likes.includes(p.id);
+  const timeUp = () => S.phase === 'swipe' && S.endsAt > 0 && nowT() >= S.endsAt; // 0:00이 지났지만 운영자가 아직 공개하지 않음
+  const pickOpen = () => S.phase === 'swipe' && !timeUp();
+  const canPick = (p) => S.swipesLoaded && !!p && pickOpen() && p.id !== S.pid && !S.swipes.likes.includes(p.id);
   const unviewedCount = () => inboxPeople().filter((x) => !S.viewed.has(x.p.id)).length;
 
   function renderApp() {
@@ -3240,7 +3242,7 @@ window.ND_CONFIG = {
 
   // 고른 사람 취소 (7). 취소한 사람은 '넘긴 사람'으로 옮겨, 카드 맨 앞에 다시 나오지 않게 합니다.
   function unpick(id) {
-    if (S.phase !== 'swipe') return;
+    if (!pickOpen()) return;
     S.swipes = { likes: S.swipes.likes.filter((x) => x !== id), passes: S.swipes.passes.filter((x) => x !== id).concat(id) };
     S.history = S.history.filter((e) => e.id !== id);
     S.browsing = false;
@@ -3265,7 +3267,7 @@ window.ND_CONFIG = {
   // 프로필에서 '대화해보고 싶어요'·'패스'를 누르면 기록하고 테마 화면으로 돌아갑니다.
   function choose(id, kind) {
     const p = S.profiles.get(id);
-    if (!p || S.phase !== 'swipe' || !S.swipesLoaded) return;
+    if (!p || !pickOpen() || !S.swipesLoaded) return;
     const wasLiked = S.swipes.likes.includes(id);
     S.swipes = {
       likes: kind === 'like' ? (wasLiked ? S.swipes.likes.slice() : S.swipes.likes.concat(id)) : S.swipes.likes.filter((x) => x !== id),
@@ -3286,7 +3288,7 @@ window.ND_CONFIG = {
 
   // 완료 화면의 '방금 선택 되돌리기'
   function undo() {
-    if (S.phase !== 'swipe') return;
+    if (!pickOpen()) return;
     const last = lastAction();
     if (!last) return;
     S.history.pop();
@@ -3347,17 +3349,15 @@ window.ND_CONFIG = {
     $('likes-seg').hidden = waiting;
     $('likes-count').hidden = waiting;
     if (waiting) {
-      const n = S.phase === 'swipe' ? inboxPeople().length : 0;
-      const key = 'wait:' + S.phase + ':' + n;
+      // 숫자도 공개 전에는 보이지 않게 (옆 사람이 누르는 순간 숫자가 올라 누군지 짐작되지 않게)
+      const up = timeUp();
+      const key = 'wait:' + S.phase + ':' + (up ? 'up:' + S.swipes.likes.length : '');
       if (likesKey !== key) {
         likesKey = key;
-        const later = '카드 고르기 시간이 끝나면 누군지 볼 수 있어요.';
-        $('likes-body').replaceChildren(S.phase === 'swipe'
-          ? h('div', { class: 'lock-box' }, icon('lock'),
-            h('b', null, n ? n + '명이 나와 대화하고 싶어해요' : later),
-            n ? h('p', null, later) : null,
-            h('button', { type: 'button', class: 'cta', onclick: () => goTab('swipe') }, '계속 고르기'))
-          : h('div', { class: 'lock-box' }, icon('lock'), h('b', null, '카드 고르기가 시작되면 열려요')));
+        $('likes-body').replaceChildren(up
+          ? h('div', { class: 'lock-box' }, icon('lock'), h('b', null, '카드 고르기 시간이 끝났어요.'), h('p', null, '고른 ' + S.swipes.likes.length + '명은 저장됐어요.'))
+          : h('div', { class: 'lock-box' }, icon('lock'), h('b', null, '카드 고르기 시간이 끝나면 누군지 볼 수 있어요.'),
+            S.phase === 'swipe' ? h('button', { type: 'button', class: 'cta', onclick: () => goTab('swipe') }, '계속 고르기') : null));
       }
       return;
     }
@@ -3570,7 +3570,7 @@ window.ND_CONFIG = {
     // 아래쪽 고정 버튼: 스크롤해도 늘 보이는 닫기, 고를 수 있으면 고르기
     let bar;
     let barCls = '';
-    if (from === 'theme' && S.phase === 'swipe' && S.swipesLoaded) {
+    if (from === 'theme' && pickOpen() && S.swipesLoaded) {
       if (S.swipes.likes.includes(p.id)) {
         // 선택 취소는 실수로 누르지 않게 눈에 덜 띄게, 두 번 눌러야 (LIKE 목록과 같게)
         const cancel = h('button', { type: 'button', class: 'ghost-btn danger', onclick: () => {
@@ -3839,13 +3839,14 @@ window.ND_CONFIG = {
       S.likesTab = 'in';
       goTab('likes');
     }
-    if (prev === 'swipe' && next !== 'swipe' && S.pid && S.view === 'app') {
+    if (prev === 'swipe' && next !== 'swipe' && S.pid && S.view === 'app' && timeUpFor !== S.endsAt) {
       toast('카드 고르기 시간이 끝났어요. 고른 ' + S.swipes.likes.length + '명은 저장됐어요.', 3500);
     }
   }
 
   // ---------- 남은 시간 ('2분 남음'·'1분 남음'을 보내면 참가자·운영자 화면 위에 표시) ----------
   let timerTick = null;
+  let timeUpFor = 0; // 이 끝나는 시각에 '시간이 끝났어요'를 이미 알렸는지
   const fmtLeft = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
   const hhmm = (t) => new Date(t).toTimeString().slice(0, 5);
   let autoClosing = false;
@@ -3917,6 +3918,15 @@ window.ND_CONFIG = {
     const swiping = S.phase === 'swipe';
     const on = swiping && S.endsAt > 0;
     const left = on ? S.endsAt - nowT() : 0;
+    if (on && left <= 0 && timeUpFor !== S.endsAt && S.pid && S.view === 'app') {
+      timeUpFor = S.endsAt;
+      closeSheet();
+      hideTutorial();
+      toast('카드 고르기 시간이 끝났어요. 고른 ' + S.swipes.likes.length + '명은 저장됐어요.', 3500);
+      likesKey = '';
+      render();
+      return;
+    }
     document.querySelectorAll('.js-timer').forEach((el) => {
       el.hidden = !on;
       el.textContent = on ? fmtLeft(left) : '';
